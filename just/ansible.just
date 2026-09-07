@@ -1,13 +1,13 @@
 set default-list := true
 
-bootstrap target:
+bootstrap host:
     ansible-playbook \
         -i hosts/lab/hosts.yml \
         ansible/playbooks/bootstrap.yml \
-        --limit {{target}}
+        --limit {{host}}
 
-configure target:
+configure host:
     ansible-playbook \
         -i hosts/lab/hosts.yml \
         ansible/playbooks/site.yml \
-        --limit {{target}}
+        --limit {{host}}

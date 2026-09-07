@@ -1,17 +1,17 @@
 set default-list := true
 
-deploy service target:
+deploy host service:
     ansible-playbook \
         -i hosts/lab/hosts.yml \
         ansible/playbooks/service.yml \
-        --limit {{target}} \
+        --limit {{host}} \
         -e service={{service}}
 
-status service target:
-    ssh {{target}} systemctl status {{service}}.service
+status host service:
+    ssh {{host}} systemctl status {{service}}.service
 
-logs service target:
-    ssh {{target}} journalctl -u {{service}}.service -f
+logs host service:
+    ssh {{host}} journalctl -u {{service}}.service -f
 
-restart service target:
-    ssh {{target}} systemctl restart {{service}}.service
+restart host service:
+    ssh {{host}} systemctl restart {{service}}.service

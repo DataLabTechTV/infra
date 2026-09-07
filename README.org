@@ -1,0 +1,56 @@
+#+title: README
+
+* infra
+IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desktop, workstation, or home lab.
+
+** Project Structure
++ =justfile=, =just/*.just= :: Orchestration of operations.
++ =tofu/= :: Provisioning of VMs in Proxmox.
++ =ansible/= :: Configure VMs and deploy services (locally or remotely to VMs).
++ =services/= :: SystemD services (e.g., Quadlets).
+
+** Just Recipes
+By default, the =HOST=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =HOST=lab=:
+
+#+begin_src bash :session *lab*
+export HOST=lab
+#+end_src
+
+The full workflow will then begin with:
+
+#+begin_src bash :session *lab*
+just provision
+#+end_src
+
+Which will create the required VMs. You should then configure them:
+
+#+begin_src bash :session *lab*
+just configure
+#+end_src
+
+Which will install requirements such as ~podman~. Once this step is done, you can continue with deploying services:
+
+#+begin_src bash :session *lab*
+just deploy nginx
+just deploy traefik
+just deploy rustfs
+just deploy postgres
+just deploy vault
+just deploy forgejo
+#+end_src
+
+Finally, once these run, you can manage the services with operations like:
+
+#+begin_src bash :session *lab*
+just status nginx
+just logs postgres
+just restart traefik
+#+end_src
+
+** Service Description
+- =nginx= :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
+- =traefik= :: Manages certificates and routes services as required.
+- =rustfs= :: Object storage.
+- =postgres= :: Generic database solution (integrates with most services, has multiple useful extensions).
+- =vault= :: Secrets management.
+- =forgejo= :: Git repositories and CI/CD.

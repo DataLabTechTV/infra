@@ -2,12 +2,12 @@ set default-list := true
 
 host := env("HOST", "local")
 
-mod terraform "just/terraform.just"
+mod tofu "just/tofu.just"
 mod ansible "just/ansible.just"
 mod service "just/service.just"
 
 provision:
-    just terraform apply
+    just tofu apply
 
 configure:
     just ansible configure {{host}}

@@ -63,16 +63,15 @@ just restart traefik
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
 
 *** Lab Topology
-| *VM*     | *Hostname* | *vCPUs* |    *RAM* |     *HDD* |  *Service* |
-| <l>    |      <r> |       |    <r> |     <r> |      <r> |
+|     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Service*  |
 |--------+----------+-------+--------+---------+----------|
-| 1      |    proxy |     2 |  2 GiB |  32 GiB |  traefik |
-|        |          |       |        |         |    nginx |
+|      1 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik  |
+|        |          |       |        |         | nginx    |
 |--------+----------+-------+--------+---------+----------|
-| 2      |     data |     4 |  8 GiB | 100 GiB |   rustfs |
+|      2 | data     |     4 | 8 GiB  | 100 GiB | rustfs   |
 |        |          |       |        |         | postgres |
-|        |          |       |        |         |    vault |
+|        |          |       |        |         | vault    |
 |--------+----------+-------+--------+---------+----------|
-| 3      |    forge |     4 |  6 GiB | 100 GiB |  forgejo |
+|      3 | forge    |     4 | 6 GiB  | 100 GiB | forgejo  |
 |--------+----------+-------+--------+---------+----------|
-| *Totals* |        3 |    10 | 16 GiB | 232 GiB |        6 |
+| *Totals* | 3        |    10 | 16 GiB | 232 GiB | 6        |

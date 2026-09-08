@@ -5,9 +5,13 @@ IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desk
 
 ** Project Structure
 + =justfile=, =just/*.just= :: Orchestration of operations.
++ =lib/= :: Bash helper libraries for logging, prompting, etc.
 + =tofu/= :: Provisioning of VMs in Proxmox.
 + =ansible/= :: Configure VMs and deploy services (locally or remotely to VMs).
 + =services/= :: SystemD services (e.g., Quadlets).
+  - =<service>/= :: One directory per service.
+    - =quadlets/= :: Actual unit files (e.g., =*.build=, =*.container=, etc.).
+    - =config/= :: Configuration files for that service.
 
 ** Just Recipes
 By default, the =HOST=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =HOST=lab=:
@@ -54,3 +58,21 @@ just restart traefik
 - =postgres= :: Generic database solution (integrates with most services, has multiple useful extensions).
 - =vault= :: Secrets management.
 - =forgejo= :: Git repositories and CI/CD.
+
+** Topology Design
+This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
+
+*** Lab Topology
+| *VM*     | *Hostname* | *vCPUs* |    *RAM* |     *HDD* |  *Service* |
+| <l>    |      <r> |       |    <r> |     <r> |      <r> |
+|--------+----------+-------+--------+---------+----------|
+| 1      |    proxy |     2 |  2 GiB |  32 GiB |  traefik |
+|        |          |       |        |         |    nginx |
+|--------+----------+-------+--------+---------+----------|
+| 2      |     data |     4 |  8 GiB | 100 GiB |   rustfs |
+|        |          |       |        |         | postgres |
+|        |          |       |        |         |    vault |
+|--------+----------+-------+--------+---------+----------|
+| 3      |    forge |     4 |  6 GiB | 100 GiB |  forgejo |
+|--------+----------+-------+--------+---------+----------|
+| *Totals* |        3 |    10 | 16 GiB | 232 GiB |        6 |

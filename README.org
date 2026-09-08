@@ -1,9 +1,8 @@
-#+title: README
+#+title: infra
 
-* infra
 IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desktop, workstation, or home lab.
 
-** Project Structure
+* Project Structure
 + =justfile=, =just/*.just= :: Orchestration of operations.
 + =lib/= :: Bash helper libraries for logging, prompting, etc.
 + =tofu/= :: Provisioning of VMs in Proxmox.
@@ -13,7 +12,7 @@ IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desk
     - =quadlets/= :: Actual unit files (e.g., =*.build=, =*.container=, etc.).
     - =config/= :: Configuration files for that service.
 
-** Just Recipes
+* Just Recipes
 By default, the =HOST=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =HOST=lab=:
 
 #+begin_src bash :session *lab*
@@ -51,7 +50,7 @@ just logs postgres
 just restart traefik
 #+end_src
 
-** Service Description
+* Service Description
 - =nginx= :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
 - =traefik= :: Manages certificates and routes services as required.
 - =rustfs= :: Object storage.
@@ -59,10 +58,10 @@ just restart traefik
 - =vault= :: Secrets management.
 - =forgejo= :: Git repositories and CI/CD.
 
-** Topology Design
+* Topology Design
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
 
-*** Lab Topology
+** Lab Topology
 |     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Services*                |
 |--------+----------+-------+--------+---------+-------------------------|
 |      1 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik, nginx          |

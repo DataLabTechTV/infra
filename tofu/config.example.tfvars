@@ -1,6 +1,6 @@
-pm_endpoint = "<proxmox ip address>"
-pm_node = "<proxmox node name>"
-pm_user = "<proxmox username>"
-pm_token_id = "<proxmox token id>"
-pm_token_secret = "<proxmox token secret>"
-pm_insecure = false  # true to disable SSL/TLS (i.e., use plain HTTP)
+pm_endpoint = "https://proxmox:8006"
+pm_node = "pve"
+pm_user = "terraform"
+pm_token_id = "dlt"
+pm_token_secret = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+pm_insecure = true  # disables certificate validation

@@ -3,14 +3,14 @@
 IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desktop, workstation, or home lab.
 
 * Project Structure
-+ =justfile=, =just/*.just= :: Orchestration of operations.
-+ =lib/= :: Bash helper libraries for logging, prompting, etc.
-+ =tofu/= :: Provisioning of VMs in Proxmox.
-+ =ansible/= :: Configure VMs and deploy services (locally or remotely to VMs).
-+ =services/= :: SystemD services (e.g., Quadlets).
++ justfile, just/ :: Orchestration of operations.
++ lib/ :: Bash helper libraries for logging, prompting, etc.
++ tofu/ :: Provisioning of VMs in Proxmox.
++ ansible/ :: Configure VMs and deploy services (locally or remotely to VMs).
++ services/ :: SystemD services (e.g., Quadlets).
   - =<service>/= :: One directory per service.
-    - =quadlets/= :: Actual unit files (e.g., =*.build=, =*.container=, etc.).
-    - =config/= :: Configuration files for that service.
+    - quadlets/ :: Actual unit files (e.g., =*.build=, =*.container=, etc.).
+    - config/ :: Configuration files for that service.
 
 * Just Recipes
 By default, the =HOST=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =HOST=lab=:
@@ -51,12 +51,12 @@ just restart traefik
 #+end_src
 
 * Service Description
-- =nginx= :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
-- =traefik= :: Manages certificates and routes services as required.
-- =rustfs= :: Object storage.
-- =postgres= :: Generic database solution (integrates with most services, has multiple useful extensions).
-- =vault= :: Secrets management.
-- =forgejo= :: Git repositories and CI/CD.
+- nginx :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
+- traefik :: Manages certificates and routes services as required.
+- rustfs :: Object storage.
+- postgres :: Generic database solution (integrates with most services, has multiple useful extensions).
+- vault :: Secrets management.
+- forgejo :: Git repositories and CI/CD.
 
 * Topology Design
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.

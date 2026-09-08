@@ -4,7 +4,8 @@ IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desk
 
 * Project Structure
 + justfile, just/ :: Orchestration of operations.
-+ lib/ :: Bash helper libraries for logging, prompting, etc.
++ scripts/ :: Bash scripts, either to be called by ~just~ or to be used as libraries.
+  - lib/ :: Bash helper libraries for logging, prompting, etc.
 + tofu/ :: Provisioning of VMs in Proxmox.
 + ansible/ :: Configure VMs and deploy services (locally or remotely to VMs).
 + services/ :: SystemD services (e.g., Quadlets).

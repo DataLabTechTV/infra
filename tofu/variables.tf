@@ -1,40 +1,46 @@
-variable "pm_endpoint" {
+variable "proxmox_endpoint" {
   type        = string
   description = "Proxmox VE endpoint URL"
 }
 
-variable "pm_insecure" {
+variable "proxmox_insecure" {
   type        = bool
   description = "Proxmox VE endpoint insecure TLS"
   default     = false
 }
 
 
-variable "pm_node" {
+variable "proxmox_node" {
   type        = string
   description = "Proxmox VE node name"
   default     = "pve"
 }
 
-variable "pm_user" {
+variable "proxmox_user" {
   type        = string
   description = "Proxmox VE PAM user without realm"
   default     = "terraform"
 }
 
-variable "pm_token_id" {
+variable "proxmox_token_id" {
   type        = string
   description = "Proxmox VE API token ID"
 }
 
-variable "pm_token_secret" {
+variable "proxmox_token_secret" {
   type        = string
   description = "Proxmox VE API token secret"
   sensitive   = true
 }
 
-variable "pm_local_private_key_path" {
+variable "proxmox_ssh_private_key_path" {
   type        = string
   description = "Path to the SSH private key used to access Proxmox VE"
   default     = "~/.ssh/proxmox"
+}
+
+variable "vm_ssh_public_key_path" {
+  type        = string
+  description = "Path to the SSH public key used to access the VMs"
+  default     = "~/.ssh/vms.pub"
 }

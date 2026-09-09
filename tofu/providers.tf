@@ -1,12 +1,12 @@
 provider "proxmox" {
-  endpoint  = var.pm_endpoint
-  insecure  = var.pm_insecure
-  api_token = "${var.pm_user}@pam!${var.pm_token_id}=${var.pm_token_secret}"
+  endpoint  = var.proxmox_endpoint
+  insecure  = var.proxmox_insecure
+  api_token = "${var.proxmox_user}@pam!${var.proxmox_token_id}=${var.proxmox_token_secret}"
 
   ssh {
     agent       = false
-    username    = var.pm_user
-    private_key = file(var.pm_local_private_key_path)
+    username    = var.proxmox_user
+    private_key = file(var.proxmox_ssh_private_key_path)
   }
 }
 

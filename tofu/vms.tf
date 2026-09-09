@@ -13,8 +13,8 @@ locals {
       vm_id = 302
       cores = 4
       memory = {
-        dedicated = 8096
-        floating  = 8096
+        dedicated = 8192
+        floating  = 8192
       }
       size = 100
     },
@@ -46,6 +46,24 @@ resource "random_password" "vm" {
   special = false
 }
 
+data "external" "hashed_passwd" {
+  for_each = local.vms
+
+  program = [
+    "bash",
+    "-c",
+    <<-EOT
+      password=$(jq -r '.password')
+      hash=$(openssl passwd -6 -stdin <<< "$password")
+      jq -n --arg hash "$hash" '{"hash": $hash}'
+    EOT
+  ]
+
+  query = {
+    password = random_password.vm[each.key].result
+  }
+}
+
 resource "proxmox_virtual_environment_file" "vm_cfg" {
   for_each = local.vms
 
@@ -56,7 +74,7 @@ resource "proxmox_virtual_environment_file" "vm_cfg" {
   source_raw {
     data = templatefile("cloud-config.yaml.tftpl", {
       hostname            = each.key
-      password            = random_password.vm[each.key].result
+      hashed_passwd       = data.external.hashed_passwd[each.key].result.hash
       ssh_authorized_keys = [file(var.vm_ssh_public_key_path)]
       extra_cmds          = []
     })

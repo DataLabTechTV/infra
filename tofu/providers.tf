@@ -17,3 +17,5 @@ provider "null" {}
 provider "local" {}
 
 provider "http" {}
+
+provider "external" {}

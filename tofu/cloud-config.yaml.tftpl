@@ -3,6 +3,8 @@ hostname: "${hostname}.lan"
 ssh_pwauth: false
 users:
   - name: rocky
+    hashed_passwd: "${hashed_passwd}"
+    lock_passwd: false
     sudo: ALL=(ALL) NOPASSWD:ALL
     groups: [wheel]
     ssh_authorized_keys:

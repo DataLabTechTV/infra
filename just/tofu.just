@@ -20,3 +20,6 @@ apply: _check
 
 destroy: _check
     tofu -chdir={{tofu_dir}} destroy -var-file={{config_file}}
+
+output: _check
+    tofu -chdir={{tofu_dir}} output -show-sensitive

@@ -1,17 +1,31 @@
 #cloud-config
-hostname: "${hostname}"
-password: "${password}"
-chpasswd:
-    expire: false
-ssh_pwauth: true
+hostname: "${hostname}.lan"
+ssh_pwauth: false
+users:
+  - name: rocky
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: [wheel]
+    ssh_authorized_keys:
+    %{ for ssh_authorized_key in ssh_authorized_keys ~}
+      - "${ssh_authorized_key}"
+    %{ endfor ~}
 package_update: true
-package_upgrade: true
+package_upgrade: false
 packages:
   - qemu-guest-agent
   - podman
+network:
+  version: 2
+  ethernets:
+    eth0:
+      dhcp4: true
+      dhcp4-overrides:
+        send-hostname: true
+        hostname: "${hostname}.lan"
 runcmd:
   - systemctl enable --now qemu-guest-agent
+  - nmcli connection down "cloud-init eth0"
+  - nmcli connection up "cloud-init eth0"
 %{ if length(extra_cmds) > 0 ~}
   ${indent(2, chomp(extra_cmds))}
 %{ endif ~}
-  - reboot

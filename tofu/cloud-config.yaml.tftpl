@@ -1,0 +1,17 @@
+#cloud-config
+hostname: "${hostname}"
+password: "${password}"
+chpasswd:
+    expire: false
+ssh_pwauth: true
+package_update: true
+package_upgrade: true
+packages:
+  - qemu-guest-agent
+  - podman
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+%{ if length(extra_cmds) > 0 ~}
+  ${indent(2, chomp(extra_cmds))}
+%{ endif ~}
+  - reboot

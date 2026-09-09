@@ -4,8 +4,8 @@ set -euo pipefail
 _check_config_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly _check_config_dir
 
-. "$_check_config_dir/lib/logging.sh"
-. "$_check_config_dir/lib/prompt.sh"
+. "$_check_config_dir/../lib/logging.sh"
+. "$_check_config_dir/../lib/prompt.sh"
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: ${0##*/} CONFIG_FILE"

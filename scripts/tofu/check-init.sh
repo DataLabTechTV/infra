@@ -4,8 +4,8 @@ set -euo pipefail
 _check_init_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly _check_init_dir
 
-. "$_check_init_dir/lib/logging.sh"
-. "$_check_init_dir/lib/prompt.sh"
+. "$_check_init_dir/../lib/logging.sh"
+. "$_check_init_dir/../lib/prompt.sh"
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: ${0##*/} TOFU_DIR"

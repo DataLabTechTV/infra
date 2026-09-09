@@ -5,10 +5,10 @@ tofu_dir := absolute_path('tofu/')
 config_file := join(tofu_dir, 'config.tfvars')
 
 _check_config:
-    ./scripts/check-config.sh {{config_file}}
+    ./scripts/tofu/check-config.sh {{config_file}}
 
 _check_init:
-    ./scripts/check-init.sh {{join(tofu_dir, '.terraform')}}
+    ./scripts/tofu/check-init.sh {{join(tofu_dir, '.terraform')}}
 
 _check: _check_config _check_init
 

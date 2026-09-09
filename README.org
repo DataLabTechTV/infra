@@ -65,8 +65,10 @@ This repo can contain more than one deployment, each one being assigned a specif
 ** Lab Topology
 |     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Services*                |
 |--------+----------+-------+--------+---------+-------------------------|
-|      1 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik, nginx          |
-|      2 | data     |     4 | 8 GiB  | 100 GiB | rustfs, postgres, vault |
-|      3 | forge    |     4 | 6 GiB  | 100 GiB | forgejo                 |
+|    301 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik, nginx          |
+|    302 | data     |     4 | 8 GiB  | 100 GiB | rustfs, postgres, vault |
+|    303 | forge    |     4 | 6 GiB  | 100 GiB | forgejo                 |
 |--------+----------+-------+--------+---------+-------------------------|
 | *Totals* | 3        |    10 | 16 GiB | 232 GiB | 6                       |
+
+*Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float.

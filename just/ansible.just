@@ -7,6 +7,6 @@ _default:
 # Configure the infrastructure for the specified context and target (optional)
 configure context target="":
     ansible-playbook \
-        --inventory ./ansible/inventories/{{context}}/hosts.yml \
+        --inventory ./ansible/inventory/{{context}}/hosts.yml \
         ./ansible/playbooks/site.yml \
         {{ if target !=  "" { "--limit " + target } else { "" } }}

@@ -7,7 +7,7 @@ _default:
 # Deploy the specified service into the target of the given context
 deploy context target service:
     ansible-playbook \
-        --inventory ./ansible/inventories/{{context}}/hosts.yml \
+        --inventory ./ansible/inventory/{{context}}/hosts.yml \
         ./ansible/playbooks/service.yml \
         --limit {{target}} \
         --extra-vars service={{service}}

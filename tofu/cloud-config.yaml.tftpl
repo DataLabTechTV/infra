@@ -11,11 +11,8 @@ users:
     %{ for ssh_authorized_key in ssh_authorized_keys ~}
       - "${ssh_authorized_key}"
     %{ endfor ~}
-package_update: true
-package_upgrade: false
 packages:
   - qemu-guest-agent
-  - podman
 network:
   version: 2
   ethernets:

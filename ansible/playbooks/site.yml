@@ -1,0 +1,17 @@
+---
+- name: Configure lab hosts
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update all packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+    - name: Install container tooling
+      ansible.builtin.dnf:
+        name:
+          - podman
+          - cockpit-podman
+        state: present

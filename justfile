@@ -22,7 +22,7 @@ _env_help:
 
 # Provision infrastructure (e.g., VMs)
 provision:
-    just tofu apply
+    just tofu apply {{context}}
 
 # Update, upgrade, and install required packages (e.g., podman)
 configure:

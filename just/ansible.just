@@ -1,7 +1,12 @@
-set default-list := true
+set working-directory := '..'
 
+_default:
+    @just _env_help
+    @just --justfile {{module_file()}} --list --unsorted
+
+# Configure the infrastructure for the specified context and target (optional)
 configure context target="":
     ansible-playbook \
-        -i hosts/{{context}}/hosts.yml \
-        ansible/playbooks/site.yml \
+        --inventory ./ansible/inventories/{{context}}/hosts.yml \
+        ./ansible/playbooks/site.yml \
         {{ if target !=  "" { "--limit " + target } else { "" } }}

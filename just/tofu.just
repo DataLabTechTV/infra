@@ -32,5 +32,5 @@ apply context target="": _check
 destroy context target="": _check
     @just -f {{module_file()}} _tofu destroy {{context}} {{target}}
 
-output context target: _check
-    @just -f {{module_file()}} _tofu output {{context}} {{target}} -show-sensitive
+output context target="": _check
+    @just -f {{module_file()}} _tofu output {{context}} "{{target}}" -show-sensitive

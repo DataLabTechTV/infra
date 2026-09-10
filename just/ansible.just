@@ -1,13 +1,7 @@
 set default-list := true
 
-bootstrap host:
+configure context target="":
     ansible-playbook \
-        -i hosts/lab/hosts.yml \
-        ansible/playbooks/bootstrap.yml \
-        --limit {{host}}
-
-configure host:
-    ansible-playbook \
-        -i hosts/lab/hosts.yml \
+        -i hosts/{{context}}/hosts.yml \
         ansible/playbooks/site.yml \
-        --limit {{host}}
+        {{ if target !=  "" { "--limit " + target } else { "" } }}

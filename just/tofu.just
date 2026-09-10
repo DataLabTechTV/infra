@@ -12,14 +12,25 @@ _check_init:
 
 _check: _check_config _check_init
 
-plan: _check
-    tofu -chdir={{tofu_dir}} plan -var-file={{config_file}}
+_tofu action context target="" *args:
+    tofu -chdir={{tofu_dir}} workspace select {{context}} || \
+        tofu -chdir={{tofu_dir}} workspace new {{context}}
 
-apply: _check
-    tofu -chdir={{tofu_dir}} apply -var-file={{config_file}}
+    tofu -chdir={{tofu_dir}} \
+        {{action}} \
+        -var-file={{config_file}} \
+        -var="context={{context}}" \
+        {{ if target != "" { '-var="target=' + target + '"' } else { '' } }} \
+        {{args}}
 
-destroy: _check
-    tofu -chdir={{tofu_dir}} destroy -var-file={{config_file}}
+plan context target="": _check
+    @just -f {{module_file()}}  _tofu plan {{context}} {{target}}
 
-output: _check
-    tofu -chdir={{tofu_dir}} output -show-sensitive
+apply context target="": _check
+    @just -f {{module_file()}} _tofu apply {{context}} {{target}}
+
+destroy context target="": _check
+    @just -f {{module_file()}} _tofu destroy {{context}} {{target}}
+
+output context target: _check
+    @just -f {{module_file()}} _tofu output {{context}} {{target}} -show-sensitive

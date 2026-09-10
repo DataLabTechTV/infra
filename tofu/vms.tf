@@ -1,36 +1,16 @@
 locals {
-  vms = {
-    proxy = {
-      vm_id = 301
-      cores = 2
-      memory = {
-        dedicated = 2048
-        floating  = 2048
-      }
-      size = 32
-    },
-    data = {
-      vm_id = 302
-      cores = 4
-      memory = {
-        dedicated = 8192
-        floating  = 8192
-      }
-      size = 100
-    },
-    forge = {
-      vm_id = 303
-      cores = 4
-      memory = {
-        dedicated = 6144
-        floating  = 6144
-      }
-      size = 100
-    }
+  context_vms = try(local.contexts[var.context].vms, {})
+
+  vms = var.target == null ? local.context_vms : {
+    for name, vm in local.context_vms :
+    name => vm
+    if name == var.target
   }
 }
 
 resource "proxmox_download_file" "rocky_10_generic_cloud_qcow2_img" {
+  count = length(local.vms) > 0 ? 1 : 0
+
   content_type       = "import"
   datastore_id       = "local"
   file_name          = "Rocky-10-GenericCloud-Base-10.2-20260525.0.x86_64.qcow2"
@@ -84,6 +64,8 @@ resource "proxmox_virtual_environment_file" "vm_cfg" {
 }
 
 resource "proxmox_hardware_mapping_pci" "gpu_vga" {
+  count = length(local.vms) > 0 ? 1 : 0
+
   name = "gpu_vga"
   map = [
     {
@@ -97,6 +79,8 @@ resource "proxmox_hardware_mapping_pci" "gpu_vga" {
 }
 
 resource "proxmox_hardware_mapping_pci" "gpu_audio" {
+  count = length(local.vms) > 0 ? 1 : 0
+
   name = "gpu_audio"
   map = [
     {
@@ -141,7 +125,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
     datastore_id = "local-lvm"
     interface    = "virtio0"
     size         = try(local.vms[each.key].size, 20)
-    file_id      = proxmox_download_file.rocky_10_generic_cloud_qcow2_img.id
+    file_id      = proxmox_download_file.rocky_10_generic_cloud_qcow2_img[0].id
   }
 
   operating_system {
@@ -152,8 +136,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   dynamic "hostpci" {
     for_each = try(local.vms[each.key].gpu, false) ? [
-      proxmox_hardware_mapping_pci.gpu_vga.name,
-      proxmox_hardware_mapping_pci.gpu_audio.name
+      proxmox_hardware_mapping_pci.gpu_vga[0].name,
+      proxmox_hardware_mapping_pci.gpu_audio[0].name
     ] : []
 
     content {

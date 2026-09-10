@@ -1,6 +1,7 @@
 set default-list := true
 
-host := env("HOST", "local")
+context := env("CONTEXT", "lab")
+target := env("TARGET", "")
 
 mod tofu "just/tofu.just"
 mod ansible "just/ansible.just"
@@ -10,16 +11,16 @@ provision:
     just tofu apply
 
 configure:
-    just ansible configure {{host}}
+    just ansible configure {{context}} {{target}}
 
 deploy service:
-    just service deploy {{host}} {{service}}
+    just service deploy {{context}} {{target}} {{service}}
 
 status service:
-    just service status {{host}} {{service}}
+    just service status {{target}} {{service}}
 
 logs service:
-    just service logs {{host}} {{service}}
+    just service logs {{target}} {{service}}
 
 restart service:
-    just service restart {{host}} {{service}}
+    just service restart {{target}} {{service}}

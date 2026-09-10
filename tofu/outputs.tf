@@ -1,14 +1,7 @@
-output "proxy_password" {
-  value     = random_password.vm["proxy"].result
-  sensitive = true
-}
-
-output "data_password" {
-  value     = random_password.vm["data"].result
-  sensitive = true
-}
-
-output "forge_password" {
-  value     = random_password.vm["data"].result
+output "vm_passwords" {
+  value = {
+    for name, password in random_password.vm :
+    name => password.result
+  }
   sensitive = true
 }

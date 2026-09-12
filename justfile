@@ -11,6 +11,26 @@ _env_help:
     @echo "    TARGET   Limit provisioning and configuration to a specific host (unset by default)"
     @echo
 
+# Provision, configure, and deploy all services
+build:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    . ./scripts/lib/logging.sh
+
+    case {{context}} in
+        lab)
+            just provision
+            just configure
+            just deploy openbao
+            # just deploy postgres
+            ;;
+        *)
+            error "build: unknown context: {{context}}"
+            exit 1
+            ;;
+    esac
+
 # Provision infrastructure (e.g., VMs)
 [group('deploy')]
 provision:

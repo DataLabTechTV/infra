@@ -105,6 +105,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   agent {
     enabled = true
+    wait_for_ip {
+      ipv4 = true
+    }
   }
 
   cpu {

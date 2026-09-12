@@ -1,0 +1,22 @@
+[Unit]
+Description=OpenBao
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=openbao
+Image=ghcr.io/openbao/openbao:2.6.2
+
+Exec=bao server -config=/etc/openbao/openbao.hcl
+
+PublishPort=8200:8200
+
+Volume=/etc/openbao:/etc/openbao:ro
+Volume=openbao-data:/openbao/data
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,3 +1,6 @@
+output/**
+!.gitkeep
+
 # Local .terraform directories
 **/.terraform/*
 

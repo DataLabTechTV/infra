@@ -7,7 +7,7 @@ Wants=network-online.target
 ContainerName=openbao
 Image=ghcr.io/openbao/openbao:2.6.2
 
-Exec=bao server -config=/etc/openbao/openbao.hcl
+Exec=bao server -config=/etc/openbao/openbao.json
 
 PublishPort=8200:8200
 

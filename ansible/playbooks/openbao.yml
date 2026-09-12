@@ -1,0 +1,71 @@
+- name: Deploy OpenBao
+  import_playbook: service.yml
+
+- name: Initialize OpenBao
+  hosts: all
+  become: true
+
+  vars:
+    container: openbao
+    config_file: "../../services/openbao/config/openbao.json"
+    output_dir: "../../output/openbao"
+
+  tasks:
+    - name: Read OpenBao configuration
+      ansible.builtin.set_fact:
+        config: "{{ lookup('ansible.builtin.file', config_file) | from_json }}"
+
+    - name: Set CLI API address
+      ansible.builtin.set_fact:
+        addr: >-
+          {{ config.api_addr | urlsplit('scheme') }}://127.0.0.1:{{
+            config.api_addr | urlsplit('port')
+          }}
+
+    - name: Debug configuration
+      ansible.builtin.debug:
+        var: addr
+
+    - name: Check OpenBao initialization status
+      ansible.builtin.command:
+        cmd: |
+          podman exec
+            --env BAO_ADDR={{ addr }}
+            {{ container }}
+            bao operator init -status
+      register: bao_init_status
+      changed_when: false
+      failed_when: bao_init_status.rc not in [0, 2]
+
+    - name: Initialize OpenBao
+      ansible.builtin.command:
+        cmd: |
+          podman exec
+            --env BAO_ADDR={{ addr }}
+            {{ container }}
+            bao operator init
+              -format=json
+              -key-shares=1
+              -key-threshold=1
+      register: bao_init
+      when: bao_init_status.rc == 2
+      changed_when: true
+      no_log: true
+
+    - name: Create OpenBao output directory
+      ansible.builtin.file:
+        path: "{{ output_dir }}"
+        state: directory
+        mode: "0700"
+      delegate_to: localhost
+      become: false
+
+    - name: Save OpenBao initialization data
+      ansible.builtin.copy:
+        content: "{{ bao_init.stdout }}"
+        dest: "{{ output_dir }}/init.json"
+        mode: "0600"
+      delegate_to: localhost
+      become: false
+      when: bao_init.changed
+      no_log: true

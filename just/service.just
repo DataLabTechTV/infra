@@ -6,9 +6,17 @@ _default:
 
 # Deploy the specified service into the target of the given context
 deploy context target service:
+    #!/usr/bin/env bash
+    set -euxo pipefail
+
+    playbook="./ansible/playbooks/{{service}}.yml"
+    if [ ! -f "$playbook" ]; then
+        playbook="./ansible/playbooks/service.yml"
+    fi
+
     ansible-playbook \
         --inventory ./ansible/inventory/{{context}}/hosts.yml \
-        ./ansible/playbooks/service.yml \
+        $playbook \
         --limit {{target}} \
         --extra-vars service={{service}}
 

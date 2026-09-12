@@ -44,22 +44,22 @@ configure:
 # Deploy the specified service
 [group('deploy')]
 deploy service:
-    just service deploy {{context}} {{target}} {{service}}
+    just service deploy {{context}} "{{target}}" {{service}}
 
 # Check systemd status for specified service
 [group('manage')]
 status service:
-    just service status {{target}} {{service}}
+    just service status "{{target}}" {{service}}
 
 # Follow systemd logs for specified service
 [group('manage')]
 logs service:
-    just service logs {{target}} {{service}}
+    just service logs "{{target}}" {{service}}
 
 # Restart the specified service
 [group('manage')]
 restart service:
-    just service restart {{target}} {{service}}
+    just service restart "{{target}}" {{service}}
 
 # Run OpenTofu commands directly
 [group('lowlevel')]

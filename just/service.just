@@ -17,7 +17,7 @@ deploy context target service:
     ansible-playbook \
         --inventory ./ansible/inventory/{{context}}/hosts.yml \
         $playbook \
-        --limit {{target}} \
+        {{ if target !=  "" { "--limit " + target } else { "" } }} \
         --extra-vars service={{service}}
 
 # Check systemd status for specified service in the given target host

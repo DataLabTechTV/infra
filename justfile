@@ -1,5 +1,4 @@
 context := env("CONTEXT", "lab")
-target := env("TARGET", "")
 
 _default:
     @just _env_help
@@ -8,58 +7,45 @@ _default:
 _env_help:
     @echo "Environment variables:"
     @echo "    CONTEXT  Collection of infrastructure, configurations, and services (default: lab)"
-    @echo "    TARGET   Limit provisioning and configuration to a specific host (unset by default)"
     @echo
+
+_target service:
+    ./scripts/build.sh --print-target '{{context}}' '{{service}}'
 
 # Provision, configure, and deploy all services
 build:
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    . ./scripts/lib/logging.sh
-
-    case {{context}} in
-        lab)
-            just provision
-            just configure
-            just deploy openbao
-            # just deploy postgres
-            ;;
-        *)
-            error "build: unknown context: {{context}}"
-            exit 1
-            ;;
-    esac
+    ./scripts/build.sh '{{context}}'
 
 # Provision infrastructure (e.g., VMs)
 [group('deploy')]
 provision:
-    just tofu apply {{context}}
+    just tofu apply '{{context}}'
 
 # Update, upgrade, and install required packages (e.g., podman)
 [group('deploy')]
 configure:
-    just ansible configure {{context}} {{target}}
+    just ansible install
+    just ansible configure '{{context}}'
 
 # Deploy the specified service
 [group('deploy')]
 deploy service:
-    just service deploy {{context}} "{{target}}" {{service}}
+    just service deploy '{{context}}' "$(just _target "{{service}}")" '{{service}}'
 
 # Check systemd status for specified service
 [group('manage')]
 status service:
-    just service status "{{target}}" {{service}}
+    just service status "$(just _target "{{service}}")" '{{service}}'
 
 # Follow systemd logs for specified service
 [group('manage')]
-logs service:
-    just service logs "{{target}}" {{service}}
+logs target service:
+    just service logs "$(just _target "{{service}}")" '{{service}}'
 
 # Restart the specified service
 [group('manage')]
-restart service:
-    just service restart "{{target}}" {{service}}
+restart target service:
+    just service restart "$(just _target "{{service}}")" '{{service}}'
 
 # Run OpenTofu commands directly
 [group('lowlevel')]

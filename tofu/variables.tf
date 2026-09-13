@@ -4,12 +4,6 @@ variable "context" {
   default     = "lab"
 }
 
-variable "target" {
-  type        = string
-  description = "Limit deployment to a specific target host within the selected context"
-  default     = null
-}
-
 variable "proxmox_endpoint" {
   type        = string
   description = "Proxmox VE endpoint URL"

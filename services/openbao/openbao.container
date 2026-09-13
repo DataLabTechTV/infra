@@ -6,6 +6,7 @@ Wants=network-online.target
 [Container]
 ContainerName=openbao
 Image=ghcr.io/openbao/openbao:2.6.2
+PodmanArgs=--memory-swappiness=0
 
 Exec=bao server -config=/etc/openbao/openbao.json
 

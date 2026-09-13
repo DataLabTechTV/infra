@@ -1,11 +1,5 @@
 locals {
-  context_vms = try(local.contexts[var.context].vms, {})
-
-  vms = var.target == null ? local.context_vms : {
-    for name, vm in local.context_vms :
-    name => vm
-    if name == var.target
-  }
+  vms = try(local.contexts[var.context].vms, {})
 }
 
 resource "proxmox_download_file" "rocky_10_generic_cloud_qcow2_img" {

@@ -15,28 +15,28 @@ _check_init:
 
 _check: _check_config _check_init
 
-_tofu action context *args:
-    tofu -chdir='{{tofu_dir}}' workspace select '{{context}}' || \
-        tofu -chdir='{tofu_dir}}' workspace new '{{context}}'
+_tofu action *args:
+    tofu -chdir='{{tofu_dir}}' workspace select "$CONTEXT" || \
+        tofu -chdir='{tofu_dir}}' workspace new "$CONTEXT"
 
     tofu -chdir='{{tofu_dir}}' \
         {{action}} \
         -var-file='{{config_file}}' \
-        -var='context={{context}}' \
+        -var="context=$CONTEXT" \
         {{args}}
 
 # Check infrastructure changes for the specified context
-plan context: _check
-    @just --justfile '{{module_file()}}'  _tofu plan '{{context}}'
+plan: _check
+    @just --justfile '{{module_file()}}'  _tofu plan
 
 # Apply infrastructure changes for the specified context
-apply context: _check
-    @just --justfile '{{module_file()}}' _tofu apply '{{context}}'
+apply: _check
+    @just --justfile '{{module_file()}}' _tofu apply
 
 # Destroy infrastructure the specified context
-destroy context: _check
-    @just --justfile '{{module_file()}}' _tofu destroy '{{context}}'
+destroy: _check
+    @just --justfile '{{module_file()}}' _tofu destroy
 
 # Print generated configurations and credentials (plain text)
-output context: _check
-    @just --justfile '{{module_file()}}' _tofu output '{{context}}' -show-sensitive
+output: _check
+    @just --justfile '{{module_file()}}' _tofu output -show-sensitive

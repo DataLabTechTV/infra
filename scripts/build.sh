@@ -7,15 +7,13 @@ readonly _build_script_dir
 . "$_build_script_dir/lib/logging.sh"
 
 
-if [ "$#" -lt 1 ]; then
-    echo "Usage: ${0##?/} CONTEXT"
-    echo
-    echo "Arguments:"
-    echo "  CONTEXT     Sets the collection of VMs to provision and services to deploy"
+if [ -z "$CONTEXT" ]; then
+    error "build.sh: CONTEXT env var not set"
     exit 2
 fi
 
-export CONTEXT="$1"
+info "Building '$CONTEXT' context..."
+export CONTEXT
 
 case $CONTEXT in
     lab)

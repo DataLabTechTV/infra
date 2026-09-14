@@ -10,16 +10,16 @@ _default:
 install:
     ansible-galaxy collection install -r ./ansible/requirements.yml
 
-# Configure the infrastructure for the specified context
-configure context:
+# Configure the infrastructure for the active context
+configure:
     ansible-playbook \
-        --inventory './ansible/inventory/{{context}}/hosts.yml' \
+        --inventory "./ansible/inventory/$CONTEXT/hosts.yml" \
         './ansible/playbooks/configure.yml'
 
 # Deploy services to the specified context hosts
-deploy context target="" service="":
+deploy target="" service="":
     ansible-playbook \
-        --inventory './ansible/inventory/{{context}}/hosts.yml' \
+        --inventory "./ansible/inventory/$CONTEXT/hosts.yml" \
         {{ if target != '' { '--limit ' + target } else { '' } }} \
         {{ if service != '' { '--extra-vars "service=' + service + '"' } else { '' } }} \
         './ansible/playbooks/deploy.yml'

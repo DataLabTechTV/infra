@@ -1,4 +1,4 @@
-context := env("CONTEXT", "lab")
+export CONTEXT := env("CONTEXT", "lab")
 
 _default:
     @just _env_help
@@ -11,8 +11,8 @@ _env_help:
 
 _host service:
     #!/usr/bin/env bash
-    ansible-inventory -i './ansible/inventory/{{context}}/hosts.yml' --list |
-        jq -r --arg group '{{context}}' --arg service '{{service}}' '
+    ansible-inventory -i './ansible/inventory/{{CONTEXT}}/hosts.yml' --list |
+        jq -r --arg group '{{CONTEXT}}' --arg service '{{service}}' '
             . as $inventory
             | $inventory[$group].hosts[]
             | select($inventory._meta.hostvars[.].services | index($service))
@@ -21,23 +21,23 @@ _host service:
 
 # Provision, configure, and deploy all services
 build:
-    ./scripts/build.sh '{{context}}'
+    ./scripts/build.sh
 
 # Provision infrastructure (e.g., VMs)
 [group('deploy')]
 provision:
-    just tofu apply '{{context}}'
+    just tofu apply
 
 # Update, upgrade, and install required packages (e.g., podman)
 [group('deploy')]
 configure:
     just ansible install
-    just ansible configure '{{context}}'
+    just ansible configure
 
 # Deploy services to the correct hosts
 [group('deploy')]
 deploy target="" service="":
-    just ansible deploy '{{context}}' '{{target}}' '{{service}}'
+    just ansible deploy '{{target}}' '{{service}}'
 
 # Check systemd status for specified service
 [group('manage')]
@@ -65,3 +65,7 @@ mod ansible "just/ansible.just"
 # Manage services directly
 [group('lowlevel')]
 mod service "just/service.just"
+
+# Display generated secrets
+[group('lowlevel')]
+mod secrets "just/secrets.just"

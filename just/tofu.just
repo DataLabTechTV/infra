@@ -37,6 +37,24 @@ apply: _check
 destroy: _check
     @just --justfile '{{module_file()}}' _tofu destroy
 
-# Print generated configurations and credentials (plain text)
-output: _check
-    @just --justfile '{{module_file()}}' _tofu output -show-sensitive
+# Print generated configurations and credentials (format: hcl, json)
+output $fmt="hcl": _check
+    #!/usr/bin/env bash
+
+    . ./scripts/lib/logging.sh
+
+    case "$fmt" in
+        json)
+            just --justfile '{{module_file()}}' _tofu output -json
+            ;;
+
+        pretty)
+            json="$(just --justfile '{{module_file()}}' _tofu output -json)"
+            info "Showing VM passwords for default user (rocky)"
+            jq -r -n --argjson json "$json" '$json.vm_passwords.value | to_entries[] | [.key, .value] | @tsv'
+            ;;
+
+        *)
+            just --justfile '{{module_file()}}' _tofu output -show-sensitive
+            ;;
+    esac

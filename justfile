@@ -9,8 +9,8 @@ _env_help:
     @echo "    CONTEXT  Collection of infrastructure, configurations, and services (default: lab)"
     @echo
 
-_target service:
-    ./scripts/build.sh --print-target '{{context}}' '{{service}}'
+# _host target:
+#     ansible-inventory -i './ansible/inventory/{{context}}/hosts.yml' --host '{{service}}' | jq -r '.ansible_host'
 
 # Provision, configure, and deploy all services
 build:
@@ -27,10 +27,10 @@ configure:
     just ansible install
     just ansible configure '{{context}}'
 
-# Deploy the specified service
+# Deploy services to the correct hosts
 [group('deploy')]
-deploy service:
-    just service deploy '{{context}}' "$(just _target "{{service}}")" '{{service}}'
+deploy:
+    just ansible deploy '{{context}}'
 
 # Check systemd status for specified service
 [group('manage')]

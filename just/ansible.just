@@ -1,5 +1,7 @@
 set working-directory := '..'
 
+export ANSIBLE_CONFIG := './ansible/ansible.cfg'
+
 _default:
     @just _env_help
     @just --justfile '{{module_file()}}' --list --unsorted
@@ -13,3 +15,9 @@ configure context:
     ansible-playbook \
         --inventory './ansible/inventory/{{context}}/hosts.yml' \
         './ansible/playbooks/site.yml'
+
+# Deploy services to the specified context hosts
+deploy context:
+    ansible-playbook \
+        --inventory './ansible/inventory/{{context}}/hosts.yml' \
+        './ansible/playbooks/service.yml'

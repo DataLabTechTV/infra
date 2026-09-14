@@ -9,8 +9,15 @@ _env_help:
     @echo "    CONTEXT  Collection of infrastructure, configurations, and services (default: lab)"
     @echo
 
-# _host target:
-#     ansible-inventory -i './ansible/inventory/{{context}}/hosts.yml' --host '{{service}}' | jq -r '.ansible_host'
+_host service:
+    #!/usr/bin/env bash
+    ansible-inventory -i './ansible/inventory/{{context}}/hosts.yml' --list |
+        jq -r --arg group '{{context}}' --arg service '{{service}}' '
+            . as $inventory
+            | $inventory[$group].hosts[]
+            | select($inventory._meta.hostvars[.].services | index($service))
+            | $inventory._meta.hostvars[.].ansible_host
+        '
 
 # Provision, configure, and deploy all services
 build:
@@ -29,23 +36,23 @@ configure:
 
 # Deploy services to the correct hosts
 [group('deploy')]
-deploy:
-    just ansible deploy '{{context}}'
+deploy target="" service="":
+    just ansible deploy '{{context}}' '{{target}}' '{{service}}'
 
 # Check systemd status for specified service
 [group('manage')]
 status service:
-    just service status "$(just _target "{{service}}")" '{{service}}'
+    just service status "$(just _host "{{service}}")" '{{service}}'
 
 # Follow systemd logs for specified service
 [group('manage')]
 logs target service:
-    just service logs "$(just _target "{{service}}")" '{{service}}'
+    just service logs "$(just _host "{{service}}")" '{{service}}'
 
 # Restart the specified service
 [group('manage')]
 restart target service:
-    just service restart "$(just _target "{{service}}")" '{{service}}'
+    just service restart "$(just _host "{{service}}")" '{{service}}'
 
 # Run OpenTofu commands directly
 [group('lowlevel')]

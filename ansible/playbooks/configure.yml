@@ -18,9 +18,15 @@
         name: "*"
         state: latest
 
+    - name: Enable EPEL
+      ansible.builtin.dnf:
+        name: epel-release
+        state: present
+
     - name: Install container tooling
       ansible.builtin.dnf:
         name:
           - podman
           - cockpit-podman
+          - kitty-terminfo
         state: present

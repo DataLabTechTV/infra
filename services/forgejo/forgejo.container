@@ -1,15 +1,21 @@
+[Unit]
+Description=Forgejo
+After=network-online.target
+Wants=network-online.target
+
 [Container]
-ContainerName=forgejo
-Environment=USER_UID=1000
-Environment=USER_GID=1000
 Image=codeberg.org/forgejo/forgejo:16
+ContainerName=forgejo
+Volume=forgejo-data:/data
 Network=forgejo.network
 PublishPort=3000:3000
 PublishPort=222:22
-Volume=forgejo-data:/data
+Environment=USER_UID=1000
+Environment=USER_GID=1000
 
 [Service]
-Restart=always
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=default.target

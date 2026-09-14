@@ -4,17 +4,15 @@ After=network-online.target
 Wants=network-online.target
 
 [Container]
-ContainerName=openbao
 Image=ghcr.io/openbao/openbao:2.6.2
-Memory=512M
-PodmanArgs=--memory-swap=512M
-
-Exec=bao server -config=/etc/openbao/openbao.json
-
-PublishPort=8200:8200
-
+ContainerName=openbao
 Volume=/etc/openbao:/etc/openbao:ro
 Volume=openbao-data:/openbao/data
+Network=openbao.network
+PublishPort=8200:8200
+Memory=512M
+PodmanArgs=--memory-swap=512M
+Exec=bao server -config=/etc/openbao/openbao.json
 
 [Service]
 Restart=on-failure

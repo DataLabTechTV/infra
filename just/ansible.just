@@ -14,7 +14,7 @@ install:
 configure context:
     ansible-playbook \
         --inventory './ansible/inventory/{{context}}/hosts.yml' \
-        './ansible/playbooks/site.yml'
+        './ansible/playbooks/configure.yml'
 
 # Deploy services to the specified context hosts
 deploy context target="" service="":
@@ -22,4 +22,4 @@ deploy context target="" service="":
         --inventory './ansible/inventory/{{context}}/hosts.yml' \
         {{ if target != '' { '--limit ' + target } else { '' } }} \
         {{ if service != '' { '--extra-vars "service=' + service + '"' } else { '' } }} \
-        './ansible/playbooks/service.yml'
+        './ansible/playbooks/deploy.yml'

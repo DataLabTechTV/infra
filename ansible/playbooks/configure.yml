@@ -1,5 +1,5 @@
 ---
-- name: Configure lab hosts
+- name: Configure hosts
   hosts: all
   become: true
   gather_facts: false

@@ -1,10 +1,10 @@
 ---
-- name: Deploy service
+- name: Deploy services
   hosts: all
   become: true
 
   tasks:
-    - name: Deploy services
+    - name: Deploy services assigned to host
       ansible.builtin.include_role:
         name: service
       vars:

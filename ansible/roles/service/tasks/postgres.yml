@@ -1,0 +1,45 @@
+- name: Get existing PostgreSQL password
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ openbao_url }}"
+    engine_mount_point: secret
+    path: services/postgres
+  register: postgres_secret
+  failed_when: false
+  no_log: true
+
+- name: Generate PostgreSQL password
+  ansible.builtin.set_fact:
+    postgres_password: >-
+      {{
+        lookup(
+          'ansible.builtin.password',
+          '/dev/null',
+          length=32,
+          chars=['ascii_letters', 'digits']
+        )
+      }}
+  when: postgres_secret.data is not defined
+  no_log: true
+
+- name: Use existing PostgreSQL password
+  ansible.builtin.set_fact:
+    postgres_password: "{{ postgres_secret.secret.password }}"
+  when: postgres_secret.data is defined
+  no_log: true
+
+- name: Store PostgreSQL password
+  community.hashi_vault.vault_kv2_write:
+    url: "{{ openbao_url }}"
+    engine_mount_point: secret
+    path: services/postgres
+    data:
+      password: "{{ postgres_password }}"
+  when: postgres_secret.data is not defined
+  no_log: true
+
+- name: Create PostgreSQL password secret
+  containers.podman.podman_secret:
+    name: postgres_password
+    data: "{{ postgres_secret.secret.password }}"
+    state: present
+  no_log: true

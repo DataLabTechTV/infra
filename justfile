@@ -19,23 +19,24 @@ _host service:
             | $inventory._meta.hostvars[.].ansible_host
         '
 
-# Provision, configure, and deploy all services
-build:
-    ./scripts/build.sh
+# Provision, configure, and deploy the context
+[group('lifecycle')]
+up:
+    ./scripts/up.sh
 
 # Provision infrastructure (e.g., VMs)
-[group('deploy')]
+[group('lifecycle')]
 provision:
     just tofu apply
 
 # Update, upgrade, and install required packages (e.g., podman)
-[group('deploy')]
+[group('lifecycle')]
 configure:
     just ansible install
     just ansible configure
 
-# Deploy services to the correct hosts
-[group('deploy')]
+# Deploy services, optionally limited to a target host and/or service
+[group('lifecycle')]
 deploy target="" service="":
     just ansible deploy '{{target}}' '{{service}}'
 

@@ -12,3 +12,4 @@
       loop: "{{ services | default([]) }}"
       loop_control:
         loop_var: item_service
+      when: service is not defined or item_service == service

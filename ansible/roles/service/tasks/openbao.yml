@@ -9,10 +9,6 @@
         config.api_addr | urlsplit('port')
       }}
 
-- name: Debug configuration
-  ansible.builtin.debug:
-    var: addr
-
 - name: Check OpenBao initialization status
   ansible.builtin.command:
     cmd: |

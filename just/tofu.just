@@ -50,8 +50,19 @@ output $fmt="hcl": _check
 
         pretty)
             json="$(just --justfile '{{module_file()}}' _tofu output -json)"
+
+            tmpfile="$(mktemp)"
+            trap 'rm -f "$tmpfile"' EXIT
+
+            jq -r -n --argjson json "$json" '
+                $json.vm_passwords.value |
+                to_entries[] |
+                [.key, .value] |
+                @tsv
+            ' >>"$tmpfile"
+
             info "Showing VM passwords for default user (rocky)"
-            jq -r -n --argjson json "$json" '$json.vm_passwords.value | to_entries[] | [.key, .value] | @tsv'
+            just _display_table "$tmpfile" 'VM\tPassword\n'
             ;;
 
         *)

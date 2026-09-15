@@ -9,6 +9,26 @@ _env_help:
     @echo "    CONTEXT  Collection of infrastructure, configurations, and services (default: lab)"
     @echo
 
+_display_table $tsv_path $header_str="":
+    #!/usr/bin/env bash
+
+    tmpfile="$(mktemp)"
+    trap 'rm -f "$tmpfile"' EXIT
+
+    cp "$tsv_path" "$tmpfile"
+
+    if command -v crabular-cli &>/dev/null; then
+        extra_args=()
+        if [ -z "$header_str" ]; then
+            extra_args+=( --no-header )
+        else
+            sed -i "1s/^/$header_str\n/" "$tmpfile"
+        fi
+        crabular-cli --input "$tmpfile" --format 'tsv' "${extra_args[@]}"
+    else
+        cat "$tmpfile"
+    fi
+
 _host service:
     #!/usr/bin/env bash
     ansible-inventory -i './ansible/inventory/{{CONTEXT}}/hosts.yml' --list |

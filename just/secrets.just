@@ -18,7 +18,12 @@ tofu:
 openbao:
     #!/usr/bin/env bash
     . ./scripts/lib/logging.sh
+
     info "Retrieving secrets generated during OpenBao initialization..."
+
+    tmpfile="$(mktemp)"
+    trap 'rm -f "$tmpfile"' EXIT
+
     jq -r '
         { unseal_keys_hex, root_token } |
         to_entries[] |
@@ -27,4 +32,6 @@ openbao:
         then $entry.value[] | [$entry.key, .]
         else [$entry.key, $entry.value]
         end | @tsv
-    ' "./output/$CONTEXT/openbao/init.json"
+    ' "./output/$CONTEXT/openbao/init.json" >"$tmpfile"
+
+    just _display_table "$tmpfile" 'Secret\tValue\n'

@@ -9,7 +9,9 @@
         name: service
       vars:
         service: "{{ item_service }}"
-      loop: "{{ services | default([]) }}"
+      loop: "{{ deployment_order | default(services | default([]), true) }}"
       loop_control:
         loop_var: item_service
-      when: service is not defined or item_service == service
+      when:
+        - item_service in services | default([])
+        - service is not defined or item_service == service

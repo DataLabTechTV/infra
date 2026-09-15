@@ -110,3 +110,42 @@
         {{ openbao_container }}
         bao secrets enable -version=2 kv
   when: "'kv/' not in (bao_engines.stdout | from_json)"
+
+- name: Configure IaC policy
+  ansible.builtin.command:
+    cmd: |
+      podman exec --interactive
+        --env BAO_ADDR={{ addr }}
+        --env BAO_TOKEN={{ init.root_token }}
+        {{ openbao_container }}
+        bao policy write iac /etc/{{ service }}/policies/iac.hcl
+
+- name: Check for existing IaC token
+  ansible.builtin.stat:
+    path: "{{ openbao_output_dir }}/iac.token"
+  register: iac_token_file
+  delegate_to: localhost
+  become: false
+
+- name: Create IaC token
+  ansible.builtin.command:
+    cmd: |
+      podman exec --interactive
+        --env BAO_ADDR={{ addr }}
+        --env BAO_TOKEN={{ init.root_token }}
+        {{ openbao_container }}
+        bao token create -policy=iac -ttl=0 -orphan -format=json
+  register: iac_token
+  no_log: true
+  changed_when: true
+  when: not iac_token_file.stat.exists
+
+- name: Save IaC token locally
+  ansible.builtin.copy:
+    content: "{{ (iac_token.stdout | from_json).auth.client_token }}\n"
+    dest: "{{ openbao_output_dir }}/iac.token"
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+  no_log: true
+  when: not iac_token_file.stat.exists

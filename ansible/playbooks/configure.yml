@@ -28,5 +28,7 @@
         name:
           - podman
           - cockpit-podman
+          - python3-hvac
+          - python3-psycopg2
           - kitty-terminfo
         state: present

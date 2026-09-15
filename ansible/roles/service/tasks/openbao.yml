@@ -83,12 +83,6 @@
   changed_when: true
   no_log: true
 
-- name: Install hvac requirements
-  ansible.builtin.dnf:
-    name:
-      - python3-hvac
-    state: present
-
 - name: Check enabled secrets engines
   ansible.builtin.command:
     cmd: |

@@ -1,2 +1,5 @@
 collections:
   - name: community.hashi_vault
+    version: 7.1.0
+  - name: community.postgresql
+    version: 5.0.0

@@ -1,0 +1,6 @@
+FORGEJO__SERVER__DOMAIN={{ ansible_host }}
+FORGEJO__SERVER__ROOT_URL=http://{{ ansible_host }}
+
+FORGEJO__DATABASE__HOST={{ postgres_host }}:{{ postgres_port }}
+FORGEJO__DATABASE__NAME={{ db_name }}
+FORGEJO__DATABASE__USER={{ db_user }}

@@ -1,0 +1,18 @@
+- name: Authenticate with OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: auth
+
+- name: Read PostgreSQL password
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ openbao_url }}"
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: data/postgres/root
+  register: postgres_root
+  no_log: true
+
+- name: Set PostgreSQL password
+  ansible.builtin.set_fact:
+    postgres_password: "{{ postgres_root.secret.password }}"
+  no_log: true

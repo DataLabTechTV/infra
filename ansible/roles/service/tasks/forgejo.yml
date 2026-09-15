@@ -1,0 +1,7 @@
+- name: Provision Forgejo database
+  ansible.builtin.include_role:
+    name: postgres
+    tasks_from: provision.yml
+  vars:
+    db_name: forgejo
+    db_user: forgejo

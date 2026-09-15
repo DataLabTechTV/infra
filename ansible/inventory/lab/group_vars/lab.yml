@@ -14,3 +14,6 @@ openbao_config_file: "{{ playbook_dir }}/../../services/openbao/config/openbao.j
 openbao_output_dir: "{{ playbook_dir }}/../../output/{{ group_names[0] }}/openbao"
 openbao_iac_token_file: "{{ openbao_output_dir }}/iac.token"
 openbao_url: "http://data.lan:8200"
+
+postgres_host: data.lan
+postgres_port: 5432

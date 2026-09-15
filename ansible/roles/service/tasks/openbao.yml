@@ -120,13 +120,6 @@
         {{ openbao_container }}
         bao policy write iac /etc/{{ service }}/policies/iac.hcl
 
-- name: Check for existing IaC token
-  ansible.builtin.stat:
-    path: "{{ openbao_output_dir }}/iac.token"
-  register: iac_token_file
-  delegate_to: localhost
-  become: false
-
 - name: Create IaC token
   ansible.builtin.command:
     cmd: |
@@ -137,8 +130,6 @@
         bao token create -policy=iac -ttl=0 -orphan -format=json
   register: iac_token
   no_log: true
-  changed_when: true
-  when: not iac_token_file.stat.exists
 
 - name: Save IaC token locally
   ansible.builtin.copy:
@@ -148,4 +139,3 @@
   delegate_to: localhost
   become: false
   no_log: true
-  when: not iac_token_file.stat.exists

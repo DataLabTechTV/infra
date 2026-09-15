@@ -27,19 +27,23 @@
   when: postgres_secret.data is defined
   no_log: true
 
+- name: Authenticate with OpenBao
+  ansible.builtin.include_tasks: openbao_auth.yml
+
 - name: Store PostgreSQL password
   community.hashi_vault.vault_kv2_write:
     url: "{{ openbao_url }}"
-    engine_mount_point: secret
-    path: services/postgres
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: data/postgres/root
     data:
       password: "{{ postgres_password }}"
   when: postgres_secret.data is not defined
-  no_log: true
+  no_log: false
 
 - name: Create PostgreSQL password secret
   containers.podman.podman_secret:
     name: postgres_password
-    data: "{{ postgres_secret.secret.password }}"
+    data: "{{ postgres_password }}"
     state: present
   no_log: true

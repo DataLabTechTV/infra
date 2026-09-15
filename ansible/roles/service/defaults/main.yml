@@ -4,3 +4,4 @@ quadlet_dir: /etc/containers/systemd
 openbao_container: openbao
 openbao_config_file: "../../services/openbao/config/openbao.json"
 openbao_output_dir: "../../output/{{ group_names[0] }}/openbao"
+openbao_iac_token_file: "{{ openbao_output_dir }}/iac.token"

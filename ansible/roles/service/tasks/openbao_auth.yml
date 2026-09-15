@@ -1,0 +1,5 @@
+- name: Load OpenBao IaC token
+  ansible.builtin.set_fact:
+    openbao_iac_token: >-
+      {{ lookup('ansible.builtin.file', openbao_iac_token_file) | trim }}
+  no_log: true

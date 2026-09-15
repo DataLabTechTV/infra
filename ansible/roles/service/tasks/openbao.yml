@@ -143,7 +143,7 @@
 - name: Save IaC token locally
   ansible.builtin.copy:
     content: "{{ (iac_token.stdout | from_json).auth.client_token }}\n"
-    dest: "{{ openbao_output_dir }}/iac.token"
+    dest: "{{ openbao_iac_token_file }}"
     mode: "0600"
   delegate_to: localhost
   become: false

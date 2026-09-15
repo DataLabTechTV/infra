@@ -27,4 +27,4 @@ openbao:
         then $entry.value[] | [$entry.key, .]
         else [$entry.key, $entry.value]
         end | @tsv
-    ' './output/openbao/init.json'
+    ' "./output/$CONTEXT/openbao/init.json"

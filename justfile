@@ -42,7 +42,23 @@ _host service:
 # Provision, configure, and deploy the context
 [group('lifecycle')]
 up:
-    ./scripts/up.sh
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source "./lib/logging.sh"
+
+    info "Building '$CONTEXT' context..."
+
+    case "$CONTEXT" in
+        lab)
+            just provision
+            just configure
+            just deploy
+            ;;
+        *)
+            error "build: unknown context: $CONTEXT"
+            exit 1
+            ;;
+    esac
 
 # Provision infrastructure (e.g., VMs)
 [group('lifecycle')]

@@ -7,13 +7,46 @@ _default:
     @just _env_help
     @just --justfile '{{module_file()}}' --list --unsorted
 
-_check_config:
-    ./scripts/tofu/check-config.sh '{{config_file}}'
+_check-config:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source "./lib/logging.sh"
+    source "./lib/prompt.sh"
 
-_check_init:
-    ./scripts/tofu/check-init.sh '{{join(tofu_dir, ".terraform")}}'
+    info "Checking if config file '{{config_file}}' exists..."
 
-_check: _check_config _check_init
+    if [ ! -f "{{config_file}}" ]; then
+        error "Configuration file not found: {{config_file}}"
+        exit 1
+    fi
+
+_check-init:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source "./lib/logging.sh"
+    source "./lib/prompt.sh"
+
+    tofu_dir='{{join(tofu_dir, ".terraform")}}'
+
+    info "Checking if OpenTofu directory '$tofu_dir' is initialized..."
+
+    if [ ! -d "$tofu_dir" ]; then
+        while true; do
+            prompt "OpenTofu is not initialized. Initialize? [yN]" ans
+
+            case "${ans?}" in
+                y|Y)
+                    tofu -chdir="$tofu_dir" init
+                    break
+                    ;;
+                *)
+                    exit 1
+                    ;;
+            esac
+        done
+    fi
+
+_check: _check-config _check-init
 
 _tofu action *args:
     tofu -chdir='{{tofu_dir}}' workspace select "$CONTEXT" || \

@@ -4,15 +4,6 @@ locals {
   contexts = {
     lab = {
       vms = {
-        proxy = {
-          vm_id = 301
-          cores = 2
-          memory = {
-            dedicated = 2048
-            floating  = 2048
-          }
-          size = 32
-        },
         data = {
           vm_id = 302
           cores = 4
@@ -30,7 +21,16 @@ locals {
             floating  = 6144
           }
           size = 100
-        }
+        },
+        proxy = {
+          vm_id = 301
+          cores = 2
+          memory = {
+            dedicated = 2048
+            floating  = 2048
+          }
+          size = 32
+        },
       }
     }
   }

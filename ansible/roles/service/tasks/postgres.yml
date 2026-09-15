@@ -28,7 +28,9 @@
   no_log: true
 
 - name: Authenticate with OpenBao
-  ansible.builtin.include_tasks: openbao_auth.yml
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: auth
 
 - name: Store PostgreSQL password
   community.hashi_vault.vault_kv2_write:

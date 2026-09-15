@@ -4,46 +4,45 @@ IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desk
 
 * Project Structure
 + justfile, just/ :: Orchestration of operations.
-+ scripts/ :: Bash scripts, either to be called by ~just~ or to be used as libraries.
-  - lib/ :: Bash helper libraries for logging, prompting, etc.
++ lib/ :: Bash helper libraries for logging, prompting, etc.
 + tofu/ :: Provisioning of VMs in Proxmox.
 + ansible/ :: Configure VMs and deploy services (locally or remotely to VMs).
 + services/ :: SystemD services (e.g., Quadlets).
-  - =<service>/= :: One directory per service.
-    - quadlets/ :: Actual unit files (e.g., =*.build=, =*.container=, etc.).
-    - config/ :: Configuration files for that service.
+  - =<service>/= :: Unit files for the service (e.g., =*.build=, =*.container=, etc.).
+    - config/ :: Configuration files for the service, usually copied to =/etc/<service>=.
 
 * Just Recipes
-By default, the =HOST=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =HOST=lab=:
+By default, the =CONTEXT=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =CONTEXT=lab=:
 
 #+begin_src bash :session *lab*
-export HOST=lab
+export CONTEXT=lab
 #+end_src
 
-The full workflow will then begin with:
+Each context knows which steps it requires, if you run:
+
+#+begin_src :session *lab*
+just up
+#+end_src
+
+Depending on the context, the following recipes will be run. The full workflow optionally begins with:
 
 #+begin_src bash :session *lab*
 just provision
 #+end_src
 
-Which will create the required VMs. You should then configure them:
+Which will create the required VMs. You can then configure the VMs with:
 
 #+begin_src bash :session *lab*
 just configure
 #+end_src
 
-Which will install requirements such as ~podman~. Once this step is done, you can continue with deploying services:
+Which will install requirements such as ~podman~ or =cockpit-podman=. Once this step is done, you can continue with deploying services:
 
 #+begin_src bash :session *lab*
-just deploy nginx
-just deploy traefik
-just deploy rustfs
-just deploy postgres
-just deploy vault
-just deploy forgejo
+just deploy
 #+end_src
 
-Finally, once these run, you can manage the services with operations like:
+Finally, you can manage the services with operations like:
 
 #+begin_src bash :session *lab*
 just status nginx
@@ -56,19 +55,19 @@ just restart traefik
 - traefik :: Manages certificates and routes services as required.
 - rustfs :: Object storage.
 - postgres :: Generic database solution (integrates with most services, has multiple useful extensions).
-- vault :: Secrets management.
+- openbao :: Secrets management.
 - forgejo :: Git repositories and CI/CD.
 
 * Topology Design
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
 
 ** Lab Topology
-|     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Services*                |
-|--------+----------+-------+--------+---------+-------------------------|
-|    301 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik, nginx          |
-|    302 | data     |     4 | 8 GiB  | 100 GiB | rustfs, postgres, vault |
-|    303 | forge    |     4 | 6 GiB  | 100 GiB | forgejo                 |
-|--------+----------+-------+--------+---------+-------------------------|
-| *Totals* | 3        |    10 | 16 GiB | 232 GiB | 6                       |
+|     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
+|--------+----------+-------+--------+---------+---------------------------|
+|    301 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik, nginx            |
+|    302 | data     |     4 | 8 GiB  | 100 GiB | rustfs, postgres, openbao |
+|    303 | forge    |     4 | 6 GiB  | 100 GiB | forgejo                   |
+|--------+----------+-------+--------+---------+---------------------------|
+| *Totals* | 3        |    10 | 16 GiB | 232 GiB | 6                         |
 
 *Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float.

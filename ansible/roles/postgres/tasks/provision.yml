@@ -3,9 +3,15 @@
     name: openbao
     tasks_from: unseal
 
+- name: Authenticate with OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: auth
+
 - name: Get existing DB password
   community.hashi_vault.vault_kv2_get:
     url: "{{ openbao_addr }}"
+    token: "{{ openbao_iac_token }}"
     engine_mount_point: kv
     path: "{{ openbao_secret_postgres_prefix }}/{{ db_name }}"
   register: db_secret
@@ -31,11 +37,6 @@
     db_pass: "{{ db_secret.secret.password }}"
   when: db_secret.data is defined
   no_log: true
-
-- name: Authenticate with OpenBao
-  ansible.builtin.include_role:
-    name: openbao
-    tasks_from: auth
 
 - name: Store DB password
   community.hashi_vault.vault_kv2_write:

@@ -7,7 +7,7 @@
   community.hashi_vault.vault_kv2_get:
     url: "{{ openbao_addr }}"
     engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_root }}"
+    path: "{{ openbao_secret_postgres_admin }}"
   register: postgres_secret
   failed_when: false
   no_log: true
@@ -42,7 +42,7 @@
     url: "{{ openbao_addr }}"
     token: "{{ openbao_iac_token }}"
     engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_root }}"
+    path: "{{ openbao_secret_postgres_admin }}"
     data:
       password: "{{ postgres_password }}"
   when: postgres_secret.data is not defined

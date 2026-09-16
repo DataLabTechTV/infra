@@ -13,7 +13,7 @@
     url: "{{ openbao_addr }}"
     token: "{{ openbao_iac_token }}"
     engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_prefix }}/{{ db_name }}"
+    path: "{{ openbao_secret_postgres_db_prefix }}/{{ db_name }}"
   register: db_secret
   failed_when: false
   no_log: true
@@ -43,7 +43,7 @@
     url: "{{ openbao_addr }}"
     token: "{{ openbao_iac_token }}"
     engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_prefix }}/{{ db_name }}"
+    path: "{{ openbao_secret_postgres_db_prefix }}/{{ db_name }}"
     data:
       username: "{{ db_user }}"
       password: "{{ db_pass }}"
@@ -67,4 +67,7 @@
   community.postgresql.postgresql_db:
     name: "{{ db_name }}"
     owner: "{{ db_user }}"
+    login_host: "{{ postgres_host }}"
+    login_port: "{{ postgres_port }}"
+    login_password: "{{ postgres_password }}"
     state: present

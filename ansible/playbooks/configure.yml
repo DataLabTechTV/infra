@@ -28,7 +28,18 @@
         name:
           - podman
           - cockpit-podman
+        state: present
+
+    - name: Install Ansible dependencies
+      ansible.builtin.dnf:
+        name:
           - python3-hvac
           - python3-psycopg2
+          - kitty-terminfo
+        state: present
+
+    - name: Install quality of life packages
+      ansible.builtin.dnf:
+        name:
           - kitty-terminfo
         state: present

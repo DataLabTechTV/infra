@@ -1,8 +1,13 @@
+- name: Unseal OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: unseal
+
 - name: Get existing DB password
   community.hashi_vault.vault_kv2_get:
-    url: "{{ openbao_url }}"
-    engine_mount_point: secret
-    path: "services/postgres/{{ db_name }}"
+    url: "{{ openbao_addr }}"
+    engine_mount_point: kv
+    path: "{{ openbao_secret_postgres_prefix }}/{{ db_name }}"
   register: db_secret
   failed_when: false
   no_log: true
@@ -34,10 +39,10 @@
 
 - name: Store DB password
   community.hashi_vault.vault_kv2_write:
-    url: "{{ openbao_url }}"
+    url: "{{ openbao_addr }}"
     token: "{{ openbao_iac_token }}"
     engine_mount_point: kv
-    path: "data/postgres/{{ db_name }}"
+    path: "{{ openbao_secret_postgres_prefix }}/{{ db_name }}"
     data:
       username: "{{ db_user }}"
       password: "{{ db_pass }}"
@@ -55,7 +60,6 @@
     password: "{{ db_pass }}"
     login_host: "{{ postgres_host }}"
     login_port: "{{ postgres_port }}"
-    login_user: postgres
     login_password: "{{ postgres_password }}"
 
 - name: Create DB

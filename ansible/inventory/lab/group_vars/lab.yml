@@ -13,7 +13,11 @@ deployment_order:
 openbao_config_file: "{{ playbook_dir }}/../../services/openbao/config/openbao.json"
 openbao_output_dir: "{{ playbook_dir }}/../../output/{{ group_names[0] }}/openbao"
 openbao_iac_token_file: "{{ openbao_output_dir }}/iac.token"
-openbao_url: "http://data.lan:8200"
+
+openbao_secret_postgres_prefix: "data/postgres"
+openbao_secret_postgres_root: "{{ openbao_secret_postgres_prefix }}/root"
+
+openbao_addr: "http://data.lan:8200"
 
 postgres_host: data.lan
 postgres_port: 5432

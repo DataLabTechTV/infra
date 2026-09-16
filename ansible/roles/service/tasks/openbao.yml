@@ -4,7 +4,7 @@
 
 - name: Set CLI API address
   ansible.builtin.set_fact:
-    addr: >-
+    local_addr: >-
       {{ config.api_addr | urlsplit('scheme') }}://127.0.0.1:{{
         config.api_addr | urlsplit('port')
       }}
@@ -13,7 +13,7 @@
   ansible.builtin.command:
     cmd: |
       podman exec
-        --env BAO_ADDR={{ addr }}
+        --env BAO_ADDR={{ local_addr }}
         {{ service }}
         bao operator init -status
   register: bao_init_status
@@ -24,7 +24,7 @@
   ansible.builtin.command:
     cmd: |
       podman exec
-        --env BAO_ADDR={{ addr }}
+        --env BAO_ADDR={{ local_addr }}
         {{ service }}
         bao operator init
           -format=json
@@ -53,41 +53,18 @@
   when: bao_init.changed
   no_log: true
 
-- name: Read OpenBao initialization data
-  ansible.builtin.set_fact:
-    init: "{{ lookup('ansible.builtin.file', openbao_output_dir + '/init.json') | from_json }}"
-  delegate_to: localhost
-  become: false
-  no_log: true
-
-- name: Check OpenBao seal status
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ addr }}
-        {{ service }}
-        bao status
-  register: bao_status
-  changed_when: false
-  failed_when: bao_status.rc not in [0, 1, 2]
-
 - name: Unseal OpenBao
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ addr }}
-        {{ service }}
-        bao operator unseal
-        {{ init.unseal_keys_hex[0] }}
-  when: bao_status.rc == 2
-  changed_when: true
-  no_log: true
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: unseal
+  vars:
+    addr: "{{ local_addr }}"
 
 - name: Check enabled secrets engines
   ansible.builtin.command:
     cmd: |
       podman exec
-        --env BAO_ADDR={{ addr }}
+        --env BAO_ADDR={{ local_addr }}
         --env BAO_TOKEN={{ init.root_token }}
         {{ service }}
         bao secrets list -format=json
@@ -99,7 +76,7 @@
   ansible.builtin.command:
     cmd: |
       podman exec
-        --env BAO_ADDR={{ addr }}
+        --env BAO_ADDR={{ local_addr }}
         --env BAO_TOKEN={{ init.root_token }}
         {{ service }}
         bao secrets enable -version=2 kv
@@ -109,7 +86,7 @@
   ansible.builtin.command:
     cmd: |
       podman exec --interactive
-        --env BAO_ADDR={{ addr }}
+        --env BAO_ADDR={{ local_addr }}
         --env BAO_TOKEN={{ init.root_token }}
         {{ service }}
         bao policy write iac /etc/{{ service }}/policies/iac.hcl
@@ -118,7 +95,7 @@
   ansible.builtin.command:
     cmd: |
       podman exec --interactive
-        --env BAO_ADDR={{ addr }}
+        --env BAO_ADDR={{ local_addr }}
         --env BAO_TOKEN={{ init.root_token }}
         {{ service }}
         bao token create -policy=iac -ttl=0 -orphan -format=json

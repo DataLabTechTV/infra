@@ -13,26 +13,26 @@
   ansible.builtin.include_tasks: restart.yml
 
 - name: Check OpenBao initialization status
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ local_addr }}
-        {{ service }}
-        bao operator init -status
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    env:
+      BAO_ADDR: "{{ local_addr }}"
+    command: |
+      bao operator init -status
   register: bao_init_status
   changed_when: false
   failed_when: bao_init_status.rc not in [0, 2]
 
 - name: Initialize OpenBao
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ local_addr }}
-        {{ service }}
-        bao operator init
-          -format=json
-          -key-shares=1
-          -key-threshold=1
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    env:
+      BAO_ADDR: "{{ local_addr }}"
+    command: |
+      bao operator init
+        -format=json
+        -key-shares=1
+        -key-threshold=1
   register: bao_init
   when: bao_init_status.rc == 2
   changed_when: true
@@ -64,44 +64,44 @@
     addr: "{{ local_addr }}"
 
 - name: Check enabled secrets engines
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ local_addr }}
-        --env BAO_TOKEN={{ init.root_token }}
-        {{ service }}
-        bao secrets list -format=json
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    env:
+      BAO_ADDR: "{{ local_addr }}"
+      BAO_TOKEN: "{{ init.root_token }}"
+    command: |
+      bao secrets list -format=json
   register: bao_engines
   changed_when: false
   no_log: true
 
 - name: Enable OpenBao KV2 secrets engine
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ local_addr }}
-        --env BAO_TOKEN={{ init.root_token }}
-        {{ service }}
-        bao secrets enable -version=2 kv
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    env:
+      BAO_ADDR: "{{ local_addr }}"
+      BAO_TOKEN: "{{ init.root_token }}"
+    command: |
+      bao secrets enable -version=2 kv
   when: "'kv/' not in (bao_engines.stdout | from_json)"
 
 - name: Configure IaC policy
-  ansible.builtin.command:
-    cmd: |
-      podman exec --interactive
-        --env BAO_ADDR={{ local_addr }}
-        --env BAO_TOKEN={{ init.root_token }}
-        {{ service }}
-        bao policy write iac /etc/{{ service }}/policies/iac.hcl
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    env:
+      BAO_ADDR: "{{ local_addr }}"
+      BAO_TOKEN: "{{ init.root_token }}"
+    command: |
+      bao policy write iac /etc/{{ service }}/policies/iac.hcl
 
 - name: Create IaC token
-  ansible.builtin.command:
-    cmd: |
-      podman exec --interactive
-        --env BAO_ADDR={{ local_addr }}
-        --env BAO_TOKEN={{ init.root_token }}
-        {{ service }}
-        bao token create -policy=iac -ttl=0 -orphan -format=json
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    env:
+      BAO_ADDR: "{{ local_addr }}"
+      BAO_TOKEN: "{{ init.root_token }}"
+    command: |
+      bao token create -policy=iac -ttl=0 -orphan -format=json
   register: iac_token
   no_log: true
 

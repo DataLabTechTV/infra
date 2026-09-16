@@ -18,25 +18,24 @@
   no_log: true
 
 - name: Check OpenBao seal status
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ addr }}
-        {{ container }}
-        bao status
+  containers.podman.podman_container_exec:
+    name: "{{ container }}"
+    env:
+      BAO_ADDR: "{{ addr }}"
+    command: |
+      bao status
   delegate_to: "{{ openbao_host }}"
   register: bao_status
   changed_when: false
   failed_when: bao_status.rc not in [0, 1, 2]
 
 - name: Unseal OpenBao
-  ansible.builtin.command:
-    cmd: |
-      podman exec
-        --env BAO_ADDR={{ addr }}
-        {{ container }}
-        bao operator unseal
-        {{ init.unseal_keys_hex[0] }}
+  containers.podman.podman_container_exec:
+    name: "{{ container }}"
+    env:
+      BAO_ADDR: "{{ addr }}"
+    command: |
+      bao operator unseal {{ init.unseal_keys_hex[0] }}
   delegate_to: "{{ openbao_host }}"
   when: bao_status.rc == 2
   changed_when: true

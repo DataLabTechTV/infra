@@ -43,6 +43,16 @@
       forgejo migrate
         --config /data/gitea/conf/app.ini
 
+- name: Check whether Forgejo admin exists
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    user: 1000
+    command: >
+      forgejo admin user list
+        --config /data/gitea/conf/app.ini
+  register: forgejo_users
+  changed_when: false
+
 - name: Create Forgejo admin user
   containers.podman.podman_container_exec:
     name: "{{ service }}"
@@ -54,4 +64,4 @@
         --admin
         --password {{ forgejo_admin.password }}
         --config /data/gitea/conf/app.ini
-  no_log: false
+  when: forgejo_admin.username not in forgejo_users.stdout

@@ -9,6 +9,9 @@
         config.api_addr | urlsplit('port')
       }}
 
+- name: Ensure service is running
+  ansible.builtin.include_tasks: restart.yml
+
 - name: Check OpenBao initialization status
   ansible.builtin.command:
     cmd: |

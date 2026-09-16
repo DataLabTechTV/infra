@@ -35,22 +35,6 @@
     loop_var: item_quadlet_unit
   notify: Restart service
 
-- name: Check whether service exists
-  ansible.builtin.stat:
-    path: "/etc/containers/systemd/{{ service }}.container"
-  register: service_file
-
-- name: Ensure service is running
-  ansible.builtin.systemd_service:
-    daemon_reload: true
-    name: "{{ service }}.service"
-    enabled: true
-    state: started
-  when: service_file.stat.exists
-
-- name: Run pending service handlers
-  ansible.builtin.meta: flush_handlers
-
 - name: Service-specific configuration
   ansible.builtin.include_tasks: "{{ service }}.yml"
   when: >

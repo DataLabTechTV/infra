@@ -1,7 +1,19 @@
+- name: Set DB name and user
+  ansible.builtin.set_fact:
+    db_name: forgejo
+    db_user: forgejo
+
 - name: Provision Forgejo database
   ansible.builtin.include_role:
     name: postgres
     tasks_from: provision
-  vars:
-    db_name: forgejo
-    db_user: forgejo
+
+- name: Deploy Forgejo templates
+  ansible.builtin.include_tasks: templates.yml
+
+- name: Create Forgejo DB password secret
+  containers.podman.podman_secret:
+    name: forgejo_db_password
+    data: "{{ db_pass }}"
+    state: present
+  no_log: true

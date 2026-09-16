@@ -16,10 +16,10 @@ configure:
         --inventory "./ansible/inventory/$CONTEXT/hosts.yml" \
         './ansible/playbooks/configure.yml'
 
-# Deploy services to the specified context hosts
-deploy target="" service="":
+# Deploy quadlets to the specified context hosts
+deploy target="" quadlet="":
     ansible-playbook \
         --inventory "./ansible/inventory/$CONTEXT/hosts.yml" \
         {{ if target != '' { '--limit ' + target } else { '' } }} \
-        {{ if service != '' { '--extra-vars "service=' + service + '"' } else { '' } }} \
+        {{ if quadlet != '' { '--extra-vars "quadlet=' + quadlet + '"' } else { '' } }} \
         './ansible/playbooks/deploy.yml'

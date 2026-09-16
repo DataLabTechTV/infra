@@ -1,0 +1,19 @@
+- name: Find quadlet templates
+  ansible.builtin.find:
+    paths: "{{ quadlet_dir }}/templates"
+    recurse: true
+    patterns: "*.j2"
+    file_type: file
+  become: false
+  delegate_to: localhost
+  register: quadlet_templates
+
+- name: Deploy service templates
+  ansible.builtin.template:
+    src: "{{ item.path }}"
+    dest: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | regex_replace('\\.j2$', '') }}"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ quadlet_templates.files }}"
+  notify: Restart quadlet service

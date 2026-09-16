@@ -4,14 +4,14 @@
   become: true
 
   tasks:
-    - name: Deploy services assigned to host
+    - name: Deploy quadlets according to the inventory
       ansible.builtin.include_role:
-        name: service
+        name: quadlet
       vars:
-        service: "{{ item_service }}"
-      loop: "{{ deployment_order | default(services | default([]), true) }}"
+        quadlet: "{{ item_quadlet }}"
+      loop: "{{ deployment_order | default(quadlets | default([]), true) }}"
       loop_control:
-        loop_var: item_service
+        loop_var: item_quadlet
       when:
-        - item_service in services | default([])
-        - service is not defined or item_service == service
+        - item_quadlet in quadlets | default([])
+        - quadlet is not defined or item_quadlet == quadlet

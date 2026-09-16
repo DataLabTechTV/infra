@@ -1,0 +1,2 @@
+quadlet_dir: "{{ playbook_dir }}/../../quadlets/{{ quadlet }}"
+install_dir: "/etc/containers/systemd"

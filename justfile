@@ -6,7 +6,7 @@ _default:
 
 _env_help:
     @echo "Environment variables:"
-    @echo "    CONTEXT  Collection of infrastructure, configurations, and services (default: lab)"
+    @echo "    CONTEXT  Collection of infrastructure, configurations, and quadlets (default: lab)"
     @echo
 
 _display_table $tsv_path $header_str="":
@@ -29,13 +29,13 @@ _display_table $tsv_path $header_str="":
         cat "$tmpfile"
     fi
 
-_host service:
+_host quadlet:
     #!/usr/bin/env bash
     ansible-inventory -i './ansible/inventory/{{CONTEXT}}/hosts.yml' --list |
-        jq -r --arg group '{{CONTEXT}}' --arg service '{{service}}' '
+        jq -r --arg group '{{CONTEXT}}' --arg quadlet '{{quadlet}}' '
             . as $inventory
             | $inventory[$group].hosts[]
-            | select($inventory._meta.hostvars[.].services | index($service))
+            | select($inventory._meta.hostvars[.].quadlets | index($quadlet))
             | $inventory._meta.hostvars[.].ansible_host
         '
 
@@ -71,10 +71,10 @@ configure:
     just ansible install
     just ansible configure
 
-# Deploy services, optionally limited to a target host and/or service
+# Deploy quadlets, optionally limited to a target host and/or quadlet
 [group('lifecycle')]
-deploy target="" service="":
-    just ansible deploy '{{target}}' '{{service}}'
+deploy target="" quadlet="":
+    just ansible deploy '{{target}}' '{{quadlet}}'
 
 # Check systemd status for specified service
 [group('manage')]

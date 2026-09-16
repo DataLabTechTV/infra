@@ -35,7 +35,7 @@
 
 - name: Initialize Forgejo database
   containers.podman.podman_container_exec:
-    name: "{{ service }}"
+    name: "{{ quadlet }}"
     user: 1000
     env:
       FORGEJO__security_INSTALL_LOCK: "true"
@@ -45,7 +45,7 @@
 
 - name: Check whether Forgejo admin exists
   containers.podman.podman_container_exec:
-    name: "{{ service }}"
+    name: "{{ quadlet }}"
     user: 1000
     command: >
       forgejo admin user list
@@ -55,7 +55,7 @@
 
 - name: Create Forgejo admin user
   containers.podman.podman_container_exec:
-    name: "{{ service }}"
+    name: "{{ quadlet }}"
     user: 1000
     command: >
       forgejo admin user create

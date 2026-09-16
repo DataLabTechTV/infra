@@ -4,8 +4,8 @@
       {{
         hostvars
         | dict2items
-        | selectattr('value.services', 'defined')
-        | selectattr('value.services', 'contains', 'openbao')
+        | selectattr('value.quadlets', 'defined')
+        | selectattr('value.quadlets', 'contains', 'openbao')
         | map(attribute='key')
         | first
       }}

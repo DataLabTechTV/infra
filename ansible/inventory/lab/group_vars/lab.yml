@@ -17,8 +17,13 @@ openbao_iac_token_file: "{{ openbao_output_dir }}/iac.token"
 openbao_secret_postgres_prefix: "data/postgres"
 openbao_secret_postgres_db_prefix: "{{ openbao_secret_postgres_prefix }}/db"
 openbao_secret_postgres_admin: "{{ openbao_secret_postgres_prefix }}/admin"
+openbao_secret_forgejo_prefix: "forge/forgejo"
+openbao_secret_forgejo_admin: "{{ openbao_secret_forgejo_prefix }}/admin"
 
 openbao_addr: "http://data.lan:8200"
 
 postgres_host: data.lan
 postgres_port: 5432
+
+forgejo_admin_user: "admin"
+forgejo_admin_email: "admin@forge.lan"

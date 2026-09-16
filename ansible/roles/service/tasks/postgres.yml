@@ -1,56 +1,16 @@
-- name: Unseal OpenBao
+- name: Setup PostgreSQL credentials
   ansible.builtin.include_role:
     name: openbao
-    tasks_from: unseal
-
-- name: Get existing PostgreSQL password
-  community.hashi_vault.vault_kv2_get:
-    url: "{{ openbao_addr }}"
-    engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_admin }}"
-  register: postgres_secret
-  failed_when: false
-  no_log: true
-
-- name: Generate PostgreSQL password
-  ansible.builtin.set_fact:
-    postgres_password: >-
-      {{
-        lookup(
-          'ansible.builtin.password',
-          '/dev/null',
-          length=32,
-          chars=['ascii_letters', 'digits']
-        )
-      }}
-  when: postgres_secret.data is not defined
-  no_log: true
-
-- name: Use existing PostgreSQL password
-  ansible.builtin.set_fact:
-    postgres_password: "{{ postgres_secret.secret.password }}"
-  when: postgres_secret.data is defined
-  no_log: true
-
-- name: Authenticate with OpenBao
-  ansible.builtin.include_role:
-    name: openbao
-    tasks_from: auth
-
-- name: Store PostgreSQL password
-  community.hashi_vault.vault_kv2_write:
-    url: "{{ openbao_addr }}"
-    token: "{{ openbao_iac_token }}"
-    engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_admin }}"
-    data:
-      password: "{{ postgres_password }}"
-  when: postgres_secret.data is not defined
-  no_log: false
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_postgres_admin }}"
+    secret_fact: postgres
+    secret_passwords:
+      - password
 
 - name: Create PostgreSQL password secret
   containers.podman.podman_secret:
     name: postgres_password
-    data: "{{ postgres_password }}"
+    data: "{{ postgres.password }}"
     state: present
   no_log: true

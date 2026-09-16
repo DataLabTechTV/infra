@@ -4,6 +4,7 @@
     recurse: true
     patterns: "*.j2"
     file_type: file
+  become: false
   delegate_to: localhost
   register: service_templates
 

@@ -14,6 +14,32 @@
 - name: Create Forgejo DB password secret
   containers.podman.podman_secret:
     name: forgejo_db_password
-    data: "{{ db_pass }}"
+    data: "{{ db.password }}"
     state: present
   no_log: true
+
+- name: Setup admin credentials
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_forgejo_admin }}"
+    secret_fact: forgejo_admin
+    secret_values:
+        username: "{{ forgejo_admin_user }}"
+    secret_passwords:
+      - password
+
+- name: Ensure service is running
+  ansible.builtin.include_tasks: restart.yml
+
+- name: Create Forgejo admin user
+  containers.podman.podman_container_exec:
+    name: forgejo
+    command: >
+      forgejo admin user create
+        --username {{ forgejo_admin.username }}
+        --email {{ forgejo_admin_email }}
+        --admin
+        --password {{ forgejo_admin.password }}
+  no_log: false

@@ -1,54 +1,14 @@
-- name: Unseal OpenBao
+- name: Setup DB credentials
   ansible.builtin.include_role:
     name: openbao
-    tasks_from: unseal
-
-- name: Authenticate with OpenBao
-  ansible.builtin.include_role:
-    name: openbao
-    tasks_from: auth
-
-- name: Get existing DB password
-  community.hashi_vault.vault_kv2_get:
-    url: "{{ openbao_addr }}"
-    token: "{{ openbao_iac_token }}"
-    engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_db_prefix }}/{{ db_name }}"
-  register: db_secret
-  failed_when: false
-  no_log: true
-
-- name: Generate DB password
-  ansible.builtin.set_fact:
-    db_pass: >-
-      {{
-        lookup(
-          'ansible.builtin.password',
-          '/dev/null',
-          length=32,
-          chars=['ascii_letters', 'digits']
-        )
-      }}
-  when: db_secret.data is not defined
-  no_log: true
-
-- name: Use existing DB password
-  ansible.builtin.set_fact:
-    db_pass: "{{ db_secret.secret.password }}"
-  when: db_secret.data is defined
-  no_log: true
-
-- name: Store DB password
-  community.hashi_vault.vault_kv2_write:
-    url: "{{ openbao_addr }}"
-    token: "{{ openbao_iac_token }}"
-    engine_mount_point: kv
-    path: "{{ openbao_secret_postgres_db_prefix }}/{{ db_name }}"
-    data:
-      username: "{{ db_user }}"
-      password: "{{ db_pass }}"
-  when: db_secret.data is not defined
-  no_log: false
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_postgres_db_prefix }}/{{ db_name }}"
+    secret_fact: db
+    secret_values:
+        username: "{{ db_user }}"
+    secret_passwords:
+      - password
 
 - name: Authenticate with PostgreSQL
   ansible.builtin.include_role:
@@ -57,8 +17,8 @@
 
 - name: Create DB user
   community.postgresql.postgresql_user:
-    name: "{{ db_user }}"
-    password: "{{ db_pass }}"
+    name: "{{ db.username }}"
+    password: "{{ db.password }}"
     login_host: "{{ postgres_host }}"
     login_port: "{{ postgres_port }}"
     login_password: "{{ postgres_password }}"
@@ -66,7 +26,7 @@
 - name: Create DB
   community.postgresql.postgresql_db:
     name: "{{ db_name }}"
-    owner: "{{ db_user }}"
+    owner: "{{ db.username }}"
     login_host: "{{ postgres_host }}"
     login_port: "{{ postgres_port }}"
     login_password: "{{ postgres_password }}"

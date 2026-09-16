@@ -33,13 +33,25 @@
 - name: Ensure service is running
   ansible.builtin.include_tasks: restart.yml
 
+- name: Initialize Forgejo database
+  containers.podman.podman_container_exec:
+    name: "{{ service }}"
+    user: 1000
+    env:
+      FORGEJO__security_INSTALL_LOCK: "true"
+    command: >
+      forgejo migrate
+        --config /data/gitea/conf/app.ini
+
 - name: Create Forgejo admin user
   containers.podman.podman_container_exec:
-    name: forgejo
+    name: "{{ service }}"
+    user: 1000
     command: >
       forgejo admin user create
         --username {{ forgejo_admin.username }}
         --email {{ forgejo_admin_email }}
         --admin
         --password {{ forgejo_admin.password }}
+        --config /data/gitea/conf/app.ini
   no_log: false

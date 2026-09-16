@@ -6,10 +6,10 @@ IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desk
 + justfile, just/ :: Orchestration of operations.
 + lib/ :: Bash helper libraries for logging, prompting, etc.
 + tofu/ :: Provisioning of VMs in Proxmox.
-+ ansible/ :: Configure VMs and deploy services (locally or remotely to VMs).
-+ services/ :: SystemD services (e.g., Quadlets).
-  - =<service>/= :: Unit files for the service (e.g., =*.build=, =*.container=, etc.).
-    - config/ :: Configuration files for the service, usually copied to =/etc/<service>=.
++ ansible/ :: Configure VMs and deploy quadlets (locally or remotely to VMs).
++ quadlets/ :: SystemD quadlets.
+  - =<quadlet>/= :: Unit files for the quadlet (e.g., =*.build=, =*.container=, etc.).
+    - config/ :: Configuration files for the quadlet, usually copied to =/etc/<quadlet>=.
 
 * Just Recipes
 By default, the =CONTEXT=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =CONTEXT=lab=:
@@ -20,7 +20,7 @@ export CONTEXT=lab
 
 Each context knows which steps it requires, if you run:
 
-#+begin_src :session *lab*
+#+begin_src bash :session *lab*
 just up
 #+end_src
 
@@ -36,7 +36,7 @@ Which will create the required VMs. You can then configure the VMs with:
 just configure
 #+end_src
 
-Which will install requirements such as ~podman~ or =cockpit-podman=. Once this step is done, you can continue with deploying services:
+Which will install requirements such as ~podman~ or =cockpit-podman=. Once this step is done, you can continue with deploying quadlets:
 
 #+begin_src bash :session *lab*
 just deploy
@@ -50,7 +50,22 @@ just logs postgres
 just restart traefik
 #+end_src
 
+Several secrets will be generated during deployment. The bootstrap secrets for the VM default user (rocky) can be accessed via:
+
+#+begin_src bash :session *lab*
+just secrets vms
+#+end_src
+
+The boostrap secrets for OpenBao can be accessed via:
+
+#+begin_src bash :session *lab*
+just secrets openbao
+#+end_src
+
+Any other secrets created after OpenBao has been deployed will be available exclusively in OpenBao.
+
 * Service Description
+** Quadlets
 - nginx :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
 - traefik :: Manages certificates and routes services as required.
 - rustfs :: Object storage.

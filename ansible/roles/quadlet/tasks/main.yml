@@ -1,4 +1,4 @@
-- name: Ensure quadlet configuration directory exists
+- name: "Ensure {{ quadlet }} configuration directory exists"
   ansible.builtin.file:
     path: "/etc/{{ quadlet }}"
     state: directory
@@ -6,16 +6,16 @@
     group: root
     mode: "0755"
 
-- name: Deploy quadlet configuration
+- name: "Deploy {{ quadlet }} configuration"
   ansible.builtin.copy:
     src: "{{ quadlet_dir }}/config/"
     dest: "/etc/{{ quadlet }}/"
     owner: root
     group: root
     mode: "0644"
-  notify: Restart quadlet service
+  notify: "Restart {{ quadlet }} service"
 
-- name: Deploy quadlet files
+- name: "Deploy {{ quadlet }} quadlet files"
   ansible.builtin.copy:
     src: "{{ item_quadlet_unit }}"
     dest: "{{ install_dir }}/"
@@ -33,7 +33,7 @@
     - "{{ quadlet_dir }}/*.artifact"
   loop_control:
     loop_var: item_quadlet_unit
-  notify: Restart quadlet service
+  notify: "Restart {{ quadlet }} service"
 
 - name: Quadlet-specific configuration
   ansible.builtin.include_tasks: "{{ quadlet }}.yml"

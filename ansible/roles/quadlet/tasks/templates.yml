@@ -16,4 +16,4 @@
     group: root
     mode: "0644"
   loop: "{{ quadlet_templates.files }}"
-  notify: Restart quadlet service
+  notify: "Restart {{ quadlet }} service"

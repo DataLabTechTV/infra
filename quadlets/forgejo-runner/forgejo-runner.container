@@ -12,7 +12,7 @@ Volume=forgejo-runner-data:/data
 Network=forgejo-runner.network
 Environment=DOCKER_HOST=unix:///run/podman/podman.sock
 Environment=CREDENTIALS_DIRECTORY=/run/secrets
-Secret=forgejo_uuid,type=file,target=forgejo.token
+Secret=forgejo_token,target=forgejo.token
 Exec=forgejo-runner daemon --config /etc/forgejo-runner/runner-config.yml
 
 [Service]

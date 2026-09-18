@@ -7,6 +7,7 @@ deployment_order:
   - postgres
   - rustfs
   - forgejo
+  - forgejo-runner
   - nginx
   - traefik
 
@@ -26,5 +27,6 @@ openbao_addr: "http://data.lan:8200"
 postgres_host: data.lan
 postgres_port: 5432
 
+forgejo_addr: "http://forge.lan:3000"
 forgejo_admin_user: "forgejo"
 forgejo_admin_email: "forgejo@forge.lan"

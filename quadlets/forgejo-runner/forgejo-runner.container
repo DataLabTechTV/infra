@@ -1,0 +1,23 @@
+[Unit]
+Description=Forgejo Runner
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=code.forgejo.org/forgejo/runner:13
+ContainerName=forgejo-runner
+Volume=/etc/forgejo-runner:/etc/forgejo-runner:ro
+Volume=/run/podman/podman.sock:/run/podman/podman.sock
+Volume=forgejo-runner-data:/data
+Network=forgejo-runner.network
+Environment=DOCKER_HOST=unix:///run/podman/podman.sock
+Environment=CREDENTIALS_DIRECTORY=/run/secrets
+Secret=forgejo_uuid,type=file,target=forgejo.token
+Exec=forgejo-runner daemon --config /etc/forgejo-runner/runner-config.yml
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

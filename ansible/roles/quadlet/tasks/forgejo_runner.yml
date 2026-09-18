@@ -1,0 +1,73 @@
+- name: Enable rootful Podman socket
+  ansible.builtin.systemd_service:
+    name: podman.socket
+    enabled: true
+    state: started
+
+- name: Generate random hexadecimal string
+  ansible.builtin.set_fact:
+    forgejo_token: "{{ lookup('ansible.builtin.password', '/dev/null', length=40, chars='hexdigits') }}"
+
+- name: Create Forgejo token secret
+  containers.podman.podman_secret:
+    name: forgejo_token
+    data: "{{ forgejo_token }}"
+    state: present
+  no_log: true
+
+- name: Authenticate with Forgejo
+  ansible.builtin.include_role:
+    name: forgejo
+    tasks_from: auth
+
+- name: Get Forgejo runners
+  ansible.builtin.uri:
+    url: "{{ forgejo_addr }}/api/v1/admin/actions/runners"
+    headers:
+      Authorization: "token {{ forgejo_api_token }}"
+    return_content: true
+  register: forgejo_runners
+  no_log: true
+
+- name: Register Forgejo runner
+  containers.podman.podman_container_exec:
+    name: forgejo
+    user: 1000
+    command: >
+      forgejo forgejo-cli actions register
+        --name ubuntu-latest
+        --secret {{ forgejo_token }}
+  register: forgejo_register
+  when: >
+    forgejo_runners.json
+    | selectattr('name', 'equalto', 'ubuntu-latest')
+    | list
+    | length == 0
+  no_log: false
+
+- name: Set new Forgejo runner UUID
+  ansible.builtin.set_fact:
+    forgejo_uuid: "{{ forgejo_register.stdout }}"
+  when: >
+    forgejo_runners.json
+    | selectattr('name', 'equalto', 'ubuntu-latest')
+    | list
+    | length == 0
+
+- name: Set existing Forgejo runner UUID
+  ansible.builtin.set_fact:
+    forgejo_uuid: >
+      {{
+        forgejo_runners.json
+        | selectattr('name', 'equalto', 'ubuntu-latest')
+        | map(attribute='uuid')
+        | first
+      }}
+  when: >
+    forgejo_runners.json
+    | selectattr('name', 'equalto', 'ubuntu-latest')
+    | list
+    | length > 0
+
+- name: Deploy Forgejo runner templates
+  ansible.builtin.include_tasks: templates.yml

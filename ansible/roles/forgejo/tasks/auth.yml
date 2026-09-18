@@ -1,0 +1,38 @@
+- name: Unseal OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: unseal
+
+- name: Authenticate with OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: auth
+
+- name: Read Forgejo credentials
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ openbao_addr }}"
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: "{{ openbao_secret_forgejo_admin }}"
+  register: forgejo_admin
+  no_log: true
+
+- name: Set Forgejo credentials
+  ansible.builtin.set_fact:
+    forgejo_username: "{{ forgejo_admin.secret.username }}"
+    forgejo_password: "{{ forgejo_admin.secret.password }}"
+  no_log: true
+
+- name: Read Forgejo API token
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ openbao_addr }}"
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: "{{ openbao_secret_forgejo_tokens }}"
+  register: forgejo_tokens
+  no_log: true
+
+- name: Set Forgejo API token
+  ansible.builtin.set_fact:
+    forgejo_api_token: "{{ forgejo_tokens.secret.admin }}"
+  no_log: true

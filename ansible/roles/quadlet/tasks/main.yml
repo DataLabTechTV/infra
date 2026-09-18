@@ -6,6 +6,12 @@
     group: root
     mode: "0755"
 
+- name: "Check for {{ quadlet }} configuration"
+  ansible.builtin.stat:
+    path: "{{ quadlet_dir }}/config"
+  delegate_to: localhost
+  register: quadlet_config
+
 - name: "Deploy {{ quadlet }} configuration"
   ansible.builtin.copy:
     src: "{{ quadlet_dir }}/config/"
@@ -13,6 +19,7 @@
     owner: root
     group: root
     mode: "0644"
+  when: quadlet_config.stat.exists and quadlet_config.stat.isdir
   notify: "Restart {{ quadlet }} service"
 
 - name: "Deploy {{ quadlet }} quadlet files"
@@ -36,12 +43,12 @@
   notify: "Restart {{ quadlet }} service"
 
 - name: Quadlet-specific configuration
-  ansible.builtin.include_tasks: "{{ quadlet }}.yml"
+  ansible.builtin.include_tasks: "{{ quadlet | replace('-', '_') }}.yml"
   when: >
     lookup(
       'ansible.builtin.first_found',
       {
-        'files': [quadlet + '.yml'],
+        'files': [quadlet | replace('-', '_') + '.yml'],
         'paths': [role_path + '/tasks']
       },
       errors='ignore'

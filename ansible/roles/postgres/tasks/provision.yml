@@ -10,6 +10,13 @@
     secret_passwords:
       - password
 
+- name: Wait for PostgreSQL connection
+  ansible.builtin.wait_for:
+    host: "{{ postgres_host }}"
+    port: "{{ postgres_port }}"
+    timeout: 30
+    delay: 2
+
 - name: Authenticate with PostgreSQL
   ansible.builtin.include_role:
     name: postgres

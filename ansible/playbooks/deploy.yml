@@ -1,7 +1,6 @@
 ---
 - name: Deploy services
   hosts: all
-  order: inventory
   become: true
 
   tasks:

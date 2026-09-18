@@ -33,16 +33,6 @@
 - name: Ensure service is running
   ansible.builtin.include_tasks: restart.yml
 
-- name: Initialize Forgejo database
-  containers.podman.podman_container_exec:
-    name: "{{ quadlet }}"
-    user: 1000
-    env:
-      FORGEJO__security_INSTALL_LOCK: "true"
-    command: >
-      forgejo migrate
-        --config /data/gitea/conf/app.ini
-
 - name: Check whether Forgejo admin exists
   containers.podman.podman_container_exec:
     name: "{{ quadlet }}"
@@ -52,6 +42,9 @@
         --config /data/gitea/conf/app.ini
   register: forgejo_users
   changed_when: false
+  retries: 30
+  delay: 2
+  until: forgejo_users.rc == 0
 
 - name: Create Forgejo admin user
   containers.podman.podman_container_exec:

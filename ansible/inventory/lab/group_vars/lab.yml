@@ -19,6 +19,7 @@ openbao_secret_postgres_db_prefix: "{{ openbao_secret_postgres_prefix }}/db"
 openbao_secret_postgres_admin: "{{ openbao_secret_postgres_prefix }}/admin"
 openbao_secret_forgejo_prefix: "forge/forgejo"
 openbao_secret_forgejo_admin: "{{ openbao_secret_forgejo_prefix }}/admin"
+openbao_secret_forgejo_tokens: "{{ openbao_secret_forgejo_prefix }}/tokens"
 
 openbao_addr: "http://data.lan:8200"
 

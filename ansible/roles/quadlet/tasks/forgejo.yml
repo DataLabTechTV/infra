@@ -58,3 +58,37 @@
         --password {{ forgejo_admin.password }}
         --config /data/gitea/conf/app.ini
   when: forgejo_admin.username not in forgejo_users.stdout
+
+- name: Get existing API token secret
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ openbao_addr }}"
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: "{{ openbao_secret_forgejo_tokens }}"
+  register: tokens_secret
+  failed_when: false
+  no_log: true
+
+- name: Generate Forgejo API token
+  containers.podman.podman_container_exec:
+    name: forgejo
+    user: 1000
+    command: >
+      forgejo admin user generate-access-token
+        --username {{ forgejo_admin_user }}
+        --token-name ansible
+        --raw
+  register: forgejo_api_token
+  when: tokens_secret.data is not defined
+  no_log: false
+
+- name: Store Forgejo API token secret
+  community.hashi_vault.vault_kv2_write:
+    url: "{{ openbao_addr }}"
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: "{{ openbao_secret_forgejo_tokens }}"
+    data:
+      admin: "{{ forgejo_api_token.stdout | trim }}"
+  when: forgejo_api_token is changed
+  no_log: true

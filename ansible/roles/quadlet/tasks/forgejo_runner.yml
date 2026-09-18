@@ -45,29 +45,18 @@
     | length == 0
   no_log: false
 
-- name: Set new Forgejo runner UUID
+- name: Find existing Forgejo runner
   ansible.builtin.set_fact:
-    forgejo_uuid: "{{ forgejo_register.stdout }}"
-  when: >
-    forgejo_runners.json
-    | selectattr('name', 'equalto', 'ubuntu-latest')
-    | list
-    | length == 0
-
-- name: Set existing Forgejo runner UUID
-  ansible.builtin.set_fact:
-    forgejo_uuid: >
+    forgejo_runner: >-
       {{
         forgejo_runners.json
         | selectattr('name', 'equalto', 'ubuntu-latest')
-        | map(attribute='uuid')
         | first
       }}
-  when: >
-    forgejo_runners.json
-    | selectattr('name', 'equalto', 'ubuntu-latest')
-    | list
-    | length > 0
+
+- name: Set Forgejo runner UUID
+  ansible.builtin.set_fact:
+    forgejo_uuid: "{{ forgejo_runner.uuid if forgejo_runner else forgejo_register.stdout | trim }}"
 
 - name: Deploy Forgejo runner templates
   ansible.builtin.include_tasks: templates.yml

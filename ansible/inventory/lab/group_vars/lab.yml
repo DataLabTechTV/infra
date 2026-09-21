@@ -8,7 +8,7 @@ deployment_order:
   - rustfs
   - forgejo
   - forgejo-runner
-  - nginx
+  - squid
   - traefik
 
 openbao_config_file: "{{ playbook_dir }}/../../quadlets/openbao/config/openbao.json"

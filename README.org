@@ -66,12 +66,25 @@ Any other secrets created after OpenBao has been deployed will be available excl
 
 * Service Description
 ** Quadlets
-- nginx :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
-- traefik :: Manages certificates and routes services as required.
-- rustfs :: Object storage.
-- postgres :: Generic database solution (integrates with most services, has multiple useful extensions).
+We'll need the following quadlets, deployed in order:
+
 - openbao :: Secrets management.
+- postgres :: Generic database solution (integrates with most services, has multiple useful extensions).
+- rustfs :: Object storage.
 - forgejo :: Git repositories and CI/CD.
+- squid :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
+- traefik :: Manages certificates and routes services as required.
+
+Dependencies are as follows:
+
+| Service  | Dependencies      |
+|----------+-------------------|
+| openbao  | N/A               |
+| postgres | openbao           |
+| rustfs   | openbao           |
+| forgejo  | openbao, postgres |
+| squid    | N/A               |
+| traefik  | N/A               |
 
 * Topology Design
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
@@ -79,8 +92,8 @@ This repo can contain more than one deployment, each one being assigned a specif
 ** Lab Topology
 |     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
 |--------+----------+-------+--------+---------+---------------------------|
-|    301 | proxy    |     2 | 2 GiB  | 32 GiB  | traefik, nginx            |
-|    302 | data     |     4 | 8 GiB  | 100 GiB | rustfs, postgres, openbao |
+|    301 | proxy    |     2 | 2 GiB  | 32 GiB  | squid, traefik            |
+|    302 | data     |     4 | 8 GiB  | 100 GiB | openbao, postgres, rustfs |
 |    303 | forge    |     4 | 6 GiB  | 100 GiB | forgejo                   |
 |--------+----------+-------+--------+---------+---------------------------|
 | *Totals* | 3        |    10 | 16 GiB | 232 GiB | 6                         |

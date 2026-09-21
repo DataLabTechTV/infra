@@ -68,6 +68,7 @@ Any other secrets created after OpenBao has been deployed will be available excl
 ** Quadlets
 We'll need the following quadlets, deployed in order:
 
+- step-ca :: Certificate authority.
 - openbao :: Secrets management.
 - postgres :: Generic database solution (integrates with most services, has multiple useful extensions).
 - rustfs :: Object storage.
@@ -79,23 +80,25 @@ Dependencies are as follows:
 
 | Service  | Dependencies      |
 |----------+-------------------|
+| step-ca  | N/A               |
 | openbao  | N/A               |
 | postgres | openbao           |
 | rustfs   | openbao           |
 | forgejo  | openbao, postgres |
-| squid    | N/A               |
-| traefik  | N/A               |
+| squid    | step-ca           |
+| traefik  | step-ca           |
 
 * Topology Design
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
 
 ** Lab Topology
-|     *VM* | *Hostname* | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
-|--------+----------+-------+--------+---------+---------------------------|
-|    301 | proxy    |     2 | 2 GiB  | 32 GiB  | squid, traefik            |
-|    302 | data     |     4 | 8 GiB  | 100 GiB | openbao, postgres, rustfs |
-|    303 | forge    |     4 | 6 GiB  | 100 GiB | forgejo                   |
-|--------+----------+-------+--------+---------+---------------------------|
-| *Totals* | 3        |    10 | 16 GiB | 232 GiB | 6                         |
+|     *VM* | *Host*  | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
+|--------+-------+-------+--------+---------+---------------------------|
+|    301 | ca    |     1 | 1 GiB  | 16 GiB  | step-ca                   |
+|    302 | proxy |     2 | 2 GiB  | 32 GiB  | squid, traefik            |
+|    303 | data  |     4 | 8 GiB  | 100 GiB | openbao, postgres, rustfs |
+|    304 | forge |     4 | 6 GiB  | 100 GiB | forgejo, forgejo-runner   |
+|--------+-------+-------+--------+---------+---------------------------|
+| *Totals* | 4     |    11 | 17 GiB | 248 GiB | 7                         |
 
 *Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float.

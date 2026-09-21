@@ -1,0 +1,21 @@
+[Unit]
+Description=step-ca certificate authority
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/smallstep/step-ca:0.30.2
+ContainerName=step-ca
+Volume=/etc/step-ca/config/ca.json:/home/step/config/ca.json:ro
+Volume=/etc/step-ca/certs:/home/step/certs:ro
+Volume=/etc/step-ca/secrets:/home/step/secrets:ro
+Network=step-ca.network
+PublishPort=443:9000
+Exec=/usr/local/bin/step-ca /home/step/config/ca.json
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

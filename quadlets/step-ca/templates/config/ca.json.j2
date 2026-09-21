@@ -1,0 +1,35 @@
+{
+    "address": ":9000",
+    "dnsNames": [
+        "{{ ansible_facts.fqdn }}"
+    ],
+    "db": {
+        "type": "badger",
+        "dataSource": "/home/step/db"
+    },
+    "authority": {
+        "provisioners": [
+            {
+                "type": "JWK",
+                "name": "admin"
+            }
+        ],
+        "root": "/home/step/certs/root.crt",
+        "certificate": "/home/step/certs/intermediate-ca.crt",
+        "key": "/home/step/secrets/intermediate-ca.key",
+        "claims": {
+            "maxTLSCertDuration": "2160h",
+            "defaultTLSCertDuration": "720h"
+        }
+    },
+    "tls": {
+        "cipherSuites": [
+            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+            "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+        ],
+        "minVersion": 1.2,
+        "maxVersion": 1.3
+    }
+}

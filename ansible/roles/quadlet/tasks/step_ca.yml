@@ -1,0 +1,118 @@
+- name: Create step-ca output directory
+  ansible.builtin.file:
+    path: "{{ step_ca_output_dir }}"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  become: false
+
+- name: Generate root CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ step_ca_root_key_file }}"
+    type: ECC
+    curve: secp256r1
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+
+- name: Generate root CA CSR
+  community.crypto.openssl_csr:
+    path: "{{ step_ca_root_csr_file }}"
+    privatekey_path: "{{ step_ca_root_key_file }}"
+    common_name: "{{ group_names[0] }} Root CA"
+    basic_constraints:
+      - "CA:TRUE"
+    basic_constraints_critical: true
+    key_usage:
+      - keyCertSign
+      - cRLSign
+    key_usage_critical: true
+  delegate_to: localhost
+  become: false
+
+- name: Generate self-signed root CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ step_ca_root_cert_file }}"
+    privatekey_path: "{{ step_ca_root_key_file }}"
+    csr_path: "{{ step_ca_root_csr_file }}"
+    provider: selfsigned
+    selfsigned_not_after: "+3650d"
+  delegate_to: localhost
+  become: false
+
+- name: Generate intermediate CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ step_ca_intermediate_key_file }}"
+    type: ECC
+    curve: secp256r1
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+
+- name: Generate intermediate CA CSR
+  community.crypto.openssl_csr:
+    path: "{{ step_ca_intermediate_csr_file }}"
+    privatekey_path: "{{ step_ca_intermediate_key_file }}"
+    common_name: "{{ group_names[0] }} Intermediate CA"
+    basic_constraints:
+      - "CA:TRUE"
+    basic_constraints_critical: true
+    key_usage:
+      - keyCertSign
+      - cRLSign
+    key_usage_critical: true
+  delegate_to: localhost
+  become: false
+
+- name: Sign intermediate CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ step_ca_intermediate_cert_file }}"
+    csr_path: "{{ step_ca_intermediate_csr_file }}"
+    ownca_path: "{{ step_ca_root_cert_file }}"
+    ownca_privatekey_path: "{{ step_ca_root_key_file }}"
+    provider: ownca
+    ownca_not_after: "+1825d"
+  delegate_to: localhost
+  become: false
+
+- name: Create step-ca certificates directory
+  ansible.builtin.file:
+    path: "/etc/step-ca/certs"
+    state: directory
+    mode: "0755"
+
+- name: Copy root CA certificate
+  ansible.builtin.copy:
+    src: "{{ step_ca_root_cert_file }}"
+    dest: "/etc/step-ca/certs/root-ca.crt"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: "Restart {{ quadlet }} service"
+
+- name: Copy intermediate CA certificate
+  ansible.builtin.copy:
+    src: "{{ step_ca_intermediate_cert_file }}"
+    dest: "/etc/step-ca/certs/intermediate-ca.crt"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: "Restart {{ quadlet }} service"
+
+- name: Create step-ca secrets directory
+  ansible.builtin.file:
+    path: "/etc/step-ca/secrets"
+    state: directory
+    mode: "0700"
+
+- name: Copy intermediate CA private key
+  ansible.builtin.copy:
+    src: "{{ step_ca_intermediate_key_file }}"
+    dest: "/etc/step-ca/secrets/intermediate-ca.key"
+    owner: root
+    group: root
+    mode: "0600"
+  notify: "Restart {{ quadlet }} service"
+
+- name: Deploy step-ca templates
+  ansible.builtin.include_tasks: templates.yml

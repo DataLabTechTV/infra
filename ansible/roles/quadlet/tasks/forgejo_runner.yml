@@ -1,19 +1,15 @@
-- name: Enable rootful Podman socket
+- name: Enable lingering for rocky
+  ansible.builtin.command:
+    cmd: loginctl enable-linger rocky
+    creates: /var/lib/systemd/linger/rocky
+
+- name: Enable rootless Podman socket
+  become: false
   ansible.builtin.systemd_service:
     name: podman.socket
     enabled: true
     state: started
-
-- name: Generate random hexadecimal string
-  ansible.builtin.set_fact:
-    forgejo_token: "{{ lookup('ansible.builtin.password', '/dev/null', length=40, chars='hexdigits') }}"
-
-- name: Create Forgejo token secret
-  containers.podman.podman_secret:
-    name: forgejo_token
-    data: "{{ forgejo_token }}"
-    state: present
-  no_log: true
+    scope: user
 
 - name: Authenticate with Forgejo
   ansible.builtin.include_role:
@@ -29,6 +25,29 @@
   register: forgejo_runners
   no_log: true
 
+- name: Check if Forgejo runner exists
+  ansible.builtin.set_fact:
+    forgejo_runner_exists: >-
+      {{
+        forgejo_runners.json
+        | selectattr('name', 'equalto', 'ubuntu-latest')
+        | list
+        | length > 0
+      }}
+
+- name: Generate random hexadecimal string
+  ansible.builtin.set_fact:
+    forgejo_token: "{{ lookup('ansible.builtin.password', '/dev/null', length=40, chars='hexdigits') }}"
+  when: not forgejo_runner_exists
+
+- name: Create Forgejo token secret
+  containers.podman.podman_secret:
+    name: forgejo_token
+    data: "{{ forgejo_token }}"
+    state: present
+  no_log: true
+  when: not forgejo_runner_exists
+
 - name: Register Forgejo runner
   containers.podman.podman_container_exec:
     name: forgejo
@@ -38,11 +57,7 @@
         --name ubuntu-latest
         --secret {{ forgejo_token }}
   register: forgejo_register
-  when: >
-    forgejo_runners.json
-    | selectattr('name', 'equalto', 'ubuntu-latest')
-    | list
-    | length == 0
+  when: not forgejo_runner_exists
   no_log: false
 
 - name: Find existing Forgejo runner
@@ -52,6 +67,7 @@
         forgejo_runners.json
         | selectattr('name', 'equalto', 'ubuntu-latest')
         | first
+        | default(none)
       }}
 
 - name: Set Forgejo runner UUID

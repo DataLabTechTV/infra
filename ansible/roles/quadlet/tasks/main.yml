@@ -10,6 +10,7 @@
   ansible.builtin.stat:
     path: "{{ quadlet_dir }}/config"
   delegate_to: localhost
+  become: false
   register: quadlet_config
 
 - name: "Deploy {{ quadlet }} configuration"

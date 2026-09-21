@@ -1,0 +1,18 @@
+[Unit]
+Description=Squid Cache Proxy
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/ubuntu/squid:7.2-26.04_edge
+ContainerName=squid
+Volume=/etc/squid:/etc/squid:ro
+Volume=squid-data:/data
+Network=squid.network
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

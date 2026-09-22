@@ -19,6 +19,8 @@ step_ca_root_cert_file: "{{ step_ca_output_dir }}/root-ca.crt"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"
 step_ca_intermediate_csr_file: "{{ step_ca_output_dir }}/intermediate-ca.csr"
 step_ca_intermediate_cert_file: "{{ step_ca_output_dir }}/intermediate-ca.crt"
+step_ca_provisioner_public_key_file: "{{ step_ca_output_dir }}/admin.pub.json"
+step_ca_provisioner_private_key_file: "{{ step_ca_output_dir }}/admin.json"
 
 openbao_config_file: "{{ playbook_dir }}/../../quadlets/openbao/config/openbao.json"
 openbao_output_dir: "{{ playbook_dir }}/../../output/{{ group_names[0] }}/openbao"

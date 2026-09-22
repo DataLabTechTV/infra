@@ -8,6 +8,19 @@
   delegate_to: localhost
   register: quadlet_templates
 
+- name: Create template directories
+  ansible.builtin.file:
+    path: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  loop: "{{ quadlet_templates.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+  when: >-
+    (item.path | relpath(quadlet_dir ~ '/templates') | dirname) != '.'
+
 - name: Deploy service templates
   ansible.builtin.template:
     src: "{{ item.path }}"
@@ -16,4 +29,6 @@
     group: root
     mode: "0644"
   loop: "{{ quadlet_templates.files }}"
+  loop_control:
+    label: "{{ item.path }}"
   notify: "Restart {{ quadlet }} service"

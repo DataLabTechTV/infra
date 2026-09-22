@@ -79,14 +79,16 @@
   ansible.builtin.file:
     path: "/etc/step-ca/certs"
     state: directory
+    owner: 1000
+    group: 1000
     mode: "0755"
 
 - name: Copy root CA certificate
   ansible.builtin.copy:
     src: "{{ step_ca_root_cert_file }}"
     dest: "/etc/step-ca/certs/root-ca.crt"
-    owner: root
-    group: root
+    owner: 1000
+    group: 1000
     mode: "0644"
   notify: "Restart {{ quadlet }} service"
 
@@ -94,8 +96,8 @@
   ansible.builtin.copy:
     src: "{{ step_ca_intermediate_cert_file }}"
     dest: "/etc/step-ca/certs/intermediate-ca.crt"
-    owner: root
-    group: root
+    owner: 1000
+    group: 1000
     mode: "0644"
   notify: "Restart {{ quadlet }} service"
 
@@ -103,16 +105,44 @@
   ansible.builtin.file:
     path: "/etc/step-ca/secrets"
     state: directory
+    owner: 1000
+    group: 1000
     mode: "0700"
 
 - name: Copy intermediate CA private key
   ansible.builtin.copy:
     src: "{{ step_ca_intermediate_key_file }}"
     dest: "/etc/step-ca/secrets/intermediate-ca.key"
-    owner: root
-    group: root
+    owner: 1000
+    group: 1000
     mode: "0600"
   notify: "Restart {{ quadlet }} service"
+
+- name: Generate admin JWK provisioner key
+  containers.podman.podman_container:
+    name: step-ca-jwk
+    image: docker.io/smallstep/step-cli:0.30.2
+    userns: keep-id
+    command: >
+      step crypto jwk create
+        /output/admin.pub.json
+        /output/admin.json
+        --no-password
+        --insecure
+        --force
+    volumes:
+      - "{{ step_ca_output_dir | realpath }}:/output:Z"
+    state: started
+    rm: true
+  delegate_to: localhost
+  become: false
+
+- name: Read admin provisioner public JWK
+  ansible.builtin.slurp:
+    src: "{{ step_ca_provisioner_public_key_file }}"
+  register: step_ca_admin_public_jwk
+  delegate_to: localhost
+  become: false
 
 - name: Deploy step-ca templates
   ansible.builtin.include_tasks: templates.yml

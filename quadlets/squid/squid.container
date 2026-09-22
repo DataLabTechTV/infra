@@ -9,6 +9,7 @@ ContainerName=squid
 Volume=/etc/squid:/etc/squid:ro
 Volume=squid-data:/data
 Network=squid.network
+PublishPort=3128:3128
 
 [Service]
 Restart=on-failure

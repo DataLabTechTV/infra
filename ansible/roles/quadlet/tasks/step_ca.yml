@@ -1,7 +1,7 @@
 - name: Check PKI bootstrap
   ansible.builtin.assert:
     that:
-      - pki_bootstrap | bool
+      - pki_bootstrap
     fail_msg: >-
       Step CA deployment requires pki_bootstrap=true.
       Run configure with PKI bootstrap enabled first.

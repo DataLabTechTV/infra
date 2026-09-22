@@ -1,0 +1,8 @@
+- name: Install root CA certificate
+  ansible.builtin.copy:
+    src: "{{ pki_root_cert_file }}"
+    dest: /etc/pki/ca-trust/source/anchors/root-ca.crt
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Update CA trust

@@ -1,0 +1,5 @@
+- name: Generate root CA
+  ansible.builtin.include_tasks: generate.yml
+
+- name: Trust root CA
+  ansible.builtin.include_tasks: trust.yml

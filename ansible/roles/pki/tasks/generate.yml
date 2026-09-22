@@ -1,0 +1,41 @@
+- name: Create PKI output directory
+  ansible.builtin.file:
+    path: "{{ pki_output_dir }}"
+    state: directory
+    mode: "0700"
+  delegate_to: localhost
+  become: false
+
+- name: Generate root CA private key
+  community.crypto.openssl_privatekey:
+    path: "{{ pki_root_key_file }}"
+    type: ECC
+    curve: secp256r1
+    mode: "0600"
+  delegate_to: localhost
+  become: false
+
+- name: Generate root CA CSR
+  community.crypto.openssl_csr:
+    path: "{{ pki_root_csr_file }}"
+    privatekey_path: "{{ pki_root_key_file }}"
+    common_name: "{{ group_names[0] }} Root CA"
+    basic_constraints:
+      - "CA:TRUE"
+    basic_constraints_critical: true
+    key_usage:
+      - keyCertSign
+      - cRLSign
+    key_usage_critical: true
+  delegate_to: localhost
+  become: false
+
+- name: Generate self-signed root CA certificate
+  community.crypto.x509_certificate:
+    path: "{{ pki_root_cert_file }}"
+    privatekey_path: "{{ pki_root_key_file }}"
+    csr_path: "{{ pki_root_csr_file }}"
+    provider: selfsigned
+    selfsigned_not_after: "+3650d"
+  delegate_to: localhost
+  become: false

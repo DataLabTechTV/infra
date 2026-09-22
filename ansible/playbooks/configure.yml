@@ -43,3 +43,8 @@
         name:
           - kitty-terminfo
         state: present
+
+    - name: Bootstrap PKI
+      ansible.builtin.include_role:
+        name: pki
+      when: pki_bootstrap

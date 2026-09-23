@@ -43,6 +43,13 @@
     loop_var: item_quadlet_unit
   notify: "Restart {{ quadlet }} service"
 
+- name: Check for {{ quadlet }} quadlet build context
+  ansible.builtin.stat:
+    path: "{{ quadlet_src_dir }}/{{ quadlet }}"
+  delegate_to: localhost
+  register: quadlet_ctx
+  become: false
+
 - name: "Deploy {{ quadlet }} quadlet build context"
   ansible.builtin.copy:
     src: "{{ quadlet_src_dir }}/{{ quadlet }}"
@@ -50,6 +57,7 @@
     owner: root
     group: root
     mode: "0755"
+  when: quadlet_ctx.stat.exists and quadlet_ctx.stat.isdir
   notify: "Restart {{ quadlet }} service"
 
 - name: Quadlet-specific configuration

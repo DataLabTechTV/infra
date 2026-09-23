@@ -8,14 +8,14 @@
 
 - name: "Check for {{ quadlet }} configuration"
   ansible.builtin.stat:
-    path: "{{ quadlet_dir }}/config"
+    path: "{{ quadlet_src_dir }}/config"
   delegate_to: localhost
   become: false
   register: quadlet_config
 
 - name: "Deploy {{ quadlet }} configuration"
   ansible.builtin.copy:
-    src: "{{ quadlet_dir }}/config/"
+    src: "{{ quadlet_src_dir }}/config/"
     dest: "/etc/{{ quadlet }}/"
     owner: root
     group: root
@@ -26,21 +26,30 @@
 - name: "Deploy {{ quadlet }} quadlet files"
   ansible.builtin.copy:
     src: "{{ item_quadlet_unit }}"
-    dest: "{{ install_dir }}/"
+    dest: "{{ quadlet_dst_dir }}/"
     owner: root
     group: root
     mode: "0644"
   with_fileglob:
-    - "{{ quadlet_dir }}/*.container"
-    - "{{ quadlet_dir }}/*.volume"
-    - "{{ quadlet_dir }}/*.network"
-    - "{{ quadlet_dir }}/*.image"
-    - "{{ quadlet_dir }}/*.build"
-    - "{{ quadlet_dir }}/*.pod"
-    - "{{ quadlet_dir }}/*.kube"
-    - "{{ quadlet_dir }}/*.artifact"
+    - "{{ quadlet_src_dir }}/*.container"
+    - "{{ quadlet_src_dir }}/*.volume"
+    - "{{ quadlet_src_dir }}/*.network"
+    - "{{ quadlet_src_dir }}/*.image"
+    - "{{ quadlet_src_dir }}/*.build"
+    - "{{ quadlet_src_dir }}/*.pod"
+    - "{{ quadlet_src_dir }}/*.kube"
+    - "{{ quadlet_src_dir }}/*.artifact"
   loop_control:
     loop_var: item_quadlet_unit
+  notify: "Restart {{ quadlet }} service"
+
+- name: "Deploy {{ quadlet }} quadlet build context"
+  ansible.builtin.copy:
+    src: "{{ quadlet_src_dir }}/{{ quadlet }}"
+    dest: "{{ quadlet_ctx_dir }}/"
+    owner: root
+    group: root
+    mode: "0755"
   notify: "Restart {{ quadlet }} service"
 
 - name: Quadlet-specific configuration

@@ -1,0 +1,10 @@
+FROM docker.io/library/alpine:latest
+
+RUN apk add --no-cache squid
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+VOLUME /etc/squid
+VOLUME /data
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

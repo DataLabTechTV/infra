@@ -1,6 +1,6 @@
 - name: Find quadlet templates
   ansible.builtin.find:
-    paths: "{{ quadlet_dir }}/templates"
+    paths: "{{ quadlet_src_dir }}/templates"
     recurse: true
     patterns: "*.j2"
     file_type: file
@@ -10,7 +10,7 @@
 
 - name: Create template directories
   ansible.builtin.file:
-    path: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | dirname }}"
+    path: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_src_dir ~ '/templates') | dirname }}"
     state: directory
     owner: root
     group: root
@@ -19,12 +19,12 @@
   loop_control:
     label: "{{ item.path }}"
   when: >-
-    (item.path | relpath(quadlet_dir ~ '/templates') | dirname) != '.'
+    (item.path | relpath(quadlet_src_dir ~ '/templates') | dirname) != '.'
 
 - name: Deploy service templates
   ansible.builtin.template:
     src: "{{ item.path }}"
-    dest: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | regex_replace('\\.j2$', '') }}"
+    dest: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_src_dir ~ '/templates') | regex_replace('\\.j2$', '') }}"
     owner: root
     group: root
     mode: "0644"

@@ -53,16 +53,16 @@
   ansible.builtin.file:
     path: "/etc/squid/ssl"
     state: directory
-    owner: 1000
-    group: 1000
+    owner: root
+    group: root
     mode: "0755"
 
 - name: Copy Squid CA certificate
   ansible.builtin.copy:
     src: "{{ squid_cert_file }}"
     dest: "/etc/squid/ssl/squid-ca.crt"
-    owner: 1000
-    group: 1000
+    owner: root
+    group: root
     mode: "0644"
   notify: "Restart {{ quadlet }} service"
 
@@ -70,8 +70,8 @@
   ansible.builtin.copy:
     src: "{{ squid_key_file }}"
     dest: "/etc/squid/ssl/squid-ca.key"
-    owner: 1000
-    group: 1000
+    owner: root
+    group: root
     mode: "0600"
   notify: "Restart {{ quadlet }} service"
 

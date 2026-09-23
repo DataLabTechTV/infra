@@ -1,0 +1,4 @@
+[Build]
+ImageTag=localhost/squid:latest
+SetWorkingDirectory=file
+File=/opt/squid/Containerfile

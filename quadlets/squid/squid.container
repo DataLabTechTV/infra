@@ -1,13 +1,14 @@
 [Unit]
 Description=Squid Cache Proxy
-After=network-online.target
-Wants=network-online.target
+After=network-online.target squid-build.service
+Wants=network-online.target squid-build.service
 
 [Container]
-Image=docker.io/ubuntu/squid:7.2-26.04_edge
+Image=localhost/squid:latest
+AutoUpdate=local
 ContainerName=squid
-Volume=/etc/squid:/etc/squid:ro
-Volume=squid-data:/data
+Volume=/etc/squid/squid.conf:/etc/squid/squid.conf:ro
+Volume=/etc/squid/ssl:/etc/squid/ssl:ro
 Network=squid.network
 PublishPort=3128:3128
 

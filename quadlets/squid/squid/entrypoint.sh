@@ -14,10 +14,8 @@ if [ ! -d "$CACHE_DIR/00" ]; then
 fi
 
 if [ ! -f "$SSL_DB/index.txt" ]; then
-    sudo -u "$SQUID_USER" /usr/lib/squid/security_file_certgen \
-        -c \
-        -s "$SSL_DB" \
-        -M 4MB
+    su -s /bin/sh "$SQUID_USER" -c \
+        "/usr/lib/squid/security_file_certgen -c -s '$SSL_DB' -M 4MB"
 fi
 
 exec /usr/sbin/squid -N -f /etc/squid/squid.conf "$@"

@@ -55,7 +55,7 @@ up:
             just deploy
             ;;
         *)
-            error "build: unknown context: $CONTEXT"
+            error "Unknown context: $CONTEXT"
             exit 1
             ;;
     esac
@@ -106,3 +106,7 @@ mod service "just/service.just"
 # Display generated secrets
 [group('lowlevel')]
 mod secrets "just/secrets.just"
+
+# Utility scripts
+[group('utils')]
+mod utils "just/utils.just"

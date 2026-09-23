@@ -20,7 +20,7 @@ locals {
             dedicated = 2048
             floating  = 2048
           }
-          size = 32
+          size = 200
         },
         data = {
           vm_id = 303

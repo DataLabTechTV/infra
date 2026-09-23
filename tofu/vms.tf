@@ -20,6 +20,12 @@ resource "random_password" "vm" {
   special = false
 }
 
+resource "random_string" "vm_salt" {
+  for_each = local.vms
+  length   = 16
+  special  = false
+}
+
 data "external" "hashed_passwd" {
   for_each = local.vms
 
@@ -28,13 +34,14 @@ data "external" "hashed_passwd" {
     "-c",
     <<-EOT
       password=$(jq -r '.password')
-      hash=$(openssl passwd -6 -stdin <<< "$password")
+      hash=$(openssl passwd -6 -salt "$salt" -stdin <<< "$password")
       jq -n --arg hash "$hash" '{"hash": $hash}'
     EOT
   ]
 
   query = {
     password = random_password.vm[each.key].result
+    salt     = random_string.vm_salt[each.key].result
   }
 }
 
@@ -154,5 +161,11 @@ resource "proxmox_virtual_environment_vm" "vm" {
     }
 
     user_data_file_id = proxmox_virtual_environment_file.vm_cfg[each.key].id
+  }
+
+  lifecycle {
+    ignore_changes = [
+      initialization[0].user_data_file_id,
+    ]
   }
 }

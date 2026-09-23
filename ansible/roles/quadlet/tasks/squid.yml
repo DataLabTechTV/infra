@@ -74,20 +74,3 @@
     group: root
     mode: "0600"
   notify: "Restart {{ quadlet }} service"
-
-- name: Initialize Squid
-  containers.podman.podman_container:
-    name: squid-init
-    image: docker.io/ubuntu/squid:7.2-26.04_edge
-    user: 584792:584792
-    command: |
-      mkdir /data/cache
-      mkdir /data/log
-      security_file_certgen \
-        -c \
-        -s /data/ssl_db \
-        -M 4MB
-    volumes:
-      - "squid-data:/data"
-    state: started
-    rm: true

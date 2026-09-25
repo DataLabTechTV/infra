@@ -25,6 +25,7 @@
     command: |
       bao status
   delegate_to: "{{ openbao_host }}"
+  become: true
   register: bao_status
   changed_when: false
   failed_when: bao_status.rc not in [0, 1, 2]
@@ -37,6 +38,7 @@
     command: |
       bao operator unseal {{ init.unseal_keys_hex[0] }}
   delegate_to: "{{ openbao_host }}"
+  become: true
   when: bao_status.rc == 2
   changed_when: true
   no_log: true

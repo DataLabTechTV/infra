@@ -106,9 +106,9 @@ mod ansible "just/ansible.just"
 mod service "just/service.just"
 
 # Display generated secrets
-[group('lowlevel')]
+[group('support')]
 mod secrets "just/secrets.just"
 
 # Utility scripts
-[group('utils')]
+[group('support')]
 mod utils "just/utils.just"

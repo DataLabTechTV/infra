@@ -1,0 +1,4 @@
+[Build]
+ImageTag=localhost/ubuntu:latest
+SetWorkingDirectory=file
+File=/opt/forgejo-runner/Containerfile

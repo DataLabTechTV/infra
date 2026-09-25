@@ -1,15 +1,8 @@
-- name: Enable lingering for rocky
-  ansible.builtin.command:
-    cmd: loginctl enable-linger rocky
-    creates: /var/lib/systemd/linger/rocky
-
-- name: Enable rootless Podman socket
-  become: false
+- name: Enable Podman socket
   ansible.builtin.systemd_service:
     name: podman.socket
     enabled: true
     state: started
-    scope: user
 
 - name: Authenticate with Forgejo
   ansible.builtin.include_role:
@@ -37,7 +30,15 @@
 
 - name: Generate random hexadecimal string
   ansible.builtin.set_fact:
-    forgejo_token: "{{ lookup('ansible.builtin.password', '/dev/null', length=40, chars='hexdigits') }}"
+    forgejo_token: >-
+      {{
+        lookup(
+          'ansible.builtin.password',
+          '/dev/null',
+          length=40,
+          chars='hexdigits'
+        )
+      }}
   when: not forgejo_runner_exists
 
 - name: Create Forgejo token secret
@@ -72,7 +73,11 @@
 
 - name: Set Forgejo runner UUID
   ansible.builtin.set_fact:
-    forgejo_uuid: "{{ forgejo_runner.uuid if forgejo_runner else forgejo_register.stdout | trim }}"
+    forgejo_uuid: >-
+      {{
+        forgejo_runner.uuid if forgejo_runner
+        else forgejo_register.stdout | trim
+      }}
 
 - name: Deploy Forgejo runner templates
   ansible.builtin.include_tasks: templates.yml

@@ -27,7 +27,7 @@ runner:
     ubuntu-latest:
       backend: docker
       backend-options:
-        image: docker.io/library/ubuntu:latest
+        image: localhost/ubuntu:latest
         platform: linux/amd64
 
 cache:
@@ -50,4 +50,4 @@ server:
       url: "{{ forgejo_addr }}"
       uuid: "{{ forgejo_uuid }}"
       token_url: "file:$CREDENTIALS_DIRECTORY/forgejo.token"
-      fetch_interval: 30s
+      fetch_interval: 5s

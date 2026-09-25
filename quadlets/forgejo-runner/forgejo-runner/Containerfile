@@ -1,0 +1,53 @@
+FROM docker.io/library/ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+
+RUN apt-get update
+
+# Base
+RUN apt-get install -y --no-install-recommends \
+    ca-certificates curl wget gnupg lsb-release \
+    software-properties-common
+
+# VCS
+RUN apt-get install -y --no-install-recommends \
+    git git-lfs openssh-client rsync
+
+# Build tools
+RUN apt-get install -y --no-install-recommends \
+    build-essential pkg-config make cmake
+
+# Compression
+RUN apt-get install -y --no-install-recommends \
+    zip unzip tar gzip xz-utils
+
+# Tools
+RUN apt-get install -y --no-install-recommends \
+    jq sudo locales tzdata file bc
+
+# Python
+RUN apt-get install -y --no-install-recommends \
+    python3 python3-pip python3-venv
+
+RUN rm -rf /var/lib/apt/lists/*
+
+# Node
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Go
+ARG GO_VERSION=1.27.1
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o /tmp/go.tgz \
+    && tar -C /usr/local -xzf /tmp/go.tgz \
+    && rm /tmp/go.tgz
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+# Rust
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH="/usr/local/cargo/bin:${PATH}"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+
+WORKDIR /workspace

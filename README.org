@@ -88,10 +88,10 @@ Dependencies are as follows:
 | squid    | step-ca           |
 | traefik  | step-ca           |
 
-* Topology Design
+* Topology
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
 
-** Lab Topology
+** Lab
 |     *VM* | *Host*  | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
 |--------+-------+-------+--------+---------+---------------------------|
 |    301 | ca    |     1 | 1 GiB  | 16 GiB  | step-ca                   |
@@ -102,3 +102,25 @@ This repo can contain more than one deployment, each one being assigned a specif
 | *Totals* | 4     |    11 | 17 GiB | 416 GiB | 7                         |
 
 *Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float.
+
+* Ingress
+Ingress will be done through Traefik, so here we plan the hostnames and their mappings.
+
+** Lab
+| Service              | Traefik         | VM             |
+|----------------------+-----------------+----------------|
+| step-ca              | N/A             | =ca.lan=         |
+| Cockpit              | =admin.ca.lan=    | =ca.lan:9090=    |
+|----------------------+-----------------+----------------|
+| Cockpit              | =admin.data.lan=  | =data.lan:9090=  |
+| OpenBao              | =vault.lan=       | =data.lan:8200=  |
+| PostgreSQL           | N/A             | =data.lan:5432=  |
+| RustFS (S3 API)      | =store.lan=       | =data.lan:9000=  |
+| RustFS (Web Console) | =admin.store.lan= | =data.lan:9001=  |
+|----------------------+-----------------+----------------|
+| Cockpit              | =admin.forge.lan= | =forge.lan:9090= |
+| Forgejo              | =git.lan=         | =forge.lan:3000= |
+|----------------------+-----------------+----------------|
+| Cockpit              | =admin.proxy.lan= | =proxy.lan:9090= |
+| Squid Cache          | N/A             | =proxy.lan:3128= |
+| Traefik (Dashboard)  | =traefik.lan=     | =proxy.lan:8080= |

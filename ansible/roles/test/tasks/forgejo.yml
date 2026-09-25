@@ -1,0 +1,99 @@
+- name: Authenticate with Forgejo
+  ansible.builtin.include_role:
+    name: forgejo
+    tasks_from: auth
+
+- name: Get Forgejo SSH keys
+  ansible.builtin.uri:
+    url: "{{ forgejo_addr }}/api/v1/user/keys"
+    method: GET
+    headers:
+      Authorization: "token {{ forgejo_api_token }}"
+    status_code: 200
+  register: forgejo_keys
+
+- name: Add test SSH key to Forgejo
+  ansible.builtin.uri:
+    url: "{{ forgejo_addr }}/api/v1/user/keys"
+    method: POST
+    headers:
+      Authorization: "token {{ forgejo_api_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      title: "Test"
+      key: "{{ test_ssh_public_key.content | b64decode | trim }}"
+    status_code: 201
+  when: >-
+    forgejo_keys.json
+    | selectattr('title', 'equalto', 'Test')
+    | list
+    | length == 0
+
+- name: Create a test repository
+  ansible.builtin.uri:
+    url: "{{ forgejo_addr }}/api/v1/user/repos"
+    method: POST
+    headers:
+      Authorization: "token {{ forgejo_api_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      name: test
+      private: true
+      auto_init: false
+    status_code:
+      - 201
+      - 409
+
+- name: Prepare and push CI test repository
+  block:
+    - name: Create temporary repository directory
+      ansible.builtin.tempfile:
+        state: directory
+        prefix: infra-forgejo-
+      register: test_repo
+
+    - name: Copy test repository template
+      ansible.builtin.copy:
+        src: "{{ tests_dir }}/forgejo/repo/"
+        dest: "{{ test_repo.path }}/"
+
+    - name: Initialize Git repository
+      ansible.builtin.command:
+        cmd: git init -b main
+        chdir: "{{ test_repo.path }}"
+
+    - name: Configure Git identity
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+        chdir: "{{ test_repo.path }}"
+      loop:
+        - git config user.name "Admin"
+        - git config user.email "{{ forgejo_admin_email }}"
+
+    - name: Stage test repository
+      ansible.builtin.command:
+        cmd: git add -A
+        chdir: "{{ test_repo.path }}"
+
+    - name: Commit test repository
+      ansible.builtin.command:
+        cmd: git commit -m "Test"
+        chdir: "{{ test_repo.path }}"
+
+    - name: Add Forgejo remote
+      ansible.builtin.command:
+        cmd: git remote add origin ssh://git@forge.lan/{{ forgejo_admin_user }}/test.git
+        chdir: "{{ test_repo.path }}"
+
+    - name: Push test repository
+      ansible.builtin.command:
+        cmd: git push --force origin main
+        chdir: "{{ test_repo.path }}"
+
+  always:
+    - name: Cleanup
+      ansible.builtin.file:
+        path: "{{ test_repo.path }}"
+        state: absent

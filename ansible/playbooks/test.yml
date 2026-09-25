@@ -1,0 +1,9 @@
+---
+- name: Test services
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Test quadlets
+      ansible.builtin.include_role:
+        name: test

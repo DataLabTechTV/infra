@@ -93,6 +93,19 @@ logs service:
 restart service:
     just service restart "$(just _host "{{service}}")" '{{service}}'
 
+# Display generated secrets (e.g., VMs, OpenBao)
+[group('support')]
+mod secrets "just/secrets.just"
+
+# Test quadlets, optionally limited to a target host and/or quadlet
+[group('support')]
+test target="" quadlet="":
+    just ansible test '{{target}}' '{{quadlet}}'
+
+# Utility scripts (e.g., locally trust root CA)
+[group('support')]
+mod utils "just/utils.just"
+
 # Run OpenTofu commands directly
 [group('lowlevel')]
 mod tofu "just/tofu.just"
@@ -104,11 +117,3 @@ mod ansible "just/ansible.just"
 # Manage services directly
 [group('lowlevel')]
 mod service "just/service.just"
-
-# Display generated secrets
-[group('support')]
-mod secrets "just/secrets.just"
-
-# Utility scripts
-[group('support')]
-mod utils "just/utils.just"

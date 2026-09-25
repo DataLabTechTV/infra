@@ -1,0 +1,45 @@
+- name: Setup test requirements
+  block:
+    - name: Create test output directory
+      ansible.builtin.file:
+        path: "{{ test_output_dir }}"
+        state: directory
+        mode: "0700"
+
+    - name: Ensure test SSH key exists
+      community.crypto.openssh_keypair:
+        path: "{{ test_ssh_key }}"
+        type: ed25519
+        state: present
+        mode: "0600"
+
+    - name: Read test SSH public key
+      ansible.builtin.slurp:
+        src: "{{ test_ssh_key }}.pub"
+      register: test_ssh_public_key
+
+  delegate_to: localhost
+
+- name: Run quadlet-specific tests
+  block:
+    - name: Quadlet-specific test
+      ansible.builtin.include_tasks: "{{ quadlet | replace('-', '_') }}.yml"
+      vars:
+        quadlet: "{{ item_quadlet }}"
+      loop: "{{ deployment_order | default(quadlets | default([]), true) }}"
+      loop_control:
+        loop_var: item_quadlet
+      when:
+        - item_quadlet in quadlets | default([])
+        - quadlet is not defined or item_quadlet == quadlet
+        - >
+            lookup(
+              'ansible.builtin.first_found',
+              {
+                'files': [quadlet | replace('-', '_') + '.yml'],
+                'paths': [role_path + '/tasks']
+              },
+              errors='ignore'
+            ) is not none
+
+  delegate_to: localhost

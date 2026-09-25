@@ -23,3 +23,11 @@ deploy target="" quadlet="":
         {{ if target != '' { '--limit ' + target } else { '' } }} \
         {{ if quadlet != '' { '--extra-vars "quadlet=' + quadlet + '"' } else { '' } }} \
         './ansible/playbooks/deploy.yml'
+
+# Test services previously deployed as quadlets
+test target="" quadlet="":
+    ansible-playbook \
+        --inventory "./ansible/inventory/$CONTEXT/hosts.yml" \
+        {{ if target != '' { '--limit ' + target } else { '' } }} \
+        {{ if quadlet != '' { '--extra-vars "quadlet=' + quadlet + '"' } else { '' } }} \
+        './ansible/playbooks/test.yml'

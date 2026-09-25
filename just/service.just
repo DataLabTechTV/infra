@@ -12,7 +12,7 @@ status target service:
 
 # Follow systemd logs for specified service in the given target host
 logs target service:
-    ssh '{{user}}@{{target}}' journalctl --unit='{{service}}.service' --follow
+    ssh '{{user}}@{{target}}' journalctl --unit='{{service}}.service' --since=yesterday --lines=1000 --follow
 
 # Restart the specified service in the given target host
 restart target service:

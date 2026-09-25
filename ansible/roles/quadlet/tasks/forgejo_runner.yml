@@ -1,3 +1,13 @@
+- name: "Copy root CA certificate to {{ quadlet }} quadlet build context"
+  ansible.builtin.copy:
+    src: "{{ pki_root_cert_file }}"
+    dest: "{{ quadlet_ctx_dir }}/{{ quadlet }}/"
+    owner: root
+    group: root
+    mode: "0644"
+  when: pki_bootstrap
+  notify: "Restart {{ quadlet }} service"
+
 - name: Enable Podman socket
   ansible.builtin.systemd_service:
     name: podman.socket

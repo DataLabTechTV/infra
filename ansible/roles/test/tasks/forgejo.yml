@@ -69,7 +69,7 @@
         cmd: "{{ item }}"
         chdir: "{{ test_repo.path }}"
       loop:
-        - git config user.name "Admin"
+        - git config user.name {{ forgejo_admin_user }}
         - git config user.email "{{ forgejo_admin_email }}"
 
     - name: Stage test repository
@@ -84,13 +84,15 @@
 
     - name: Add Forgejo remote
       ansible.builtin.command:
-        cmd: git remote add origin ssh://git@forge.lan/{{ forgejo_admin_user }}/test.git
+        cmd: git remote add origin {{ forgejo_ssh_addr }}/{{ forgejo_admin_user }}/test.git
         chdir: "{{ test_repo.path }}"
 
     - name: Push test repository
       ansible.builtin.command:
         cmd: git push --force origin main
         chdir: "{{ test_repo.path }}"
+      environment:
+        GIT_SSH_COMMAND: "ssh -i {{ test_ssh_key }} -o IdentitiesOnly=yes"
 
   always:
     - name: Cleanup

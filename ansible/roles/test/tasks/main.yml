@@ -19,6 +19,7 @@
       register: test_ssh_public_key
 
   delegate_to: localhost
+  become: false
 
 - name: Run quadlet-specific tests
   block:
@@ -43,3 +44,4 @@
             ) is not none
 
   delegate_to: localhost
+  become: false

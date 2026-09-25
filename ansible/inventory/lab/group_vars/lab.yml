@@ -20,6 +20,7 @@ postgres_host: "data.lan"
 postgres_port: 5432
 
 forgejo_addr: "http://forge.lan:3000"
+forgejo_ssh_addr: "ssh://git@forge.lan:222"
 forgejo_admin_user: "forgejo"
 forgejo_admin_email: "forgejo@forge.lan"
 

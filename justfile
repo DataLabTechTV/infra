@@ -1,4 +1,6 @@
-export CONTEXT := env("CONTEXT", "lab")
+default_context := "lab"
+
+export CONTEXT := env("CONTEXT", default_context)
 
 _default:
     @just _env_help
@@ -6,7 +8,7 @@ _default:
 
 _env_help:
     @echo "Environment variables:"
-    @echo "    CONTEXT  Collection of infrastructure, configurations, and quadlets (default: lab)"
+    @echo "    CONTEXT  Collection of infrastructure, configurations, and quadlets (default: {{default_context}})"
     @echo
 
 _display_table $tsv_path $header_str="":
@@ -83,12 +85,12 @@ status service:
 
 # Follow systemd logs for specified service
 [group('manage')]
-logs target service:
+logs service:
     just service logs "$(just _host "{{service}}")" '{{service}}'
 
 # Restart the specified service
 [group('manage')]
-restart target service:
+restart service:
     just service restart "$(just _host "{{service}}")" '{{service}}'
 
 # Run OpenTofu commands directly

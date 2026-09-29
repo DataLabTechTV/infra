@@ -1,4 +1,4 @@
-- name: Find quadlet templates
+- name: "Find config templates for {{ quadlet }} quadlet"
   ansible.builtin.find:
     paths: "{{ quadlet_src_dir }}/templates"
     recurse: true
@@ -8,7 +8,7 @@
   delegate_to: localhost
   register: quadlet_templates
 
-- name: Create template directories
+- name: "Create template directories for {{ quadlet }} quadlet"
   ansible.builtin.file:
     path: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_src_dir ~ '/templates') | dirname }}"
     state: directory
@@ -21,7 +21,7 @@
   when: >-
     (item.path | relpath(quadlet_src_dir ~ '/templates') | dirname) != '.'
 
-- name: Deploy service templates
+- name: "Deploy config templates for {{ quadlet }} quadlet"
   ansible.builtin.template:
     src: "{{ item.path }}"
     dest: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_src_dir ~ '/templates') | regex_replace('\\.j2$', '') }}"

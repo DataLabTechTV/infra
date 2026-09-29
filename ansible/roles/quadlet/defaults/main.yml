@@ -1,3 +1,4 @@
 quadlet_src_dir: "{{ playbook_dir }}/../../quadlets/{{ quadlet }}"
 quadlet_dst_dir: "/etc/containers/systemd"
+systemd_dst_dir: "/etc/systemd/system"
 quadlet_ctx_dir: "/opt"

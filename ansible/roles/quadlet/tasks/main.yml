@@ -43,6 +43,33 @@
     loop_var: item_quadlet_unit
   notify: "Restart {{ quadlet }} service"
 
+- name: "Find auxiliary systemd units for {{ quadlet }} quadlet"
+  ansible.builtin.find:
+    paths: "{{ quadlet_src_dir }}"
+    patterns:
+      - "*.service"
+      - "*.timer"
+      - "*.path"
+    file_type: file
+  register: systemd_units
+  delegate_to: localhost
+  become: false
+
+- name: "Deploy auxiliary systemd units for {{ quadlet }} quadlet"
+  ansible.builtin.copy:
+    src: "{{ item.path }}"
+    dest: "{{ systemd_dst_dir }}/"
+    mode: "0644"
+  loop: "{{ systemd_units.files }}"
+
+- name: "Enable and start auxiliary systemd units for {{ quadlet }} quadlet"
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    name: "{{ item.path | basename }}"
+    enabled: true
+    state: started
+  loop: "{{ systemd_units.files }}"
+
 - name: Check for {{ quadlet }} quadlet build context
   ansible.builtin.stat:
     path: "{{ quadlet_src_dir }}/{{ quadlet }}"

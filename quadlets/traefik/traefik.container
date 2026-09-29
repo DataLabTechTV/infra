@@ -1,0 +1,21 @@
+[Unit]
+Description=Traefik reverse proxy
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/library/traefik:v3.7.13
+ContainerName=traefik
+Volume=/etc/traefik:/etc/traefik:Z,ro
+Volume=traefik-data:/data
+Network=traefik.network
+PublishPort=80:80
+PublishPort=443:443
+PublishPort=8080:8080
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

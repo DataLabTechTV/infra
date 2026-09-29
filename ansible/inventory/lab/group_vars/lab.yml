@@ -14,6 +14,7 @@ quadlets_dir: "{{ project_dir }}/quadlets"
 tests_dir: "{{ project_dir }}/tests"
 output_dir: "{{ project_dir }}/output"
 
+ca_host: "ca.lan"
 ca_addr: "https://ca.lan"
 
 openbao_addr: "http://data.lan:8200"

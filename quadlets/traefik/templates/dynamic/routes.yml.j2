@@ -1,0 +1,115 @@
+http:
+  serversTransports:
+    ca:
+      serverName: "{{ ca_host }}"
+      rootCAs:
+        - "/etc/traefik/certs/root-ca.crt"
+
+  routers:
+    cockpit-ca:
+      rule: "Host(`admin.ca.lan`)"
+      entryPoints:
+        - websecure
+      service: cockpit-ca
+      tls: {}
+
+    cockpit-data:
+      rule: "Host(`admin.data.lan`)"
+      entryPoints:
+        - websecure
+      service: cockpit-data
+      tls: {}
+
+    openbao:
+      rule: "Host(`vault.lan`)"
+      entryPoints:
+        - websecure
+      service: openbao
+      tls: {}
+
+    rustfs:
+      rule: "Host(`store.lan`)"
+      entryPoints:
+        - websecure
+      service: rustfs
+      tls: {}
+
+    rustfs-console:
+      rule: "Host(`admin.store.lan`)"
+      entryPoints:
+        - websecure
+      service: rustfs-console
+      tls: {}
+
+    cockpit-forge:
+      rule: "Host(`admin.forge.lan`)"
+      entryPoints:
+        - websecure
+      service: cockpit-forge
+      tls: {}
+
+    forgejo:
+      rule: "Host(`git.lan`)"
+      entryPoints:
+        - websecure
+      service: forgejo
+      tls: {}
+
+    cockpit-proxy:
+      rule: "Host(`admin.proxy.lan`)"
+      entryPoints:
+        - websecure
+      service: cockpit-proxy
+      tls: {}
+
+    traefik:
+      rule: "Host(`traefik.lan`)"
+      entryPoints:
+        - websecure
+      service: api@internal
+      tls: {}
+
+  services:
+    cockpit-ca:
+      loadBalancer:
+        servers:
+          - url: "https://ca.lan:9090"
+        serversTransport: ca
+
+    cockpit-data:
+      loadBalancer:
+        servers:
+          - url: "https://data.lan:9090"
+        serversTransport: ca
+
+    openbao:
+      loadBalancer:
+        servers:
+          - url: "http://data.lan:8200"
+
+    rustfs:
+      loadBalancer:
+        servers:
+          - url: "http://data.lan:9000"
+
+    rustfs-console:
+      loadBalancer:
+        servers:
+          - url: "http://data.lan:9001"
+
+    cockpit-forge:
+      loadBalancer:
+        servers:
+          - url: "https://forge.lan:9090"
+        serversTransport: ca
+
+    forgejo:
+      loadBalancer:
+        servers:
+          - url: "http://forge.lan:3000"
+
+    cockpit-proxy:
+      loadBalancer:
+        servers:
+          - url: "https://proxy.lan:9090"
+        serversTransport: ca

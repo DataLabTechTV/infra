@@ -1,0 +1,14 @@
+- name: Create traefik certificates directory
+  ansible.builtin.file:
+    path: "/etc/traefik/certs"
+    state: directory
+    mode: "0755"
+
+- name: Copy root CA certificate
+  ansible.builtin.copy:
+    src: "{{ pki_root_cert_file }}"
+    dest: "/etc/traefik/certs/root-ca.crt"
+    mode: "0600"
+
+- name: Deploy traefik templates
+  ansible.builtin.include_tasks: templates.yml

@@ -1,35 +1,45 @@
 {
-    "root": "/home/step/certs/root-ca.crt",
-    "crt": "/home/step/certs/intermediate-ca.crt",
-    "key": "/home/step/secrets/intermediate-ca.key",
+  "root": "/home/step/certs/root-ca.crt",
+  "crt": "/home/step/certs/intermediate-ca.crt",
+  "key": "/home/step/secrets/intermediate-ca.key",
 
-    "address": ":9000",
+  "address": ":9000",
 
-    "dnsNames": [
-        "{{ ansible_facts.fqdn }}"
-    ],
+  "dnsNames": [
+    "{{ ansible_facts.fqdn }}"
+  ],
 
-    "db": {
-        "type": "badger",
-        "dataSource": "/home/step/db"
-    },
+  "db": {
+    "type": "badger",
+    "dataSource": "/home/step/db"
+  },
 
-    "authority": {
-        "provisioners": [
-            {
-                "type": "JWK",
-                "name": "admin",
-                "key": {{ step_ca_admin_public_jwk.content | b64decode }}
-            }
-        ],
-        "claims": {
-            "maxTLSCertDuration": "2160h",
-            "defaultTLSCertDuration": "720h"
+  "authority": {
+    "provisioners": [
+      {
+        "type": "JWK",
+        "name": "admin",
+        "key": {{ step_ca_admin_public_jwk.content | b64decode }}
+      },
+      {
+        "type": "JWK",
+        "name": "squid",
+        "key": {{ step_ca_squid_public_jwk.content | b64decode }},
+        "options": {
+          "x509": {
+            "templateFile": "/etc/step-ca/templates/squid-ca.tpl"
+          }
         }
-    },
-
-    "tls": {
-        "minVersion": 1.2,
-        "maxVersion": 1.3
+      }
+    ],
+    "claims": {
+      "maxTLSCertDuration": "2160h",
+      "defaultTLSCertDuration": "720h"
     }
+  },
+
+  "tls": {
+    "minVersion": 1.2,
+    "maxVersion": 1.3
+  }
 }

@@ -1,0 +1,8 @@
+FROM docker.io/smallstep/step-cli:0.31.0-trixie
+
+COPY ca-renew.sh /usr/libexec/ca-renew/ca-renew.sh
+
+VOLUME /etc/squid/step
+VOLUME /etc/squid/ssl
+
+ENTRYPOINT ["/usr/libexec/ca-renew/ca-renew.sh"]

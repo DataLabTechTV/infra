@@ -14,6 +14,8 @@ quadlets_dir: "{{ project_dir }}/quadlets"
 tests_dir: "{{ project_dir }}/tests"
 output_dir: "{{ project_dir }}/output"
 
+ca_addr: "https://ca.lan"
+
 openbao_addr: "http://data.lan:8200"
 
 postgres_host: "data.lan"
@@ -51,8 +53,10 @@ step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"
 step_ca_intermediate_csr_file: "{{ step_ca_output_dir }}/intermediate-ca.csr"
 step_ca_intermediate_cert_file: "{{ step_ca_output_dir }}/intermediate-ca.crt"
-step_ca_provisioner_public_key_file: "{{ step_ca_output_dir }}/admin.pub.json"
-step_ca_provisioner_private_key_file: "{{ step_ca_output_dir }}/admin.json"
+step_ca_admin_public_key_file: "{{ step_ca_output_dir }}/admin.pub.json"
+step_ca_admin_private_key_file: "{{ step_ca_output_dir }}/admin.json"
+step_ca_squid_public_key_file: "{{ step_ca_output_dir }}/squid.pub.json"
+step_ca_squid_private_key_file: "{{ step_ca_output_dir }}/squid.json"
 
 squid_output_dir: "{{ output_dir }}/{{ context }}/squid"
 squid_key_file: "{{ squid_output_dir }}/squid-ca.key"

@@ -1,0 +1,4 @@
+[Build]
+ImageTag=localhost/squid-ca-renew:latest
+SetWorkingDirectory=file
+File=/opt/squid/ca-renew/Containerfile

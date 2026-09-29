@@ -6,71 +6,31 @@
       Squid Proxy deployment requires pki_bootstrap=true.
       Run configure with PKI bootstrap enabled first.
 
-- name: Create squid output directory
-  ansible.builtin.file:
-    path: "{{ squid_output_dir }}"
-    state: directory
-    mode: "0700"
-  delegate_to: localhost
-  become: false
-
-- name: Generate Squid CA private key
-  community.crypto.openssl_privatekey:
-    path: "{{ squid_key_file }}"
-    type: ECC
-    curve: secp256r1
-    mode: "0600"
-  delegate_to: localhost
-  become: false
-
-- name: Generate Squid CA CSR
-  community.crypto.openssl_csr:
-    path: "{{ squid_csr_file }}"
-    privatekey_path: "{{ squid_key_file }}"
-    common_name: "{{ group_names[0] }} Squid CA"
-    basic_constraints:
-      - "CA:TRUE"
-    basic_constraints_critical: true
-    key_usage:
-      - keyCertSign
-      - cRLSign
-    key_usage_critical: true
-  delegate_to: localhost
-  become: false
-
-- name: Sign Squid CA certificate
-  community.crypto.x509_certificate:
-    path: "{{ squid_cert_file }}"
-    csr_path: "{{ squid_csr_file }}"
-    ownca_path: "{{ pki_root_cert_file }}"
-    ownca_privatekey_path: "{{ pki_root_key_file }}"
-    provider: ownca
-    ownca_not_after: "+1825d"
-  delegate_to: localhost
-  become: false
-
 - name: Create squid certificates directory
   ansible.builtin.file:
     path: "/etc/squid/ssl"
     state: directory
     owner: root
     group: root
-    mode: "0755"
+    mode: "0700"
 
-- name: Copy Squid CA certificate
-  ansible.builtin.copy:
-    src: "{{ squid_cert_file }}"
-    dest: "/etc/squid/ssl/squid-ca.crt"
-    owner: root
-    group: root
-    mode: "0644"
-  notify: "Restart {{ quadlet }} service"
+- name: Create step-ca provisioner JWK directory
+  ansible.builtin.file:
+    path: "/etc/squid/step"
+    state: directory
+    mode: "0700"
 
-- name: Copy Squid CA private key
+- name: Copy step-ca root CA certificate
   ansible.builtin.copy:
-    src: "{{ squid_key_file }}"
-    dest: "/etc/squid/ssl/squid-ca.key"
-    owner: root
-    group: root
+    src: "{{ pki_root_cert_file }}"
+    dest: "/etc/squid/step/root-ca.crt"
     mode: "0600"
-  notify: "Restart {{ quadlet }} service"
+
+- name: Copy step-ca provisioner public JWK
+  ansible.builtin.copy:
+    src: "{{ step_ca_squid_private_key_file }}"
+    dest: "/etc/squid/step/squid.json"
+    mode: "0600"
+
+- name: Deploy squid templates
+  ansible.builtin.include_tasks: templates.yml

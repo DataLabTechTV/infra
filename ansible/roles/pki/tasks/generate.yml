@@ -22,6 +22,7 @@
     common_name: "{{ group_names[0] }} Root CA"
     basic_constraints:
       - "CA:TRUE"
+      - "pathlen:2"
     basic_constraints_critical: true
     key_usage:
       - keyCertSign

@@ -30,6 +30,7 @@
     common_name: "{{ group_names[0] }} Intermediate CA"
     basic_constraints:
       - "CA:TRUE"
+      - "pathlen:1"
     basic_constraints_critical: true
     key_usage:
       - keyCertSign
@@ -105,7 +106,26 @@
         --insecure
         --force
     volumes:
-      - "{{ step_ca_output_dir | realpath }}:/output:Z"
+      - "{{ step_ca_output_dir | realpath }}:/output:z"
+    state: started
+    rm: true
+  delegate_to: localhost
+  become: false
+
+- name: Generate squid JWK provisioner key
+  containers.podman.podman_container:
+    name: step-ca-jwk
+    image: docker.io/smallstep/step-cli:0.30.2
+    userns: keep-id
+    command: >
+      step crypto jwk create
+        /output/squid.pub.json
+        /output/squid.json
+        --no-password
+        --insecure
+        --force
+    volumes:
+      - "{{ step_ca_output_dir | realpath }}:/output:z"
     state: started
     rm: true
   delegate_to: localhost
@@ -113,8 +133,15 @@
 
 - name: Read admin provisioner public JWK
   ansible.builtin.slurp:
-    src: "{{ step_ca_provisioner_public_key_file }}"
+    src: "{{ step_ca_admin_public_key_file }}"
   register: step_ca_admin_public_jwk
+  delegate_to: localhost
+  become: false
+
+- name: Read squid provisioner public JWK
+  ansible.builtin.slurp:
+    src: "{{ step_ca_squid_public_key_file }}"
+  register: step_ca_squid_public_jwk
   delegate_to: localhost
   become: false
 

@@ -67,7 +67,7 @@
     daemon_reload: true
     name: "{{ item.path | basename }}"
     enabled: true
-    state: started
+    state: "{{ 'started' if not item.path.endswith('.service') else omit }}"
   loop: "{{ systemd_units.files }}"
 
 - name: Check for {{ quadlet }} quadlet build context

@@ -1,7 +1,8 @@
 [Unit]
 Description=Forgejo Runner
 After=network-online.target forgejo-runner-build.service
-Wants=network-online.target forgejo-runner-build.service
+Wants=network-online.target
+Requires=forgejo-runner-build.service
 
 [Container]
 Image=code.forgejo.org/forgejo/runner:13

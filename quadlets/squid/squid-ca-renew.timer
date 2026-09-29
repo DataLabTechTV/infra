@@ -2,8 +2,6 @@
 Description=Renew Squid CA certificate
 
 [Timer]
-OnBootSec=5min
-OnActiveSec=0
 OnUnitActiveSec=1d
 Persistent=true
 

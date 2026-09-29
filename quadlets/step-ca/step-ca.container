@@ -9,6 +9,7 @@ ContainerName=step-ca
 Volume=/etc/step-ca/config/ca.json:/home/step/config/ca.json:ro
 Volume=/etc/step-ca/certs:/home/step/certs:ro
 Volume=/etc/step-ca/secrets:/home/step/secrets:ro
+Volume=/etc/step-ca/templates:/home/step/templates:ro
 Volume=step-ca-db:/home/step/db
 Network=step-ca.network
 PublishPort=443:9000

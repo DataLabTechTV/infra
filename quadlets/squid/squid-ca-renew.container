@@ -1,7 +1,8 @@
 [Unit]
 Description=Squid Cache Proxy CA Certificate Renewal
 After=network-online.target squid-ca-renew-build.service
-Wants=network-online.target squid-ca-renew-build.service
+Wants=network-online.target
+Requires=squid-ca-renew-build.service
 
 [Container]
 Image=localhost/squid-ca-renew:latest
@@ -11,6 +12,7 @@ ContainerName=squid-ca-renew
 Volume=/etc/squid/step:/etc/squid/step:z,ro
 Volume=/etc/squid/ssl:/etc/squid/ssl:z
 EnvironmentFile=/etc/squid/ca-renew.env
+LogDriver=none
 
 [Service]
 Type=oneshot

@@ -1,14 +1,15 @@
 [Unit]
 Description=Squid Cache Proxy
 After=network-online.target squid-build.service squid-ca-renew.service
-Wants=network-online.target squid-build.service squid-ca-renew.service
+Wants=network-online.target
+Requires=squid-build.service squid-ca-renew.service
 
 [Container]
 Image=localhost/squid:latest
 AutoUpdate=local
 ContainerName=squid
 Volume=/etc/squid/squid.conf:/etc/squid/squid.conf:ro
-Volume=/etc/squid/ssl:/etc/squid/ssl:ro
+Volume=/etc/squid/ssl:/etc/squid/ssl:z
 Volume=squid-cache:/var/cache/squid
 Network=squid.network
 PublishPort=3128:3128

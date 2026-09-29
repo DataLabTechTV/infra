@@ -4,19 +4,21 @@ set -euo pipefail
 ca_url="${CA_URL?:CA_URL must be set}"
 
 provisioner="squid"
+provisioner_key="/etc/squid/step/squid.json"
+root_ca_cert="/etc/squid/step/root-ca.crt"
 
-cert_file="/etc/squid/ssl/squid-ca.crt"
-key_file="/etc/squid/ssl/squid-ca.key"
+cert="/etc/squid/ssl/squid-ca.crt.new"
+key="/etc/squid/ssl/squid-ca.key.new"
 
-renewal_window="720h"  # 1 month
+renewal_window="48h"
 
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 
-tmp_cert_file="$tmpdir/squid-ca.crt"
-tmp_key_file="$tmpdir/squid-ca.key"
+tmp_cert="$tmpdir/squid-ca.crt.new"
+tmp_key="$tmpdir/squid-ca.key.new"
 
-install -d -m 0700 "$(dirname "$cert_file")"
+install -d -m 0700 "$(dirname "$cert")"
 
 issue_certificate() {
     echo "Issuing Squid CA certificate"
@@ -26,31 +28,32 @@ issue_certificate() {
             "Squid TLS Interception CA" \
             --ca-url "$ca_url" \
             --issuer "$provisioner" \
-            --key /etc/squid/step/squid-ca.json \
-            --root /etc/squid/step/root-ca.crt
+            --key "$provisioner_key" \
+            --root "$root_ca_cert"
     )"
 
     step ca certificate \
         "Squid TLS Interception CA" \
-        "$tmp_cert_file" \
-        "$tmp_key_file" \
+        "$tmp_cert" \
+        "$tmp_key" \
         --ca-url "$ca_url" \
-        --token "$token"
+        --token "$token" \
+        --not-after "720h"
 
-    chmod 0600 "$tmp_key_file"
-    chmod 0644 "$tmp_cert_file"
+    chmod 0600 "$tmp_key"
+    chmod 0644 "$tmp_cert"
 
-    mv "$tmp_key_file" "$key_file"
-    mv "$tmp_cert_file" "$cert_file"
+    mv "$tmp_key" "$key"
+    mv "$tmp_cert" "$cert"
 }
 
-if [ ! -f "$cert_file" ] || [ ! -f "$key_file" ]; then
+if [ ! -f "$cert" ] || [ ! -f "$key" ]; then
     issue_certificate
     echo "Squid CA certificate created"
     exit 0
 fi
 
-if step certificate needs-renewal "$cert_file" --expires-in "$renewal_window"; then
+if step certificate needs-renewal "$cert" --expires-in "$renewal_window"; then
     issue_certificate
     echo "Squid CA certificate renewed"
 else

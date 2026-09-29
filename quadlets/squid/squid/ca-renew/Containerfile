@@ -1,4 +1,4 @@
-FROM docker.io/smallstep/step-cli:0.31.0-trixie
+FROM docker.io/smallstep/step-kms-plugin:0.17.0
 
 COPY ca-renew.sh /usr/libexec/ca-renew/ca-renew.sh
 

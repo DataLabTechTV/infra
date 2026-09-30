@@ -75,6 +75,7 @@ We'll need the following quadlets, deployed in order:
 - forgejo :: Git repositories and CI/CD.
 - squid :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
 - traefik :: Manages certificates and routes services as required.
+- coredns :: Authoritative DNS for the actice context.
 
 Dependencies are as follows:
 
@@ -87,6 +88,7 @@ Dependencies are as follows:
 | forgejo  | openbao, postgres |
 | squid    | step-ca           |
 | traefik  | step-ca           |
+| coredns  | N/A               |
 
 * Topology
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
@@ -95,7 +97,7 @@ This repo can contain more than one deployment, each one being assigned a specif
 |     *VM* | *Host*  | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
 |--------+-------+-------+--------+---------+---------------------------|
 |    301 | ca    |     1 | 1 GiB  | 16 GiB  | step-ca                   |
-|    302 | proxy |     2 | 2 GiB  | 200 GiB | squid, traefik            |
+|    302 | proxy |     2 | 2 GiB  | 200 GiB | squid, traefik, coredns   |
 |    303 | data  |     4 | 8 GiB  | 100 GiB | openbao, postgres, rustfs |
 |    304 | forge |     4 | 6 GiB  | 100 GiB | forgejo, forgejo-runner   |
 |--------+-------+-------+--------+---------+---------------------------|
@@ -107,20 +109,21 @@ This repo can contain more than one deployment, each one being assigned a specif
 Ingress will be done through Traefik, so here we plan the hostnames and their mappings. As a rule-of-thumb, hostnames will live under the =.<context>.lan= domain (e.g., =.lab.lan=).
 
 ** Lab
-| Service              | Traefik             | VM             |
-|----------------------+---------------------+----------------|
-| step-ca              | N/A                 | =ca.lan=         |
-| Cockpit              | =admin.ca.lab.lan=    | =ca.lan:9090=    |
-|----------------------+---------------------+----------------|
-| Cockpit              | =admin.data.lab.lan=  | =data.lan:9090=  |
-| OpenBao              | =vault.lab.lan=       | =data.lan:8200=  |
-| PostgreSQL           | N/A                 | =data.lan:5432=  |
-| RustFS (S3 API)      | =store.lab.lan=       | =data.lan:9000=  |
-| RustFS (Web Console) | =admin.store.lab.lan= | =data.lan:9001=  |
-|----------------------+---------------------+----------------|
-| Cockpit              | =admin.forge.lab.lan= | =forge.lan:9090= |
-| Forgejo              | =git.lab.lan=         | =forge.lan:3000= |
-|----------------------+---------------------+----------------|
-| Cockpit              | =admin.proxy.lab.lan= | =proxy.lan:9090= |
-| Squid Cache          | N/A                 | =proxy.lan:3128= |
-| Traefik (Dashboard)  | =traefik.lab.lan=     | =proxy.lan:8080= |
+| Host  | Service              | Traefik             | VM             |
+|-------+----------------------+---------------------+----------------|
+| ca    | step-ca              | N/A                 | =ca.lan=         |
+|       | Cockpit              | =admin.ca.lab.lan=    | =ca.lan:9090=    |
+|-------+----------------------+---------------------+----------------|
+| data  | Cockpit              | =admin.data.lab.lan=  | =data.lan:9090=  |
+|       | OpenBao              | =vault.lab.lan=       | =data.lan:8200=  |
+|       | PostgreSQL           | N/A                 | =data.lan:5432=  |
+|       | RustFS (S3 API)      | =store.lab.lan=       | =data.lan:9000=  |
+|       | RustFS (Web Console) | =admin.store.lab.lan= | =data.lan:9001=  |
+|-------+----------------------+---------------------+----------------|
+| forge | Cockpit              | =admin.forge.lab.lan= | =forge.lan:9090= |
+|       | Forgejo              | =git.lab.lan=         | =forge.lan:3000= |
+|-------+----------------------+---------------------+----------------|
+| proxy | Cockpit              | =admin.proxy.lab.lan= | =proxy.lan:9090= |
+|       | Squid Cache          | N/A                 | =proxy.lan:3128= |
+|       | Traefik (Dashboard)  | =traefik.lab.lan=     | =proxy.lan:8080= |
+|       | CoreDNS              | N/A                 | =proxy.lan:53=   |

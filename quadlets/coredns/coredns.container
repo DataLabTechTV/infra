@@ -8,7 +8,8 @@ Image=docker.io/coredns/coredns:1.14.7
 ContainerName=coredns
 Volume=/etc/coredns:/etc/coredns:ro
 Volume=coredns-data:/data
-PublishPort=53:53
+Network=host
+Exec=-conf /etc/coredns/Corefile
 
 [Service]
 Restart=on-failure

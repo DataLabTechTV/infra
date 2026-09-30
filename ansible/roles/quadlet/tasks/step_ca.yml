@@ -27,7 +27,7 @@
   community.crypto.openssl_csr:
     path: "{{ step_ca_intermediate_csr_file }}"
     privatekey_path: "{{ step_ca_intermediate_key_file }}"
-    common_name: "{{ group_names[0] }} Intermediate CA"
+    common_name: "{{ context }} Intermediate CA"
     basic_constraints:
       - "CA:TRUE"
       - "pathlen:1"

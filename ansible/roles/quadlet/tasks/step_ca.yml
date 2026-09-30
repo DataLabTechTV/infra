@@ -100,8 +100,8 @@
     userns: keep-id
     command: >
       step crypto jwk create
-        /output/admin.pub.json
-        /output/admin.json
+        /output/{{ step_ca_admin_public_key_file | basename }}
+        /output/{{ step_ca_admin_private_key_file | basename }}
         --no-password
         --insecure
         --force
@@ -111,6 +111,9 @@
     rm: true
   delegate_to: localhost
   become: false
+  when:
+    - not step_ca_admin_public_key_file is exists
+      or not step_ca_admin_private_key_file is exists
 
 - name: Generate squid JWK provisioner key
   containers.podman.podman_container:
@@ -119,8 +122,8 @@
     userns: keep-id
     command: >
       step crypto jwk create
-        /output/squid.pub.json
-        /output/squid.json
+        /output/{{ step_ca_squid_public_key_file | basename }}
+        /output/{{ step_ca_squid_private_key_file | basename }}
         --no-password
         --insecure
         --force
@@ -130,6 +133,9 @@
     rm: true
   delegate_to: localhost
   become: false
+  when:
+    - not step_ca_squid_public_key_file is exists
+      or not step_ca_squid_private_key_file is exists
 
 - name: Read admin provisioner public JWK
   ansible.builtin.slurp:

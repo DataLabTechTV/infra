@@ -1,0 +1,25 @@
+api:
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+
+  websecure:
+    address: ":443"
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+certificatesResolvers:
+  stepca:
+    acme:
+      email: admin@proxy.lan
+      caServer: https://{{ ca_host }}/acme/traefik/directory
+      caCertificates:
+        - /etc/traefik/certs/root-ca.crt
+      storage: /data/acme.json
+      httpChallenge:
+        entryPoint: web

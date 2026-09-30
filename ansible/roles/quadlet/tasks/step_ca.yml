@@ -145,5 +145,21 @@
   delegate_to: localhost
   become: false
 
+- name: Copy admin provisioner private JWT
+  ansible.builtin.copy:
+    src: "{{ step_ca_admin_private_key_file }}"
+    dest: "/etc/step-ca/secrets/admin.json"
+    owner: 1000
+    group: 1000
+    mode: "0600"
+
+- name: Copy squid provisioner private JWT
+  ansible.builtin.copy:
+    src: "{{ step_ca_squid_private_key_file }}"
+    dest: "/etc/step-ca/secrets/squid.json"
+    owner: 1000
+    group: 1000
+    mode: "0600"
+
 - name: Deploy step-ca templates
   ansible.builtin.include_tasks: templates.yml

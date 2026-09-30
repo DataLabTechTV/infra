@@ -50,6 +50,21 @@ deployment_order:
   - squid
   - traefik
 
+routes:
+  ca.lan:
+    admin.ca: 9090
+  data.lan:
+    admin.data: 9090
+    vault: 8200
+    store: 9000
+    admin.store: 9001
+  forge.lan:
+    admin.forge: 9090
+    git: 3000
+  proxy.lan:
+    admin.proxy: 9090
+    traefik: 8080
+
 step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"
 step_ca_intermediate_csr_file: "{{ step_ca_output_dir }}/intermediate-ca.csr"

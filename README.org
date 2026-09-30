@@ -104,23 +104,23 @@ This repo can contain more than one deployment, each one being assigned a specif
 *Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float.
 
 * Ingress
-Ingress will be done through Traefik, so here we plan the hostnames and their mappings.
+Ingress will be done through Traefik, so here we plan the hostnames and their mappings. As a rule-of-thumb, hostnames will live under the =.<context>.lan= domain (e.g., =.lab.lan=).
 
 ** Lab
-| Service              | Traefik         | VM             |
-|----------------------+-----------------+----------------|
-| step-ca              | N/A             | =ca.lan=         |
-| Cockpit              | =admin.ca.lan=    | =ca.lan:9090=    |
-|----------------------+-----------------+----------------|
-| Cockpit              | =admin.data.lan=  | =data.lan:9090=  |
-| OpenBao              | =vault.lan=       | =data.lan:8200=  |
-| PostgreSQL           | N/A             | =data.lan:5432=  |
-| RustFS (S3 API)      | =store.lan=       | =data.lan:9000=  |
-| RustFS (Web Console) | =admin.store.lan= | =data.lan:9001=  |
-|----------------------+-----------------+----------------|
-| Cockpit              | =admin.forge.lan= | =forge.lan:9090= |
-| Forgejo              | =git.lan=         | =forge.lan:3000= |
-|----------------------+-----------------+----------------|
-| Cockpit              | =admin.proxy.lan= | =proxy.lan:9090= |
-| Squid Cache          | N/A             | =proxy.lan:3128= |
-| Traefik (Dashboard)  | =traefik.lan=     | =proxy.lan:8080= |
+| Service              | Traefik             | VM             |
+|----------------------+---------------------+----------------|
+| step-ca              | N/A                 | =ca.lan=         |
+| Cockpit              | =admin.ca.lab.lan=    | =ca.lan:9090=    |
+|----------------------+---------------------+----------------|
+| Cockpit              | =admin.data.lab.lan=  | =data.lan:9090=  |
+| OpenBao              | =vault.lab.lan=       | =data.lan:8200=  |
+| PostgreSQL           | N/A                 | =data.lan:5432=  |
+| RustFS (S3 API)      | =store.lab.lan=       | =data.lan:9000=  |
+| RustFS (Web Console) | =admin.store.lab.lan= | =data.lan:9001=  |
+|----------------------+---------------------+----------------|
+| Cockpit              | =admin.forge.lab.lan= | =forge.lan:9090= |
+| Forgejo              | =git.lab.lan=         | =forge.lan:3000= |
+|----------------------+---------------------+----------------|
+| Cockpit              | =admin.proxy.lab.lan= | =proxy.lan:9090= |
+| Squid Cache          | N/A                 | =proxy.lan:3128= |
+| Traefik (Dashboard)  | =traefik.lab.lan=     | =proxy.lan:8080= |

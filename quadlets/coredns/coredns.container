@@ -1,0 +1,18 @@
+[Unit]
+Description=CoreDNS authoritative DNS
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/coredns/coredns:1.14.7
+ContainerName=coredns
+Volume=/etc/coredns:/etc/coredns:ro
+Volume=coredns-data:/data
+PublishPort=53:53
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

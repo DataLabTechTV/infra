@@ -49,6 +49,7 @@ deployment_order:
   - forgejo-runner
   - squid
   - traefik
+  - coredns
 
 routes:
   ca.lan:

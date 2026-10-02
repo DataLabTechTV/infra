@@ -18,7 +18,7 @@
     state: present
   no_log: true
 
-- name: Setup admin credentials
+- name: Setup Forgejo credentials
   ansible.builtin.include_role:
     name: openbao
     tasks_from: secret

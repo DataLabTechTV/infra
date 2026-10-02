@@ -22,6 +22,8 @@ openbao_addr: "http://data.lan:8200"
 postgres_host: "data.lan"
 postgres_port: 5432
 
+rustfs_access_key: "rustfs"
+
 forgejo_host: "git.lab.lan"
 forgejo_addr: "https://{{ forgejo_host }}"
 forgejo_ssh_addr: "ssh://git@{{ forgejo_host }}:222"
@@ -94,6 +96,8 @@ openbao_iac_token_file: "{{ openbao_output_dir }}/iac.token"
 openbao_secret_postgres_prefix: "data/postgres"
 openbao_secret_postgres_db_prefix: "{{ openbao_secret_postgres_prefix }}/db"
 openbao_secret_postgres_admin: "{{ openbao_secret_postgres_prefix }}/admin"
+openbao_secret_rustfs_prefix: "data/rustfs"
+openbao_secret_rustfs_admin: "{{ openbao_secret_rustfs_prefix }}/admin"
 openbao_secret_forgejo_prefix: "forge/forgejo"
 openbao_secret_forgejo_admin: "{{ openbao_secret_forgejo_prefix }}/admin"
 openbao_secret_forgejo_tokens: "{{ openbao_secret_forgejo_prefix }}/tokens"

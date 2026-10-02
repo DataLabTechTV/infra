@@ -1,0 +1,21 @@
+- name: Setup RustFS credentials
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_rustfs_admin }}"
+    secret_fact: rustfs_admin
+    secret_values:
+        access_key: "{{ rustfs_access_key }}"
+    secret_passwords:
+      - secret_key
+
+- name: Create RustFS admin secret key
+  containers.podman.podman_secret:
+    name: rustfs_admin_secret_key
+    data: "{{ rustfs_admin.secret_key }}"
+    state: present
+  no_log: true
+
+- name: Deploy RustFS templates
+  ansible.builtin.include_tasks: templates.yml

@@ -64,7 +64,6 @@ routes:
     git: 3000
   proxy.lan:
     admin.proxy: 9090
-    traefik: 8080
 
 step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"

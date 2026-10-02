@@ -6,11 +6,20 @@ http:
         - "/etc/traefik/certs/root-ca.crt"
 
   routers:
+    traefik:
+      rule: "Host(`traefik.{{ context }}.lan`)"
+      service: "api@internal"
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: stepca
 {% for target_host, host_routes in routes.items() %}
 {% for host, target_port in host_routes.items() %}
     {{ host | replace('.', '_') }}:
       rule: "Host(`{{ host }}.{{ context }}.lan`)"
       service: "{{ target_host | replace('.', '_') }}_{{ target_port }}"
+      entryPoints:
+        - websecure
       tls:
         certResolver: stepca
 {% endfor %}

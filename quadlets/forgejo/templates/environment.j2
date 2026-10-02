@@ -2,9 +2,9 @@ FORGEJO____APP_NAME=Forgejo
 FORGEJO____RUN_USER=git
 FORGEJO____RUN_MODE=prod
 
-FORGEJO__server__DOMAIN={{ ansible_host }}
-FORGEJO__server__ROOT_URL=http://{{ ansible_host }}:3000
-FORGEJO__server__SSH_DOMAIN={{ ansible_host }}
+FORGEJO__server__DOMAIN={{ forgejo_host }}
+FORGEJO__server__ROOT_URL={{ forgejo_addr }}
+FORGEJO__server__SSH_DOMAIN={{ forgejo_host }}
 FORGEJO__server__SSH_PORT=222
 FORGEJO__server__HTTP_ADDR=0.0.0.0
 FORGEJO__server__HTTP_PORT=3000

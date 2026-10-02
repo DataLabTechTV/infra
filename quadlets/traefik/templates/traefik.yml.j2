@@ -4,9 +4,12 @@ api:
 entryPoints:
   web:
     address: ":80"
-
   websecure:
     address: ":443"
+{% for entrypoint, config in tcp_routes.items() %}
+  {{ entrypoint }}:
+    address: ":{{ config.source }}"
+{% endfor %}
 
 providers:
   file:

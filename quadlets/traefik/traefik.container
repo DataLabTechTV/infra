@@ -11,7 +11,7 @@ Volume=traefik-data:/data
 Network=traefik.network
 PublishPort=80:80
 PublishPort=443:443
-PublishPort=8080:8080
+PublishPort=222:222
 
 [Service]
 Restart=on-failure

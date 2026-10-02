@@ -35,3 +35,25 @@ http:
         serversTransport: ca
 {% endfor %}
 {% endfor %}
+
+tcp:
+  routers:
+{% for entrypoint, config in tcp_routes.items() %}
+{% for target in config.targets %}
+    {{ target.host | replace('.', '_') }}_{{ target.port }}:
+      rule: "HostSNI(`*`)"
+      service: "{{ target.host | replace('.', '_') }}_{{ target.port }}"
+      entryPoints:
+        - {{ entrypoint }}
+{% endfor %}
+{% endfor %}
+
+  services:
+{% for entrypoint, config in tcp_routes.items() %}
+{% for target in config.targets %}
+    {{ target.host | replace('.', '_') }}_{{ target.port }}:
+      loadBalancer:
+        servers:
+          - address: "{{ target.host }}:{{ target.port }}"
+{% endfor %}
+{% endfor %}

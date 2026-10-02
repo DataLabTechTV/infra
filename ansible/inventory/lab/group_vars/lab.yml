@@ -66,6 +66,13 @@ routes:
   proxy.lan:
     admin.proxy: 9090
 
+tcp_routes:
+  ssh:
+    source: 222
+    targets:
+      - host: forge.lan
+        port: 222
+
 step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"
 step_ca_intermediate_csr_file: "{{ step_ca_output_dir }}/intermediate-ca.csr"

@@ -1,4 +1,4 @@
 [Build]
-ImageTag=localhost/ubuntu:latest
+ImageTag=localhost/rockylinux-10:latest
 SetWorkingDirectory=file
 File=/opt/forgejo-runner/Containerfile

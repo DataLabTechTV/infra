@@ -24,10 +24,10 @@ runner:
     no_proxy: localhost,127.0.0.1,.lan
 
   labels:
-    ubuntu-latest:
+    rockylinux-10:
       backend: docker
       backend-options:
-        image: localhost/ubuntu:latest
+        image: localhost/rockylinux-10:latest
         platform: linux/amd64
 
 cache:
@@ -36,7 +36,8 @@ cache:
 
 container:
   enable_ipv6: false
-  privileged: false
+  privileged: true
+  network: host
   docker_host: "-"
   force_pull: false
   force_rebuild: false

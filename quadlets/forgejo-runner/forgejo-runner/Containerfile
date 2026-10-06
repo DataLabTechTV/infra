@@ -1,57 +1,53 @@
-FROM docker.io/library/ubuntu:24.04
+FROM docker.io/rockylinux/rockylinux:10
 
-ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 
-RUN apt-get update
+# No optional dependencies
+RUN echo 'install_weak_deps=False' >>'/etc/dnf/dnf.conf'
+
+# Enable required repos
+RUN dnf -y install dnf-plugins-core epel-release \
+    && dnf config-manager --set-enabled crb
 
 # Base
-RUN apt-get install -y --no-install-recommends \
-    ca-certificates curl wget gnupg lsb-release \
-    software-properties-common
+RUN dnf -y install ca-certificates curl wget gnupg2
 
 # VCS
-RUN apt-get install -y --no-install-recommends \
-    git git-lfs openssh-client rsync
+RUN dnf -y install git git-lfs openssh-clients rsync
 
 # Build tools
-RUN apt-get install -y --no-install-recommends \
-    build-essential pkg-config make cmake
+RUN dnf -y install gcc gcc-c++ make cmake pkgconf-pkg-config
 
 # Compression
-RUN apt-get install -y --no-install-recommends \
-    zip unzip tar gzip xz-utils
+RUN dnf -y install zip unzip tar gzip xz
 
 # Tools
-RUN apt-get install -y --no-install-recommends \
-    jq sudo locales tzdata file bc
+RUN dnf -y install jq sudo glibc-langpack-en tzdata file bc
+
+# Containers
+RUN dnf -y install podman
 
 # Python
-RUN apt-get install -y --no-install-recommends \
-    python3 python3-pip python3-venv
-
-RUN rm -rf /var/lib/apt/lists/*
-
-# Trust root CA
-COPY root-ca.crt /usr/local/share/ca-certificates/root-ca.crt
-RUN update-ca-certificates
+RUN dnf -y install python3 python3-pip
 
 # Node
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
-    && rm -rf /var/lib/apt/lists/*
+RUN dnf -y install nodejs npm
 
 # Go
-ARG GO_VERSION=1.27.1
-RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" -o /tmp/go.tgz \
-    && tar -C /usr/local -xzf /tmp/go.tgz \
-    && rm /tmp/go.tgz
-ENV PATH="/usr/local/go/bin:${PATH}"
+RUN dnf -y install golang
 
 # Rust
-ENV RUSTUP_HOME=/usr/local/rustup \
-    CARGO_HOME=/usr/local/cargo \
-    PATH="/usr/local/cargo/bin:${PATH}"
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+RUN dnf -y install rust cargo
+
+# fuse-overlayfs
+COPY storage.conf /etc/containers/storage.conf
+RUN dnf -y install fuse-overlayfs
+
+# Remote cache and temporary files
+RUN dnf clean all
+
+# Trust root CA
+COPY root-ca.crt /etc/pki/ca-trust/source/anchors/root-ca.crt
+RUN update-ca-trust
 
 WORKDIR /workspace

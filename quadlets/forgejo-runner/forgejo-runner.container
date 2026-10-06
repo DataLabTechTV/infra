@@ -1,8 +1,8 @@
 [Unit]
 Description=Forgejo Runner
-After=network-online.target forgejo-runner-build.service
+After=network-online.target forgejo-runner-build.service podman.socket
 Wants=network-online.target
-Requires=forgejo-runner-build.service
+Requires=forgejo-runner-build.service podman.socket
 
 [Container]
 Image=code.forgejo.org/forgejo/runner:13

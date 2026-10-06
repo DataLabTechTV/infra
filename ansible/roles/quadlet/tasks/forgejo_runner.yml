@@ -33,7 +33,7 @@
     forgejo_runner_exists: >-
       {{
         forgejo_runners.json
-        | selectattr('name', 'equalto', 'ubuntu-latest')
+        | selectattr('name', 'equalto', 'rockylinux-10')
         | list
         | length > 0
       }}
@@ -65,7 +65,7 @@
     user: 1000
     command: >
       forgejo forgejo-cli actions register
-        --name ubuntu-latest
+        --name rockylinux-10
         --secret {{ forgejo_token }}
   register: forgejo_register
   when: not forgejo_runner_exists
@@ -76,7 +76,7 @@
     forgejo_runner: >-
       {{
         forgejo_runners.json
-        | selectattr('name', 'equalto', 'ubuntu-latest')
+        | selectattr('name', 'equalto', 'rockylinux-10')
         | first
         | default(none)
       }}

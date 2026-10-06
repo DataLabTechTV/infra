@@ -8,8 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - run: |
-          echo "Forgejo CI test"
+      - name: Show environment variables
+        run: env
 
       - name: Show DNS
         run: cat /etc/resolv.conf
@@ -18,5 +18,4 @@ jobs:
         run: getent hosts git.lab.lan
 
       - name: Downloading Alpine Linux ISO (used to test the cache proxy)
-        run: |
-          wget "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.2-x86_64.iso"
+        run: wget "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.2-x86_64.iso"

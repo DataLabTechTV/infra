@@ -1,8 +1,8 @@
 [Unit]
 Description=Squid Cache Proxy
 After=network-online.target squid-build.service squid-ca-renew.service
-Wants=network-online.target
-Requires=squid-build.service squid-ca-renew.service
+Wants=network-online.target squid-ca-renew.service
+Requires=squid-build.service
 
 [Container]
 Image=localhost/squid:latest

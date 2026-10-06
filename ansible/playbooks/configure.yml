@@ -40,15 +40,6 @@
           - cockpit-podman
         state: present
 
-    - name: Configure Podman DNS port
-      ansible.builtin.blockinfile:
-        path: /etc/containers/containers.conf
-        create: true
-        marker: "# {mark} ANSIBLE MANAGED PODMAN DNS"
-        block: |
-          [network]
-          dns_bind_port = 5353
-
     - name: Install Ansible dependencies
       ansible.builtin.dnf:
         name:

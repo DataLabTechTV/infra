@@ -1,4 +1,5 @@
 {{ context }}.lan:53 {
+    bind {{ ansible_facts.default_ipv4.address }}
     file /etc/coredns/lab.lan
     log
     errors

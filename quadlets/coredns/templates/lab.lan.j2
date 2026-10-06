@@ -3,10 +3,10 @@ $TTL 5m
 
 @  IN  SOA      ns.lab.lan. admin.lab.lan. (2026093001 1h 10m 1d 5m)
 @  IN  NS       ns.lab.lan.
-ns IN  CNAME    proxy.lan.
+ns IN  CNAME    {{ coredns_host }}.
 
 {% for target_host, host_routes in routes.items() %}
 {% for host, target_port in host_routes.items() %}
-{{ host }} IN CNAME proxy.lan.
+{{ host }} IN CNAME {{ coredns_host }}.
 {% endfor %}
 {% endfor %}

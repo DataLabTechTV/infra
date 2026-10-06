@@ -46,6 +46,9 @@ RUN dnf -y install fuse-overlayfs
 # Remote cache and temporary files
 RUN dnf clean all
 
+# Workflow container certificates
+COPY mounts.conf /etc/containers/mounts.conf
+
 # Trust root CA
 COPY root-ca.crt /etc/pki/ca-trust/source/anchors/root-ca.crt
 RUN update-ca-trust

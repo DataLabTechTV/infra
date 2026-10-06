@@ -17,5 +17,8 @@ jobs:
       - name: Resolve git.lab.lan
         run: getent hosts git.lab.lan
 
+      - name: Hash mounted certificates
+        run: md5sum /etc/local-ca/*
+
       - name: Downloading Alpine Linux ISO (used to test the cache proxy)
         run: wget "https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86_64/alpine-standard-3.24.2-x86_64.iso"

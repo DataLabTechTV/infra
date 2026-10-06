@@ -5,6 +5,8 @@ $TTL 5m
 @  IN  NS       ns.lab.lan.
 ns IN  CNAME    {{ ansible_host }}.
 
+traefik IN CNAME {{ ansible_host }}.
+
 {% for target_host, host_routes in routes.items() %}
 {% for host, target_port in host_routes.items() %}
 {{ host }} IN CNAME {{ ansible_host }}.

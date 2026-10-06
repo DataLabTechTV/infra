@@ -1,9 +1,2 @@
-- name: Find CoreDNS host
-  ansible.builtin.set_fact:
-    coredns_host: "{{ hostvars[item].ansible_host }}"
-  loop: "{{ groups[context] }}"
-  when: "'coredns' in hostvars[item].quadlets"
-  run_once: true
-
 - name: Deploy coredns templates
   ansible.builtin.include_tasks: templates.yml

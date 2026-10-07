@@ -25,14 +25,6 @@ runner:
     https_proxy: http://proxy.lan:3128
     no_proxy: localhost,127.0.0.1,.lan
 
-    SSL_CERT_FILE: /etc/local-ca/ca-bundle.crt
-    CURL_CA_BUNDLE: /etc/local-ca/ca-bundle.crt
-    REQUESTS_CA_BUNDLE: /etc/local-ca/ca-bundle.crt
-    PIP_CERT: /etc/local-ca/ca-bundle.crt
-    NODE_EXTRA_CA_CERTS: /etc/local-ca/root-ca.crt
-    GIT_SSL_CAINFO: /etc/local-ca/ca-bundle.crt
-    CARGO_HTTP_CAINFO: /etc/local-ca/ca-bundle.crt
-
   labels:
     rockylinux-10:
       backend: docker
@@ -52,13 +44,8 @@ container:
   force_pull: false
   force_rebuild: false
   options: >-
-    -v /etc/pki/ca-trust/source/anchors/root-ca.crt:/etc/local-ca/root-ca.crt:ro,z
-    -v /etc/pki/tls/certs/ca-bundle.crt:/etc/local-ca/ca-bundle.crt:ro,z
-    -v /run/podman/podman.sock:/run/podman/podman.sock
-    -v ci-containers:/var/lib/containers
+    -v /run/podman/podman.sock:/run/podman/podman.sock:z
   valid_volumes:
-    - /etc/pki/ca-trust/source/anchors/root-ca.crt
-    - /etc/pki/tls/certs/ca-bundle.crt
     - /run/podman/podman.sock
 
 host:

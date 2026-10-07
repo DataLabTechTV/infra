@@ -12,7 +12,6 @@ Volume=/etc/forgejo-runner:/etc/forgejo-runner:ro
 Volume=/run/podman/podman.sock:/run/podman/podman.sock
 Volume=forgejo-runner-data:/data
 Network=forgejo-runner.network
-Environment=DOCKER_HOST=unix:///run/podman/podman.sock
 Environment=CREDENTIALS_DIRECTORY=/run/secrets
 Secret=forgejo_token,target=forgejo.token
 SecurityLabelDisable=true

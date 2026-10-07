@@ -114,6 +114,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   cpu {
     cores = try(local.vms[each.key].cores, 1)
     type  = "host"
+    numa = true
   }
 
   memory {
@@ -137,6 +138,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   machine = "q35"
+  hotplug = "network,disk,usb,memory"
 
   dynamic "hostpci" {
     for_each = try(local.vms[each.key].gpu, false) ? [

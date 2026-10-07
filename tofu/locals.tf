@@ -35,8 +35,8 @@ locals {
           vm_id = 304
           cores = 4
           memory = {
-            dedicated = 6144
-            floating  = 6144
+            dedicated = 8192
+            floating  = 8192
           }
           size = 100
         },

@@ -1,14 +1,14 @@
 $ORIGIN lab.lan.
 $TTL 5m
 
-@  IN  SOA      ns.lab.lan. admin.lab.lan. (2026093001 1h 10m 1d 5m)
-@  IN  NS       ns.lab.lan.
-ns IN  CNAME    {{ ansible_host }}.
+@  IN  SOA  ns.lab.lan. admin.lab.lan. (2026100601 1h 10m 1d 5m)
+@  IN  NS   ns.lab.lan.
+ns IN  A    {{ ansible_facts.default_ipv4.address }}
 
-traefik IN CNAME {{ ansible_host }}.
+traefik IN A {{ ansible_facts.default_ipv4.address }}
 
 {% for target_host, host_routes in routes.items() %}
 {% for host, target_port in host_routes.items() %}
-{{ host }} IN CNAME {{ ansible_host }}.
+{{ host }} IN A {{ ansible_facts.default_ipv4.address }}
 {% endfor %}
 {% endfor %}

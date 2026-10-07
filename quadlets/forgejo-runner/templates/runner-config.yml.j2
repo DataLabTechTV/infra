@@ -16,6 +16,8 @@ runner:
   report_interval: 1s
 
   envs:
+    CONTAINER_HOST: unix:///run/podman/podman.sock
+
     HTTP_PROXY: http://proxy.lan:3128
     HTTPS_PROXY: http://proxy.lan:3128
     NO_PROXY: localhost,127.0.0.1,.lan
@@ -52,9 +54,12 @@ container:
   options: >-
     -v /etc/pki/ca-trust/source/anchors/root-ca.crt:/etc/local-ca/root-ca.crt:ro,z
     -v /etc/pki/tls/certs/ca-bundle.crt:/etc/local-ca/ca-bundle.crt:ro,z
+    -v /run/podman/podman.sock:/run/podman/podman.sock
+    -v ci-containers:/var/lib/containers
   valid_volumes:
     - /etc/pki/ca-trust/source/anchors/root-ca.crt
     - /etc/pki/tls/certs/ca-bundle.crt
+    - /run/podman/podman.sock
 
 host:
   workdir_parent: "/data/work"

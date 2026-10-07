@@ -6,7 +6,10 @@ locals {
       vms = {
         ca = {
           vm_id = 301
-          cores = 1
+          cpu = {
+            cores = 4
+            hotplugged = 1
+          }
           memory = {
             dedicated = 1024
             floating = 1024
@@ -15,7 +18,10 @@ locals {
         },
         proxy = {
           vm_id = 302
-          cores = 2
+          cpu = {
+            cores = 8
+            hotplugged = 2
+          }
           memory = {
             dedicated = 2048
             floating  = 2048
@@ -24,7 +30,10 @@ locals {
         },
         data = {
           vm_id = 303
-          cores = 4
+          cpu = {
+            cores = 16
+            hotplugged = 4
+          }
           memory = {
             dedicated = 8192
             floating  = 8192
@@ -33,10 +42,13 @@ locals {
         },
         forge = {
           vm_id = 304
-          cores = 4
+          cpu = {
+            cores = 16
+            hotplugged = 8
+          }
           memory = {
-            dedicated = 8192
-            floating  = 8192
+            dedicated = 16384
+            floating  = 16384
           }
           size = 100
         },

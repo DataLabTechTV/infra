@@ -40,8 +40,8 @@ RUN dnf -y install golang
 RUN dnf -y install rust cargo
 
 # Podman-in-podman dependencies
+COPY storage.conf /etc/containers/storage.conf
 COPY mounts.conf /etc/containers/mounts.conf
-RUN dnf -y install fuse-overlayfs
 
 # Remote cache and temporary files
 RUN dnf clean all

@@ -39,15 +39,11 @@ RUN dnf -y install golang
 # Rust
 RUN dnf -y install rust cargo
 
-# fuse-overlayfs
-COPY storage.conf /etc/containers/storage.conf
+# Podman-in-podman dependencies
+COPY mounts.conf /etc/containers/mounts.conf
 RUN dnf -y install fuse-overlayfs
 
 # Remote cache and temporary files
 RUN dnf clean all
-
-# Trust root CA
-COPY root-ca.crt /etc/pki/ca-trust/source/anchors/root-ca.crt
-RUN update-ca-trust
 
 WORKDIR /workspace

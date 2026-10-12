@@ -1,3 +1,5 @@
-FROM docker.io/astral/uv:python3.12-bookworm-slim
+FROM docker.io/rockylinux/rockylinux:10
+
+COPY --from=docker.io/astral/uv:latest /uv /uvx /usr/bin/
 
 RUN uv tool install --with=httpie-aws-authv4 httpie

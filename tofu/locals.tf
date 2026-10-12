@@ -50,7 +50,7 @@ locals {
             dedicated = 16384
             floating  = 16384
           }
-          size = 100
+          size = 200
         },
       }
     }

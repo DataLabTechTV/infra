@@ -43,6 +43,13 @@ RUN dnf -y install rust cargo
 COPY storage.conf /etc/containers/storage.conf
 COPY mounts.conf /etc/containers/mounts.conf
 
+# Python depdencies
+COPY uv.toml /etc/uv/uv.toml
+
+# Trust root CA
+COPY root-ca.crt /etc/pki/ca-trust/source/anchors/root-ca.crt
+RUN update-ca-trust
+
 # Remote cache and temporary files
 RUN dnf clean all
 

@@ -30,6 +30,7 @@ runner:
     NODE_EXTRA_CA_CERTS: /etc/local-ca/root-ca.crt
     GIT_SSL_CAINFO: /etc/local-ca/ca-bundle.crt
     CARGO_HTTP_CAINFO: /etc/local-ca/ca-bundle.crt
+    UV_SYSTEM_CERTS: true
 
   labels:
     rockylinux-10:

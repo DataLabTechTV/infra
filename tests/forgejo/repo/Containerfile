@@ -1,0 +1,3 @@
+FROM docker.io/astral/uv:python3.12-bookworm-slim
+
+RUN uv tool install --with=httpie-aws-authv4 httpie

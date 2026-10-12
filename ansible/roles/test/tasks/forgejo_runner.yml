@@ -1,0 +1,17 @@
+- name: Authenticate with Forgejo
+  ansible.builtin.include_role:
+    name: forgejo
+    tasks_from: auth
+
+- name: Trigger Forgejo test action
+  ansible.builtin.uri:
+    url: "{{ forgejo_addr }}/api/v1/repos/{{ forgejo_admin_user }}/test/actions/workflows/test.yml/dispatches"
+    method: POST
+    headers:
+      Authorization: "token {{ forgejo_api_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      ref: main
+    status_code: 204
+    validate_certs: true

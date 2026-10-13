@@ -22,7 +22,7 @@ RUN dnf -y install gcc gcc-c++ make cmake pkgconf-pkg-config
 RUN dnf -y install zip unzip tar gzip xz
 
 # Tools
-RUN dnf -y install jq sudo glibc-langpack-en tzdata file bc
+RUN dnf -y install jq sudo glibc-langpack-en tzdata file bc gettext-envsubst
 
 # Containers
 RUN dnf -y install podman

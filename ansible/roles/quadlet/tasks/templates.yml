@@ -10,10 +10,10 @@
 
 - name: "Create template directories for {{ quadlet }} quadlet"
   ansible.builtin.file:
-    path: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | dirname }}"
+    path: "{{ quadlet_scoped_config_dir }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | dirname }}"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ quadlet_scoped_user }}"
+    group: "{{ quadlet_scoped_group }}"
     mode: "0755"
   loop: "{{ quadlet_templates.files }}"
   loop_control:
@@ -24,9 +24,9 @@
 - name: "Deploy config templates for {{ quadlet }} quadlet"
   ansible.builtin.template:
     src: "{{ item.path }}"
-    dest: "/etc/{{ quadlet }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | regex_replace('\\.j2$', '') }}"
-    owner: root
-    group: root
+    dest: "{{ quadlet_scoped_config_dir }}/{{ item.path | relpath(quadlet_dir ~ '/templates') | regex_replace('\\.j2$', '') }}"
+    owner: "{{ quadlet_scoped_user }}"
+    group: "{{ quadlet_scoped_group }}"
     mode: "0644"
   loop: "{{ quadlet_templates.files }}"
   loop_control:

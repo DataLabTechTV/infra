@@ -6,7 +6,7 @@ FROM cgr.dev/chainguard/wolfi-base
 
 USER root
 
-RUN apk add --no-cache libstdc++ libgcc zlib libgomp
+RUN apk add --no-cache ca-certificates-bundle libssl3 libstdc++ libgcc zlib libgomp
 
 COPY --from=llama_cpp /usr/local/cuda/lib64 /usr/local/cuda/lib64
 COPY --from=llama_cpp /usr/local/cuda/compat /usr/local/cuda/compat

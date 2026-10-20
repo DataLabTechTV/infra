@@ -5,13 +5,13 @@ quadlet_scope: "system"
 systemd_system_dir: "/etc/systemd/system"
 quadlet_system_dir: "/etc/containers/systemd"
 quadlet_system_config_dir: "/etc/{{ quadlet }}"
-quadlet_system_ctx_dir: /opt
+quadlet_system_ctx_dir: "/opt/{{ quadlet }}"
 
 # quadlet_scope: "user"
 systemd_user_dir: "{{ ansible_facts.user_dir }}/.config/systemd/user"
 quadlet_user_dir: "{{ ansible_facts.user_dir }}/.config/containers/systemd"
 quadlet_user_config_dir: "{{ ansible_facts.user_dir }}/.config/dlt/infra/{{ quadlet }}"
-quadlet_user_ctx_dir: "{{ ansible_facts.user_dir }}/.local/share/dlt/infra/containers"
+quadlet_user_ctx_dir: "{{ ansible_facts.user_dir }}/.local/share/dlt/infra/containers/{{ quadlet }}"
 
 systemd_scoped_dir: "{{ systemd_user_dir if quadlet_scope == 'user' else systemd_system_dir }}"
 quadlet_scoped_dir: "{{ quadlet_user_dir if quadlet_scope == 'user' else quadlet_system_dir }}"

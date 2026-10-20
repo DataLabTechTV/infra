@@ -101,7 +101,7 @@
 - name: "Deploy {{ quadlet }} quadlet build context"
   ansible.builtin.copy:
     src: "{{ quadlet_dir }}/{{ quadlet }}"
-    dest: "{{ quadlet_scoped_ctx_dir }}/"
+    dest: "{{ quadlet_scoped_ctx_dir | dirname }}"
     owner: "{{ quadlet_scoped_user }}"
     group: "{{ quadlet_scoped_group }}"
     mode: "0755"

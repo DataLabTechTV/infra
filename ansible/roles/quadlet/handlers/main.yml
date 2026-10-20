@@ -5,3 +5,4 @@
     name: "{{ quadlet }}.service"
     enabled: true
     state: restarted
+  become: "{{ quadlet_scope == 'system' }}"

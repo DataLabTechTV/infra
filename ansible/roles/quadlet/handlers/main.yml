@@ -1,5 +1,6 @@
 - name: "Restart {{ quadlet }} service"
   ansible.builtin.systemd_service:
+    scope: "{{ quadlet_scope }}"
     daemon_reload: true
     name: "{{ quadlet }}.service"
     enabled: true

@@ -1,3 +1,9 @@
+# --- ansible ---
+
+ansible_user: "{{ lookup('env', 'USER') }}"
+ansible_python_interpreter: /usr/bin/python3
+
+
 # --- global ----
 
 context: "{{ group_names[0] }}"

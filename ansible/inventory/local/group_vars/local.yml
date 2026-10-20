@@ -1,0 +1,6 @@
+# --- global ----
+
+context: "{{ group_names[0] }}"
+
+project_dir: "{{ playbook_dir }}/../.."
+quadlets_dir: "{{ project_dir }}/quadlets"

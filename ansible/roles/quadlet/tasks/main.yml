@@ -43,6 +43,26 @@
     loop_var: item_quadlet_unit
   notify: "Restart {{ quadlet }} service"
 
+- name: "Deploy templated {{ quadlet }} quadlet files"
+  ansible.builtin.template:
+    src: "{{ item_quadlet_template }}"
+    dest: "{{ quadlet_scoped_dir }}/{{ item_quadlet_template | basename | regex_replace('\\.j2$', '') }}"
+    owner: "{{ quadlet_scoped_user }}"
+    group: "{{ quadlet_scoped_group }}"
+    mode: "0644"
+  with_fileglob:
+    - "{{ quadlet_dir }}/*.container.j2"
+    - "{{ quadlet_dir }}/*.volume.j2"
+    - "{{ quadlet_dir }}/*.network.j2"
+    - "{{ quadlet_dir }}/*.image.j2"
+    - "{{ quadlet_dir }}/*.build.j2"
+    - "{{ quadlet_dir }}/*.pod.j2"
+    - "{{ quadlet_dir }}/*.kube.j2"
+    - "{{ quadlet_dir }}/*.artifact.j2"
+  loop_control:
+    loop_var: item_quadlet_template
+  notify: "Restart {{ quadlet }} service"
+
 - name: "Find auxiliary systemd units for {{ quadlet }} quadlet"
   ansible.builtin.find:
     paths: "{{ quadlet_dir }}"

@@ -1,0 +1,20 @@
+[Unit]
+Description=Llama Server
+After=network-online.target llama-server-build.service
+Wants=network-online.target
+Requires=llama-server-build.service
+
+[Container]
+Image=localhost/llama-server:latest
+ContainerName=llama-server
+Volume={{ quadlet_scoped_config_dir }}:/etc/llama-server:ro
+Volume=llama-server-models:/models
+Network=llama-server.network
+Secret=hf_token,type=env,target=HF_TOKEN
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -20,6 +20,8 @@
         marker: "# {mark} ANSIBLE MANAGED COCKPIT ORIGINS"
         block: |
           [WebService]
+          Origins = https://admin.{{ inventory_hostname }}.{{ context }}.lan wss://admin.{{ inventory_hostname }}.{{ context }}.lan
+          ProtocolHeader = X-Forwarded-Proto
           AllowUnencrypted=true
       notify: Restart Cockpit
 

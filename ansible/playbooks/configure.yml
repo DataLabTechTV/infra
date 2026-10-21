@@ -47,7 +47,6 @@
         name:
           - python3-hvac
           - python3-psycopg2
-          - kitty-terminfo
         state: present
 
     - name: Install quality of life packages
@@ -55,6 +54,67 @@
         name:
           - kitty-terminfo
         state: present
+
+    - name: Configure NVIDIA drivers
+      when: nvidia | default(false)
+      block:
+        - name: Add NVIDIA CUDA repository
+          ansible.builtin.yum_repository:
+            name: cuda
+            description: NVIDIA CUDA Repository
+            baseurl: "https://developer.download.nvidia.com/compute/cuda/repos/rhel10/{{ ansible_facts.architecture }}/"
+            enabled: true
+            gpgcheck: true
+            gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/rhel10/{{ ansible_facts.architecture }}/CDF6BA43.pub"
+
+        - name: Install kernel development packages
+          ansible.builtin.dnf:
+            name:
+              - kernel-devel-matched
+              - kernel-headers
+            state: present
+
+        - name: Install NVIDIA compute driver
+          ansible.builtin.dnf:
+            name:
+              - nvidia-driver-cuda
+              - kmod-nvidia-open-dkms
+              - nvtop
+            state: present
+          notify: Reboot
+
+    - name: Configure NVIDIA GPU container support
+      become: true
+      when: nvidia | default(false)
+      block:
+        - name: Add NVIDIA Container Toolkit repository
+          ansible.builtin.yum_repository:
+            name: nvidia-container-toolkit
+            description: NVIDIA Container Toolkit
+            baseurl: https://nvidia.github.io/libnvidia-container/stable/rpm/$basearch
+            enabled: true
+            gpgcheck: false
+
+        - name: Install NVIDIA Container Toolkit
+          ansible.builtin.dnf:
+            name: nvidia-container-toolkit
+            state: present
+
+        - name: Enable NVIDIA CDI refresh
+          ansible.builtin.systemd_service:
+            name: nvidia-cdi-refresh.path
+            enabled: true
+            state: started
+
+        - name: Generate NVIDIA CDI specification
+          ansible.builtin.command:
+            argv:
+              - nvidia-ctk
+              - cdi
+              - generate
+              - --output=/etc/cdi/nvidia.yaml
+          register: nvidia_cdi_generate
+          changed_when: nvidia_cdi_generate.rc == 0
 
     - name: Bootstrap PKI
       ansible.builtin.include_role:
@@ -66,3 +126,8 @@
       ansible.builtin.systemd_service:
         name: cockpit.service
         state: restarted
+
+    - name: Reboot
+      ansible.builtin.reboot:
+        msg: Rebooting required
+        reboot_timeout: 600

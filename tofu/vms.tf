@@ -33,7 +33,9 @@ data "external" "hashed_passwd" {
     "bash",
     "-c",
     <<-EOT
-      password=$(jq -r '.password')
+      input=$(cat)
+      password=$(jq -r '.password' <<< "$input")
+      salt=$(jq -r '.salt' <<< "$input")
       hash=$(openssl passwd -6 -salt "$salt" -stdin <<< "$password")
       jq -n --arg hash "$hash" '{"hash": $hash}'
     EOT

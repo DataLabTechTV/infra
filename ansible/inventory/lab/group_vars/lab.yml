@@ -53,6 +53,8 @@ deployment_order:
   - squid
   - traefik
   - coredns
+  - llama-server
+  - open-webui
 
 routes:
   ca.lan:
@@ -67,6 +69,8 @@ routes:
     git: 3000
   gpu.lan:
     admin.gpu: 9090
+    llm: 8080
+    chat: 3000
   dev.lan:
     admin.dev: 9090
   proxy.lan:
@@ -105,6 +109,10 @@ openbao_secret_rustfs_admin: "{{ openbao_secret_rustfs_prefix }}/admin"
 openbao_secret_forgejo_prefix: "forge/forgejo"
 openbao_secret_forgejo_admin: "{{ openbao_secret_forgejo_prefix }}/admin"
 openbao_secret_forgejo_tokens: "{{ openbao_secret_forgejo_prefix }}/tokens"
+
+llama_server_hf_repo: unsloth/gemma-4-E4B-it-GGUF
+llama_server_hf_file: gemma-4-E4B-it-Q4_K_M.gguf
+llama_server_alias: unsloth/gemma-4-E4B-it-GGUF:Q4_K_M
 
 
 # --- test ----

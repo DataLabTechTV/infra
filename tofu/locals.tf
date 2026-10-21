@@ -35,8 +35,8 @@ locals {
             hotplugged = 4
           }
           memory = {
-            dedicated = 8192
-            floating  = 8192
+            dedicated = 6144
+            floating  = 6144
           }
           size = 100
         },
@@ -47,11 +47,34 @@ locals {
             hotplugged = 8
           }
           memory = {
-            dedicated = 16384
-            floating  = 16384
+            dedicated = 8192
+            floating  = 8192
           }
           size = 200
         },
+        gpu = {
+          vm_id = 305
+          cpu = {
+            cores = 16
+            hotplugged = 8
+          }
+          memory = {
+            dedicated = 12288
+            floating = 12288
+          }
+          size = 150
+        },
+        dev = {
+          vm_id = 306
+          cpu = {
+            cores = 16
+            hotplugged = 4
+          }
+          memory = {
+            dedicated = 2048
+            floating = 2048
+          }
+        }
       }
     }
   }

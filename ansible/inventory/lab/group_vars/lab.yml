@@ -65,6 +65,10 @@ routes:
   forge.lan:
     admin.forge: 9090
     git: 3000
+  gpu.lan:
+    admin.gpu: 9090
+  dev.lan:
+    admin.dev: 9090
   proxy.lan:
     admin.proxy: 9090
 

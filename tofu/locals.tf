@@ -63,6 +63,7 @@ locals {
             floating = 12288
           }
           size = 150
+          gpu = true
         },
         dev = {
           vm_id = 306

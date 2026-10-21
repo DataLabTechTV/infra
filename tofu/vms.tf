@@ -76,7 +76,7 @@ resource "proxmox_hardware_mapping_pci" "gpu_vga" {
       path         = "0000:01:00.0"
       id           = "10de:1f15"
       subsystem_id = "17aa:3a47"
-      iommu_group  = 10
+      iommu_group  = 9
     }
   ]
 }
@@ -91,7 +91,7 @@ resource "proxmox_hardware_mapping_pci" "gpu_audio" {
       path         = "0000:01:00.1",
       id           = "10de:10f9",
       subsystem_id = "10de:10f9"
-      iommu_group  = 10
+      iommu_group  = 9
     }
   ]
 }

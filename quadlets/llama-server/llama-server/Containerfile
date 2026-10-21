@@ -9,8 +9,7 @@ USER root
 RUN apk add --no-cache ca-certificates-bundle libssl3 libstdc++ libgcc zlib libgomp
 
 COPY --from=llama_cpp /usr/local/cuda/lib64 /usr/local/cuda/lib64
-COPY --from=llama_cpp /usr/local/cuda/compat /usr/local/cuda/compat
-ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/compat
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64
 ENV PATH=/usr/local/cuda/bin:${PATH}
 
 COPY --from=llama_cpp /app /app

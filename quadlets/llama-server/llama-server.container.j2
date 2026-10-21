@@ -10,7 +10,11 @@ ContainerName=llama-server
 Volume={{ quadlet_scoped_config_dir }}:/etc/llama-server:ro
 Volume=llama-server-models:/models
 Network=llama-server.network
+AddDevice=nvidia.com/gpu=all
+SecurityLabelDisable=true
 Secret=hf_token,type=env,target=HF_TOKEN
+EnvironmentFile={{ quadlet_scoped_config_dir }}/environment
+PublishPort=8080:8080
 
 [Service]
 Restart=on-failure

@@ -55,6 +55,7 @@ deployment_order:
   - coredns
   - llama-server
   - open-webui
+  - eca-server
 
 routes:
   ca.lan:
@@ -73,6 +74,7 @@ routes:
     chat: 3000
   dev.lan:
     admin.dev: 9090
+    agent: 7777
   proxy.lan:
     admin.proxy: 9090
 

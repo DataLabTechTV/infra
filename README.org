@@ -136,7 +136,7 @@ Ingress will be done through Traefik, so here we plan the hostnames and their ma
 |       | Open WebUI           | =chat.lab.lan=        | =gpu.lan:3000=   |
 |-------+----------------------+---------------------+----------------|
 | dev   | Cockpit              | =admin.dev.lab.lan=   | =dev.lan:9090=   |
-|       | ECA Server           | =harness.lab.lan=     | =dev.lan:7777=   |
+|       | ECA Server           | =agent.lab.lan=       | =dev.lan:7777=   |
 |-------+----------------------+---------------------+----------------|
 | proxy | Cockpit              | =admin.proxy.lab.lan= | =proxy.lan:9090= |
 |       | Squid Cache          | N/A                 | =proxy.lan:3128= |

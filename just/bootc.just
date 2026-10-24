@@ -6,8 +6,11 @@ _default:
 
 [working-directory: 'bootc/']
 build-iso:
-    podman build -f Containerfile -t localhost/rockylinux-homelab:latest .
-    image-builder build iso \
-        --bootc-ref localhost/rockylinux-homelab:latest \
-        --force-repo https://dl.rockylinux.org/pub/rocky/10/BaseOS/x86_64/os/ \
-        --force-repo https://dl.rockylinux.org/pub/rocky/10/AppStream/x86_64/os/
+    mkdir -p {{justfile_directory()}}/output/bootc
+    sudo podman build -f Containerfile -t localhost/rockylinux-homelab:latest .
+    sudo podman run --rm --privileged \
+        -v /var/lib/containers/storage:/var/lib/containers/storage \
+        -v {{justfile_directory()}}/output/bootc:/output \
+        quay.io/centos-bootc/bootc-image-builder:latest \
+        --type iso \
+        localhost/rockylinux-homelab:latest

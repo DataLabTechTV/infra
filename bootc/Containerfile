@@ -1,0 +1,4 @@
+FROM git.resf.org/sig_containers/rocky-bootc:10
+
+RUN dnf install -y libvirt qemu-kvm cockpit-machines && \
+    dnf clean all

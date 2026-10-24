@@ -117,3 +117,7 @@ mod ansible "just/ansible.just"
 # Manage services directly
 [group('lowlevel')]
 mod service "just/service.just"
+
+# Run bootc related commands
+[group('lowlevel')]
+mod bootc "just/bootc.just"

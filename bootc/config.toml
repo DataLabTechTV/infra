@@ -1,4 +1,0 @@
-[[customizations.user]]
-name = "rocky"
-password = "rocky"
-groups = ["wheel"]

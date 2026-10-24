@@ -16,5 +16,5 @@ build-iso:
         --config /config.toml \
         localhost/rockylinux-homelab:latest
     sudo chown -R $(id -u):$(id -g) ./output/bootc
-    mv ./output/bootc/bootiso/*.iso \
+    mv ./output/bootc/bootiso/install.iso \
        ./output/bootc/bootiso/rockylinux-homelab.iso

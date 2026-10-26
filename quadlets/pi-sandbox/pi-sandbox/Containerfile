@@ -19,8 +19,8 @@ RUN npm install -g --ignore-scripts --loglevel="error" @earendil-works/pi-coding
 
 RUN addgroup -g "${GID}" "${GROUP}" && \
     adduser -D -u "${UID}" -G "${GROUP}" -s "/bin/bash" "${USER}" && \
-    install -d -m 700 -o "${USER}" -g "${GROUP}" /home/dev/.ssh && \
-    install -d -m 755 -o "${USER}" -g "${GROUP}" /workspace && \
+    install -d -m 0700 -o "${USER}" -g "${GROUP}" /home/dev/.ssh && \
+    install -d -m 0755 -o "${USER}" -g "${GROUP}" /workspace && \
     chown "${USER}:${GROUP}" "/home/${USER}"
 
 RUN echo "${SSH_AUTHORIZED_KEY}" >> "/home/${USER}/.ssh/authorized_keys"
@@ -30,8 +30,9 @@ COPY pi /usr/local/bin/pi
 COPY sshd_config /etc/ssh/sshd_config
 COPY entrypoint.sh /usr/local/libexec/entrypoint.sh
 
-WORKDIR /workspace
+VOLUME "/home/${USER}/.pi/agent/models.json"
 VOLUME /workspace
+WORKDIR /workspace
 
 EXPOSE 2222
 

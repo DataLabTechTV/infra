@@ -8,6 +8,7 @@ Requires=pi-sandbox-build.service
 Image=localhost/pi-sandbox:latest
 ContainerName=pi-sandbox
 Volume={{ quadlet_scoped_config_dir }}:/etc/pi-sandbox:ro
+Volume=/opt/pi-sandbox/models.json:/home/dev/.pi/agent/models.json:ro
 Volume=pi-sandbox-workspace:/workspace
 Volume=pi-sandbox-home-dev:/home/dev
 Network=pi-sandbox.network

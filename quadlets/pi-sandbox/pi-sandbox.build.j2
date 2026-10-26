@@ -2,4 +2,4 @@
 ImageTag=localhost/pi-sandbox:latest
 SetWorkingDirectory=file
 File=/opt/pi-sandbox/Containerfile
-BuildArg=SSH_AUTHORIZED_KEY={{ lookup('ansible.builtin.file', vm_ssh_key_path ~ '.pub') | trim }}
+BuildArg=SSH_AUTHORIZED_KEY="{{ lookup('ansible.builtin.file', vm_ssh_key_path ~ '.pub') | trim }}"

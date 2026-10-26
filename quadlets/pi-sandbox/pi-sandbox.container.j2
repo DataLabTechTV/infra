@@ -9,14 +9,17 @@ Image=localhost/pi-sandbox:latest
 ContainerName=pi-sandbox
 Volume={{ quadlet_scoped_config_dir }}:/etc/pi-sandbox:ro
 Volume=pi-sandbox-workspace:/workspace
+Volume=pi-sandbox-home-dev:/home/dev
 Network=pi-sandbox.network
+HostName=pi-sandbox
 ReadOnly=true
-Tmpfs=/home/dev:noexec,nosuid,nodev,mode=1777
-UserNS=keep-id:uid=8000,gid=8000
 DropCapability=ALL
-AddCapability=NET_BIND_SERVICE
+AddCapability=SYS_CHROOT
+AddCapability=SETUID
+AddCapability=SETGID
+AddCapability=CHOWN
 NoNewPrivileges=true
-PublishPort=222:22
+PublishPort=2222:2222
 
 [Service]
 Restart=on-failure

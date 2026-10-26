@@ -87,7 +87,7 @@ tcp_routes:
     source: 2222
     targets:
       - host: dev.lan
-        port: 222
+        port: 2222
 
 step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"

@@ -6,3 +6,4 @@ AllowUsers dev
 AllowTcpForwarding no
 X11Forwarding no
 PermitEmptyPasswords no
+UsePAM no

@@ -2,7 +2,7 @@
 
 ansible_user: rocky
 ansible_python_interpreter: /usr/bin/python3
-ansible_ssh_common_args: -o StrictHostKeyChecking=no
+ansible_ssh_common_args: -i "{{ vm_ssh_key_path }}" -o StrictHostKeyChecking=no
 
 
 # --- global ----

@@ -1,0 +1,35 @@
+FROM cgr.dev/chainguard/wolfi-base
+ARG SSH_AUTHORIZED_KEY
+ARG USER="dev"
+ARG GROUP="dev"
+ARG UID="8000"
+ARG GID="8000"
+
+RUN apk add --no-cache bash ca-certificates-bundle git \
+    ripgrep jq curl nodejs-24 npm iproute2 openssh-server
+
+# Optionals
+RUN apk add --no-cache python-3.15 uv rust-1.99 go-1.27 \
+    py3.13-ansible-core opentofu just file
+
+ENV NONO_VERSION="v0.80.0"
+RUN curl -fsSL https://nono.sh/install.sh | sh
+RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent@1.4.0
+
+RUN addgroup -g "${GID}" "${GROUP}" && \
+    adduser -D -u "${UID}" -G "${GROUP}" -h "/home/${USER}" -s "/bin/bash" "${USER}" && \
+    install -d -m 700 -o "${USER}" -g "${GROUP}" /home/dev/.ssh && \
+    install -d -m 755 -o "${USER}" -g "${GROUP}" /workspace
+
+RUN echo "${SSH_AUTHORIZED_KEY}" >> "/home/${USER}/.ssh/authorized_keys"
+
+COPY pi /usr/local/bin/pi
+COPY sshd_config /etc/ssh/sshd_config
+COPY entrypoint.sh /usr/local/libexec/entrypoint.sh
+
+WORKDIR /workspace
+VOLUME /workspace
+
+EXPOSE 22
+
+CMD ["/usr/local/libexec/entrypoint.sh"]

@@ -1,0 +1,26 @@
+[Unit]
+Description=Pi Agend Sandbox
+After=network-online.target pi-sandbox-build.service
+Wants=network-online.target
+Requires=pi-sandbox-build.service
+
+[Container]
+Image=localhost/pi-sandbox:latest
+ContainerName=pi-sandbox
+Volume={{ quadlet_scoped_config_dir }}:/etc/pi-sandbox:ro
+Volume=pi-sandbox-workspace:/workspace
+Network=pi-sandbox.network
+ReadOnly=true
+Tmpfs=/home/dev:noexec,nosuid,nodev,mode=1777
+UserNS=keep-id:uid=8000,gid=8000
+DropCapability=ALL
+AddCapability=NET_BIND_SERVICE
+NoNewPrivileges=true
+PublishPort=222:22
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

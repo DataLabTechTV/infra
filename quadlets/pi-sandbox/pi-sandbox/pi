@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+pi_bin="/usr/local/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js"
+
+exec /usr/local/bin/nono run --profile nolabs-ai/pi -- "$pi_bin" "$@"

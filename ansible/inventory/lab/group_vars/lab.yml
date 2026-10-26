@@ -55,7 +55,7 @@ deployment_order:
   - coredns
   - llama-server
   - open-webui
-  - eca-server
+  - pi-sandbox
 
 routes:
   ca.lan:
@@ -74,15 +74,19 @@ routes:
     chat: 3000
   dev.lan:
     admin.dev: 9090
-    agent: 7777
   proxy.lan:
     admin.proxy: 9090
 
 tcp_routes:
-  ssh:
+  forgejo_ssh:
     source: 222
     targets:
       - host: forge.lan
+        port: 222
+  pi_sandbox_ssh:
+    source: 2222
+    targets:
+      - host: dev.lan
         port: 222
 
 step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"

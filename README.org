@@ -130,13 +130,14 @@ Ingress will be done through Traefik, so here we plan the hostnames and their ma
 |-------+----------------------+---------------------+----------------|
 | forge | Cockpit              | =admin.forge.lab.lan= | =forge.lan:9090= |
 |       | Forgejo              | =git.lab.lan=         | =forge.lan:3000= |
+|       | Forgejo (SSH)        | N/A                 | =forge.lan:222=  |
 |-------+----------------------+---------------------+----------------|
 | gpu   | Cockpit              | =admin.gpu.lab.lan=   | =gpu.lan:9090=   |
 |       | Llama Server         | =llm.lab.lan=         | =gpu.lan:8080=   |
 |       | Open WebUI           | =chat.lab.lan=        | =gpu.lan:3000=   |
 |-------+----------------------+---------------------+----------------|
 | dev   | Cockpit              | =admin.dev.lab.lan=   | =dev.lan:9090=   |
-|       | ECA Server           | =agent.lab.lan=       | =dev.lan:7777=   |
+|       | Pi Sandbox           | N/A                 | =dev.lan:222=    |
 |-------+----------------------+---------------------+----------------|
 | proxy | Cockpit              | =admin.proxy.lab.lan= | =proxy.lan:9090= |
 |       | Squid Cache          | N/A                 | =proxy.lan:3128= |

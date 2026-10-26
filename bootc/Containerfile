@@ -12,3 +12,5 @@ RUN sed -i \
 RUN sed -i \
     -e '/^\[extras\]/,/^\[/ { s|^mirrorlist=.*|baseurl=https://dl.rockylinux.org/pub/rocky/10/extras/$basearch/os/|; s|^#baseurl=.*||; }' \
     /etc/yum.repos.d/rocky-extras.repo
+
+RUN bootc container lint

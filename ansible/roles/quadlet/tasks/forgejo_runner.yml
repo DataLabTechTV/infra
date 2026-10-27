@@ -14,12 +14,6 @@
     enabled: true
     state: started
 
-- name: Create podman-in-podman graphroot directory
-  ansible.builtin.file:
-    path: "/var/lib/forgejo-runner/podman-storage"
-    state: directory
-    mode: "0700"
-
 - name: Authenticate with Forgejo
   ansible.builtin.include_role:
     name: forgejo

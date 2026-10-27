@@ -52,11 +52,10 @@ container:
   options: >-
     -v /etc/pki/ca-trust/source/anchors/root-ca.crt:/etc/local-ca/root-ca.crt:ro,z
     -v /etc/pki/tls/certs/ca-bundle.crt:/etc/local-ca/ca-bundle.crt:ro,z
-    -v /var/lib/forgejo-runner/podman-storage:/var/lib/containers/storage:z
+    -v /var/lib/containers
   valid_volumes:
     - /etc/pki/ca-trust/source/anchors/root-ca.crt
     - /etc/pki/tls/certs/ca-bundle.crt
-    - /var/lib/forgejo-runner/podman-storage
 
 host:
   workdir_parent: "/data/work"

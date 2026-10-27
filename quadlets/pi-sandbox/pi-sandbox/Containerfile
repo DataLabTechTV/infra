@@ -10,7 +10,7 @@ RUN apk add --no-cache bash ca-certificates-bundle git \
 
 # Optionals
 RUN apk add --no-cache python-3.15 uv rust-1.99 go-1.27 \
-    py3.13-ansible-core opentofu just file
+    py3.13-ansible-core opentofu just file kitty-terminfo
 
 ENV NONO_VERSION="v0.80.0"
 ENV NONO_INSTALL_DIR="/usr/local/bin"

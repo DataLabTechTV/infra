@@ -7,19 +7,18 @@ Requires=pi-sandbox-build.service
 [Container]
 Image=localhost/pi-sandbox:latest
 ContainerName=pi-sandbox
-Volume={{ quadlet_scoped_config_dir }}:/etc/pi-sandbox:ro
-Volume=/opt/pi-sandbox/models.json:/home/dev/.pi/agent/models.json:ro
+Volume=/etc/pi-sandbox/models.json:/home/dev/.pi/agent/models.json:ro
 Volume=pi-sandbox-workspace:/workspace
 Volume=pi-sandbox-home-dev:/home/dev
 Network=pi-sandbox.network
 HostName=pi-sandbox
 ReadOnly=true
+NoNewPrivileges=true
 DropCapability=ALL
 AddCapability=SYS_CHROOT
 AddCapability=SETUID
 AddCapability=SETGID
 AddCapability=CHOWN
-NoNewPrivileges=true
 PublishPort=2222:2222
 
 [Service]

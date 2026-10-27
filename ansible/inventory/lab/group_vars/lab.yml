@@ -119,6 +119,8 @@ openbao_secret_forgejo_tokens: "{{ openbao_secret_forgejo_prefix }}/tokens"
 llama_server_hf_repo: unsloth/gemma-4-E4B-it-GGUF
 llama_server_hf_file: gemma-4-E4B-it-Q4_K_M.gguf
 llama_server_alias: unsloth/gemma-4-E4B-it-GGUF:Q4_K_M
+llama_server_ctx_size: 51200
+llama_server_max_tokens: 4096
 
 
 # --- test ----

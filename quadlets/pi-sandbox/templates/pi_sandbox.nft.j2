@@ -1,0 +1,44 @@
+define pi_subnet        = 10.91.0.0/24
+define pi_gw            = 10.91.0.1
+define admin_net        = 192.168.1.0/24
+define llama_server_ip  = {{ hostvars[llama_server_host].ansible_facts.default_ipv4.address }}
+
+define bogons = {
+    0.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16,
+    172.16.0.0/12, 192.0.0.0/24, 192.168.0.0/16, 198.18.0.0/15, 224.0.0.0/3
+}
+
+table inet pi_sandbox {
+    chain input {
+        type filter hook input priority filter + 50; policy accept
+
+        ip saddr != $pi_subnet return
+        ct state { established, related } accept
+        ct state invalid drop
+        ip daddr $pi_gw meta l4proto { tcp, udp } th dport 53 accept
+        drop
+    }
+
+    chain forward {
+        type filter hook forward priority filter + 50; policy accept
+
+        ct state { established, related } accept
+        ct state invalid drop
+
+        ip daddr $pi_subnet ip saddr $admin_net tcp dport 2222 accept
+        ip daddr $pi_subnet drop
+
+        ip saddr != $pi_subnet return
+        ip daddr $llama_server_ip tcp dport 8080 accept
+        ip daddr $bogons drop
+        accept
+    }
+
+    chain output {
+        type filter hook output priority filter + 50; policy accept
+
+        ip daddr != $pi_subnet return
+        ct state { established, related } accept
+        drop
+    }
+}

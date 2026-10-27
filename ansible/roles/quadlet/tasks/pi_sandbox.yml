@@ -1,3 +1,19 @@
+- name: Set llama-server host
+  ansible.builtin.set_fact:
+    llama_server_host: >-
+      {{
+        groups['lab']
+        | map('extract', hostvars)
+        | selectattr('quadlets', 'contains', 'llama-server')
+        | map(attribute='inventory_hostname')
+        | first
+      }}
+
+- name: Gather facts from the llama-server host
+  ansible.builtin.setup:
+  delegate_to: "{{ llama_server_host }}"
+  delegate_facts: true
+
 - name: Deploy Pi sandbox templates
   ansible.builtin.include_tasks: templates.yml
 
@@ -6,6 +22,7 @@
     name: nftables
     enabled: true
     state: started
+  notify: "Restart {{ quadlet }} service"
 
 - name: Include Pi Sandbox nftables rules
   ansible.builtin.blockinfile:
@@ -13,9 +30,9 @@
     block: 'include "/etc/pi-sandbox/pi_sandbox.nft"'
     marker: '# {mark} ANSIBLE MANAGED PI SANDBOX'
     state: present
-  notify: Reload nftables
 
 - name: Reload nftables
   ansible.builtin.systemd_service:
     name: nftables
     state: reloaded
+  notify: "Restart {{ quadlet }} service"

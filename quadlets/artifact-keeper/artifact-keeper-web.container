@@ -1,0 +1,20 @@
+[Unit]
+Description=Artifact Keeper web UI
+PartOf=artifact-keeper.target
+After=artifact-keeper.target
+Requires=artifact-keeper.target
+
+[Container]
+Pod=artifact-keeper.pod
+ContainerName=artifact-keeper-web
+Image=ghcr.io/artifact-keeper/artifact-keeper-web:latest
+Network=artifact-keeper.network
+Environment=BACKEND_URL=http://artifact-keeper:8080
+PublishPort=3000:3000
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=multi-user.target

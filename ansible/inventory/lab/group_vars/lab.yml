@@ -50,7 +50,7 @@ deployment_order:
   - rustfs
   - forgejo
   - forgejo-runner
-  - squid
+  - artifact-keeper
   - traefik
   - coredns
   - llama-server
@@ -76,6 +76,7 @@ routes:
     admin.dev: 9090
   proxy.lan:
     admin.proxy: 9090
+    artifacts: 3000
 
 tcp_routes:
   forgejo_ssh:
@@ -115,6 +116,8 @@ openbao_secret_rustfs_admin: "{{ openbao_secret_rustfs_prefix }}/admin"
 openbao_secret_forgejo_prefix: "forge/forgejo"
 openbao_secret_forgejo_admin: "{{ openbao_secret_forgejo_prefix }}/admin"
 openbao_secret_forgejo_tokens: "{{ openbao_secret_forgejo_prefix }}/tokens"
+openbao_secret_artifact_keeper_prefix: "proxy/artifact_keeper"
+openbao_secret_artifact_keeper_secrets: "{{ openbao_secret_artifact_keeper_prefix }}/secrets"
 
 llama_server_hf_repo: unsloth/gemma-4-E4B-it-GGUF
 llama_server_hf_file: gemma-4-E4B-it-Q4_K_M.gguf

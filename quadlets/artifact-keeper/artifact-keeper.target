@@ -1,0 +1,11 @@
+[Unit]
+Description=Artifact Keeper
+Requires=artifact-keeper-pod.service
+Requires=artifact-keeper-backend.service
+Requires=artifact-keeper-web.service
+Requires=artifact-keeper-trivy.service
+Requires=artifact-keeper-scanner-adapter.service
+After=artifact-keeper-pod.service
+
+[Install]
+WantedBy=multi-user.target

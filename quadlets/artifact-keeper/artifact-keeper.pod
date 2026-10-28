@@ -1,0 +1,7 @@
+[Unit]
+Description=Artifact Keeper Pod
+PartOf=artifact-keeper.target
+
+[Pod]
+PodName=artifact-keeper
+Network=artifact-keeper.network

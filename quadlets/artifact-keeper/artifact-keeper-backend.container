@@ -1,0 +1,22 @@
+[Unit]
+Description=Artifact Keeper Backend
+PartOf=artifact-keeper.target
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Pod=artifact-keeper.pod
+Image=ghcr.io/artifact-keeper/artifact-keeper-backend:latest
+ContainerName=artifact-keeper-backend
+Volume=/etc/artifact-keeper:/etc/artifact-keeper:ro
+Volume=artifact-keeper-data.volume:/data
+Network=artifact-keeper.network
+EnvironmentFile=/etc/artifact-keeper/backend.env
+PublishPort=8080:8080
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

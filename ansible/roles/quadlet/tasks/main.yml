@@ -70,6 +70,7 @@
       - "*.service"
       - "*.timer"
       - "*.path"
+      - "*.target"
     file_type: file
   register: systemd_units
   delegate_to: localhost
@@ -88,7 +89,7 @@
     daemon_reload: true
     name: "{{ item.path | basename }}"
     enabled: true
-    state: "{{ 'started' if not item.path.endswith('.service') else omit }}"
+    state: "{{ 'started' if not item.path.endswith('.service') and not item.path.endswith('.target') else omit }}"
   loop: "{{ systemd_units.files }}"
 
 - name: Check for {{ quadlet }} quadlet build context

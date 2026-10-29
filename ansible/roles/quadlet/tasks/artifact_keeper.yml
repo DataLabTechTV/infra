@@ -1,5 +1,6 @@
 - name: Set DB name and user
   ansible.builtin.set_fact:
+    quadlet_activation_unit: artifact-keeper.target
     db_name: artifact_keeper
     db_user: artifact_keeper
 

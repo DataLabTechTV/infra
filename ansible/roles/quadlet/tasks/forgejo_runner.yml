@@ -6,7 +6,7 @@
     group: root
     mode: "0644"
   when: pki_bootstrap
-  notify: "Restart {{ quadlet }} service"
+  notify: "Restart {{ quadlet }}"
 
 - name: Enable Podman socket
   ansible.builtin.systemd_service:

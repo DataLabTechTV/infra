@@ -31,4 +31,4 @@
   loop: "{{ quadlet_templates.files }}"
   loop_control:
     label: "{{ item.path }}"
-  notify: "Restart {{ quadlet }} service"
+  notify: "Restart {{ quadlet }}"

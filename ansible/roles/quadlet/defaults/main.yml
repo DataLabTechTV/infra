@@ -1,5 +1,6 @@
 quadlet_dir: "{{ quadlets_dir }}/{{ quadlet }}"
 quadlet_scope: "system"
+quadlet_activation_unit: "{{ quadlet }}.service"
 
 # quadlet_scope: "system"
 systemd_system_dir: "/etc/systemd/system"

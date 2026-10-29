@@ -21,7 +21,7 @@
     group: "{{ quadlet_scoped_group }}"
     mode: "0644"
   when: quadlet_config.stat.exists and quadlet_config.stat.isdir
-  notify: "Restart {{ quadlet }} service"
+  notify: "Restart {{ quadlet }}"
 
 - name: "Deploy {{ quadlet }} quadlet files"
   ansible.builtin.copy:
@@ -41,7 +41,7 @@
     - "{{ quadlet_dir }}/*.artifact"
   loop_control:
     loop_var: item_quadlet_unit
-  notify: "Restart {{ quadlet }} service"
+  notify: "Restart {{ quadlet }}"
 
 - name: "Deploy templated {{ quadlet }} quadlet files"
   ansible.builtin.template:
@@ -61,7 +61,7 @@
     - "{{ quadlet_dir }}/*.artifact.j2"
   loop_control:
     loop_var: item_quadlet_template
-  notify: "Restart {{ quadlet }} service"
+  notify: "Restart {{ quadlet }}"
 
 - name: "Find auxiliary systemd units for {{ quadlet }} quadlet"
   ansible.builtin.find:
@@ -82,14 +82,28 @@
     dest: "{{ systemd_scoped_dir }}/"
     mode: "0644"
   loop: "{{ systemd_units.files }}"
+  notify: "Restart {{ quadlet }}"
 
+# ------------------------------------------------------------------------------
+# NOTE: This could be improved. Read below to understand the overall logic.
+#
+# We assume that service units will be configured exclusively as dependencies in
+# quadlet units, and that target units are used to start multi-unit quadlets, as
+# opposed to directly starting a single quadlet container, which is the default.
+# ------------------------------------------------------------------------------
 - name: "Enable and start auxiliary systemd units for {{ quadlet }} quadlet"
   ansible.builtin.systemd_service:
     scope: "{{ quadlet_scope }}"
     daemon_reload: true
     name: "{{ item.path | basename }}"
     enabled: true
-    state: "{{ 'started' if not item.path.endswith('.service') and not item.path.endswith('.target') else omit }}"
+    state: >-
+      {{
+        omit
+          if item.path.endswith('.service')
+          or item.path.endswith('.target')
+        else 'started'
+      }}
   loop: "{{ systemd_units.files }}"
 
 - name: Check for {{ quadlet }} quadlet build context
@@ -107,7 +121,7 @@
     group: "{{ quadlet_scoped_group }}"
     mode: "0755"
   when: quadlet_ctx.stat.exists and quadlet_ctx.stat.isdir
-  notify: "Restart {{ quadlet }} service"
+  notify: "Restart {{ quadlet }}"
 
 - name: Quadlet-specific configuration
   ansible.builtin.include_tasks: "{{ quadlet | replace('-', '_') }}.yml"

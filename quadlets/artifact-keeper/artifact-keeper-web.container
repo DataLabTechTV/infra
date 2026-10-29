@@ -9,7 +9,7 @@ Pod=artifact-keeper.pod
 ContainerName=artifact-keeper-web
 Image=ghcr.io/artifact-keeper/artifact-keeper-web:latest
 Network=artifact-keeper.network
-Environment=BACKEND_URL=http://artifact-keeper:8080
+Environment=BACKEND_URL=http://artifact-keeper-backend:8080
 PublishPort=3000:3000
 
 [Service]

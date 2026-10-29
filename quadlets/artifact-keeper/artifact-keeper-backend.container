@@ -12,6 +12,7 @@ Volume=/etc/artifact-keeper:/etc/artifact-keeper:ro
 Volume=artifact-keeper-data.volume:/data
 Network=artifact-keeper.network
 EnvironmentFile=/etc/artifact-keeper/backend.env
+Secret=ak_admin_password,type=env,target=ADMIN_PASSWORD
 PublishPort=8080:8080
 
 [Service]

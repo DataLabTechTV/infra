@@ -118,6 +118,7 @@ openbao_secret_forgejo_admin: "{{ openbao_secret_forgejo_prefix }}/admin"
 openbao_secret_forgejo_tokens: "{{ openbao_secret_forgejo_prefix }}/tokens"
 openbao_secret_artifact_keeper_prefix: "proxy/artifact_keeper"
 openbao_secret_artifact_keeper_secrets: "{{ openbao_secret_artifact_keeper_prefix }}/secrets"
+openbao_secret_artifact_keeper_admin: "{{ openbao_secret_artifact_keeper_prefix }}/admin"
 
 llama_server_hf_repo: unsloth/gemma-4-E4B-it-GGUF
 llama_server_hf_file: gemma-4-E4B-it-Q4_K_M.gguf

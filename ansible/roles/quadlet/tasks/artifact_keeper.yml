@@ -19,5 +19,24 @@
     secret_passwords:
       - jwt_secret
 
+- name: Setup Artifact Keeper credentials
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_artifact_keeper_admin }}"
+    secret_fact: artifact_keeper_admin
+    secret_values:
+        username: admin
+    secret_passwords:
+      - password
+
+- name: Create Artifact Keeper ak_admin_password secret
+  containers.podman.podman_secret:
+    name: ak_admin_password
+    data: "{{ artifact_keeper_admin.password }}"
+    state: present
+  no_log: true
+
 - name: Deploy Artifact Keeper templates
   ansible.builtin.include_tasks: templates.yml

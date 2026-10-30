@@ -1,0 +1,98 @@
+- name: Define Artifact Keeper remote repositories
+  ansible.builtin.set_fact:
+    artifact_keeper_repositories:
+      - key: dockerhub
+        name: Docker Hub
+        format: docker
+        repo_type: remote
+        upstream_url: https://registry-1.docker.io
+
+      - key: quay
+        name: Quay
+        format: docker
+        repo_type: remote
+        upstream_url: https://quay.io
+
+      - key: ghcr
+        name: GitHub Container Registry
+        format: docker
+        repo_type: remote
+        upstream_url: https://ghcr.io
+
+      - key: cargo
+        name: Cargo
+        format: cargo
+        repo_type: remote
+        upstream_url: https://crates.io
+
+      - key: pypi
+        name: PyPI
+        format: pypi
+        repo_type: remote
+        upstream_url: https://pypi.org
+
+      - key: go
+        name: Go Modules
+        format: go
+        repo_type: remote
+        upstream_url: https://proxy.golang.org
+
+      - key: rocky-10-baseos
+        name: Rocky Linux 10 BaseOS
+        format: rpm
+        repo_type: remote
+        upstream_url: https://dl.rockylinux.org/pub/rocky/10/BaseOS/x86_64/os/
+
+      - key: rocky-10-appstream
+        name: Rocky Linux 10 AppStream
+        format: rpm
+        repo_type: remote
+        upstream_url: https://dl.rockylinux.org/pub/rocky/10/AppStream/x86_64/os/
+
+      - key: alpine-main
+        name: Alpine Main
+        format: alpine
+        repo_type: remote
+        upstream_url: "https://dl-cdn.alpinelinux.org/alpine/latest-stable/main"
+
+      - key: alpine-community
+        name: Alpine Community
+        format: alpine
+        repo_type: remote
+        upstream_url: "https://dl-cdn.alpinelinux.org/alpine/latest-stable/community"
+
+- name: Get existing Artifact Keeper repositories
+  ansible.builtin.uri:
+    url: "{{ artifact_keeper_addr }}/api/v1/repositories"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ artifact_keeper_token }}"
+    return_content: true
+    status_code: 200
+  register: artifact_keeper_existing
+  no_log: true
+
+- name: Extract existing repository keys
+  ansible.builtin.set_fact:
+    artifact_keeper_existing_keys: >-
+      {{
+        artifact_keeper_existing.json['items']
+        | map(attribute='key')
+        | list
+      }}
+
+- name: Create missing Artifact Keeper repositories
+  ansible.builtin.uri:
+    url: "{{ artifact_keeper_addr }}/api/v1/repositories"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ artifact_keeper_token }}"
+      Content-Type: application/json
+    body: "{{ item }}"
+    body_format: json
+    status_code: [200, 201]
+  loop: "{{ artifact_keeper_repositories }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: item.key not in artifact_keeper_existing_keys
+  no_log: true

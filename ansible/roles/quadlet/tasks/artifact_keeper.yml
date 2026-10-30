@@ -40,3 +40,13 @@
 
 - name: Deploy Artifact Keeper templates
   ansible.builtin.include_tasks: templates.yml
+
+- name: Authenticate with Artifact Keeper
+  ansible.builtin.include_role:
+    name: artifact_keeper
+    tasks_from: auth
+
+- name: Setup repositories in Artifact Keeper
+  ansible.builtin.include_role:
+    name: artifact_keeper
+    tasks_from: repositories

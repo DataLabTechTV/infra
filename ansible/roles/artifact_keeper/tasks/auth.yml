@@ -1,0 +1,36 @@
+- name: Unseal OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: unseal
+
+- name: Authenticate with OpenBao
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: auth
+
+- name: Read Artifact Keeper credentials
+  community.hashi_vault.vault_kv2_get:
+    url: "{{ openbao_addr }}"
+    token: "{{ openbao_iac_token }}"
+    engine_mount_point: kv
+    path: "{{ openbao_secret_artifact_keeper_admin }}"
+  register: artifact_keeper_admin
+  no_log: true
+
+- name: Authenticate with Artifact Keeper
+  ansible.builtin.uri:
+    url: "{{ artifact_keeper_addr }}/api/v1/auth/login"
+    method: POST
+    body_format: json
+    body:
+      username: "{{ artifact_keeper_admin.secret.username }}"
+      password: "{{ artifact_keeper_admin.secret.password }}"
+    status_code: 200
+    return_content: true
+  register: artifact_keeper_login
+  no_log: true
+
+- name: Store Artifact Keeper access token
+  ansible.builtin.set_fact:
+    artifact_keeper_token: "{{ artifact_keeper_login.json.access_token }}"
+  no_log: true

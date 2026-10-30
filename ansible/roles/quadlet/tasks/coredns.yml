@@ -1,2 +1,18 @@
+- name: Set traefik host
+  ansible.builtin.set_fact:
+    traefik_host: >-
+      {{
+        groups[context]
+        | map('extract', hostvars)
+        | selectattr('quadlets', 'contains', 'traefik')
+        | map(attribute='inventory_hostname')
+        | first
+      }}
+
+- name: Gather facts from the traefik host
+  ansible.builtin.setup:
+  delegate_to: "{{ traefik_host }}"
+  delegate_facts: true
+
 - name: Deploy coredns templates
   ansible.builtin.include_tasks: templates.yml

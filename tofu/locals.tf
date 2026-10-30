@@ -4,15 +4,15 @@ locals {
   contexts = {
     lab = {
       vms = {
-        ca = {
+        core = {
           vm_id = 301
           cpu = {
             cores = 4
-            hotplugged = 1
+            hotplugged = 2
           }
           memory = {
-            dedicated = 1024
-            floating = 1024
+            dedicated = 2048
+            floating = 2048
           }
           size = 16
         },
@@ -20,7 +20,7 @@ locals {
           vm_id = 302
           cpu = {
             cores = 8
-            hotplugged = 2
+            hotplugged = 4
           }
           memory = {
             dedicated = 2048
@@ -47,8 +47,8 @@ locals {
             hotplugged = 8
           }
           memory = {
-            dedicated = 8192
-            floating  = 8192
+            dedicated = 7168
+            floating  = 7168
           }
           size = 200
         },
@@ -59,8 +59,8 @@ locals {
             hotplugged = 8
           }
           memory = {
-            dedicated = 12288
-            floating = 12288
+            dedicated = 10240
+            floating = 10240
           }
           size = 150
           gpu = true

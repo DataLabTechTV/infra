@@ -31,9 +31,9 @@
     secret_passwords:
       - password
 
-- name: Create Artifact Keeper ak_admin_password secret
+- name: Create Artifact Keeper admin password secret
   containers.podman.podman_secret:
-    name: ak_admin_password
+    name: artifact_keeper_admin_password
     data: "{{ artifact_keeper_admin.password }}"
     state: present
   no_log: true

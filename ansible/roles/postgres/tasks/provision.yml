@@ -22,7 +22,7 @@
     name: postgres
     tasks_from: auth
 
-- name: Create DB user
+- name: "Create {{ db.username }} PostgreSQL user"
   community.postgresql.postgresql_user:
     name: "{{ db.username }}"
     password: "{{ db.password }}"
@@ -30,7 +30,7 @@
     login_port: "{{ postgres_port }}"
     login_password: "{{ postgres_password }}"
 
-- name: Create DB
+- name: "Create {{ db_name }} PostgreSQL database"
   community.postgresql.postgresql_db:
     name: "{{ db_name }}"
     owner: "{{ db.username }}"

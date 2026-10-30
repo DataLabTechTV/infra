@@ -6,38 +6,49 @@ ENV LANG=C.UTF-8
 RUN echo 'install_weak_deps=False' >>'/etc/dnf/dnf.conf'
 
 # Enable required repos
-RUN dnf -y install dnf-plugins-core epel-release \
-    && dnf config-manager --set-enabled crb
+RUN dnf -y install dnf-plugins-core epel-release && \
+    dnf config-manager --set-enabled crb && \
+    dnf clean all
 
 # Base
-RUN dnf -y install ca-certificates curl wget gnupg2
+RUN dnf -y install ca-certificates curl wget gnupg2 && \
+    dnf clean all
 
 # VCS
-RUN dnf -y install git git-lfs openssh-clients rsync
+RUN dnf -y install git git-lfs openssh-clients rsync && \
+    dnf clean all
 
 # Build tools
-RUN dnf -y install gcc gcc-c++ make cmake pkgconf-pkg-config
+RUN dnf -y install gcc gcc-c++ make cmake pkgconf-pkg-config && \
+    dnf clean all
 
 # Compression
-RUN dnf -y install zip unzip tar gzip xz
+RUN dnf -y install zip unzip tar gzip xz && \
+    dnf clean all
 
 # Tools
-RUN dnf -y install jq sudo glibc-langpack-en tzdata file bc gettext-envsubst
+RUN dnf -y install jq sudo glibc-langpack-en tzdata file bc gettext-envsubst && \
+    dnf clean all
 
 # Containers
-RUN dnf -y install podman
+RUN dnf -y install podman && \
+    dnf clean all
 
 # Python
-RUN dnf -y install python3 python3-pip
+RUN dnf -y install python3 python3-pip && \
+    dnf clean all
 
 # Node
-RUN dnf -y install nodejs npm
+RUN dnf -y install nodejs npm && \
+    dnf clean all
 
 # Go
-RUN dnf -y install golang
+RUN dnf -y install golang && \
+    dnf clean all
 
 # Rust
-RUN dnf -y install rust cargo
+RUN dnf -y install rust cargo && \
+    dnf clean all
 
 # Podman-in-podman dependencies
 COPY storage.conf /etc/containers/storage.conf
@@ -50,7 +61,12 @@ COPY uv.toml /etc/uv/uv.toml
 COPY root-ca.crt /etc/pki/ca-trust/source/anchors/root-ca.crt
 RUN update-ca-trust
 
-# Remote cache and temporary files
-RUN dnf clean all
+# Artifact Keeper Repositories
+COPY artifact-keeper.conf /etc/containers/registries.conf.d/artifact-keeper.conf
+COPY artifact-keeper.repo /etc/yum.repos.d/artifact-keeper.repo
+
+# Disable default repos in favor of Artifact Keeper's
+RUN dnf config-manager --set-disabled baseos appstream extras crb && \
+    dnf clean all
 
 WORKDIR /workspace

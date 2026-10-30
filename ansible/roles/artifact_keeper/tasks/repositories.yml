@@ -1,65 +1,89 @@
 - name: Define Artifact Keeper remote repositories
   ansible.builtin.set_fact:
     artifact_keeper_repositories:
-      - key: dockerhub
+      - key: docker-hub
         name: Docker Hub
         format: docker
         repo_type: remote
         upstream_url: https://registry-1.docker.io
+        is_public: true
 
       - key: quay
         name: Quay
         format: docker
         repo_type: remote
         upstream_url: https://quay.io
+        is_public: true
 
       - key: ghcr
         name: GitHub Container Registry
         format: docker
         repo_type: remote
         upstream_url: https://ghcr.io
+        is_public: true
 
       - key: cargo
         name: Cargo
         format: cargo
         repo_type: remote
         upstream_url: https://crates.io
+        is_public: true
 
       - key: pypi
         name: PyPI
         format: pypi
         repo_type: remote
         upstream_url: https://pypi.org
+        is_public: true
 
       - key: go
         name: Go Modules
         format: go
         repo_type: remote
         upstream_url: https://proxy.golang.org
+        is_public: true
 
       - key: rocky-10-baseos
         name: Rocky Linux 10 BaseOS
         format: rpm
         repo_type: remote
         upstream_url: https://dl.rockylinux.org/pub/rocky/10/BaseOS/x86_64/os/
+        is_public: true
 
       - key: rocky-10-appstream
         name: Rocky Linux 10 AppStream
         format: rpm
         repo_type: remote
         upstream_url: https://dl.rockylinux.org/pub/rocky/10/AppStream/x86_64/os/
+        is_public: true
+
+      - key: rocky-10-extras
+        name: Rocky Linux 10 Extras
+        format: rpm
+        repo_type: remote
+        upstream_url: https://dl.rockylinux.org/pub/rocky/10/extras/x86_64/os/
+        is_public: true
+
+      - key: rocky-10-crb
+        name: Rocky Linux 10 CRB
+        format: rpm
+        repo_type: remote
+        upstream_url: https://dl.rockylinux.org/pub/rocky/10/CRB/x86_64/os/
+        is_public: true
 
       - key: alpine-main
         name: Alpine Main
         format: alpine
         repo_type: remote
-        upstream_url: "https://dl-cdn.alpinelinux.org/alpine/latest-stable/main"
+        upstream_url: https://dl-cdn.alpinelinux.org/alpine/latest-stable/main
+        is_public: true
 
       - key: alpine-community
         name: Alpine Community
         format: alpine
         repo_type: remote
-        upstream_url: "https://dl-cdn.alpinelinux.org/alpine/latest-stable/community"
+        upstream_url: https://dl-cdn.alpinelinux.org/alpine/latest-stable/community
+        is_public: true
 
 - name: Get existing Artifact Keeper repositories
   ansible.builtin.uri:

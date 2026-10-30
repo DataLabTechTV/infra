@@ -73,28 +73,28 @@ We'll need the following quadlets, deployed in order:
 - postgres :: Generic database solution (integrates with most services, has multiple useful extensions).
 - rustfs :: Object storage.
 - forgejo :: Git repositories and CI/CD.
-- squid :: Proxy cache, useful for caching ~dnf~, ~pip~, ~cargo~, etc.
+- artifact-keeper :: Artifact repository, useful for caching container images and packages (RPM, PyPI, Cargo, etc.).
 - traefik :: Manages certificates and routes services as required.
 - coredns :: Authoritative DNS for the actice context.
 - llama-server :: Serves LLM models from Hugging Face.
 - open-webui :: Provides a richer UI to interact with the LLMs.
-- eca-server :: Runs the ECA server and serves as development machine via SSH.
+- pi-sandbox :: Runs the Pi agent, wrapped in ~nono~, in a hardened container, and serves as the development machine, via SSH.
 
 Dependencies are as follows:
 
-| Service      | Dependencies      |
-|--------------+-------------------|
-| step-ca      | N/A               |
-| openbao      | N/A               |
-| postgres     | openbao           |
-| rustfs       | openbao           |
-| forgejo      | openbao, postgres |
-| squid        | step-ca           |
-| traefik      | step-ca           |
-| coredns      | N/A               |
-| llama-server | N/A               |
-| open-webui   | llama-server      |
-| eca-server   | llama-server      |
+| Service         | Dependencies      |
+|-----------------+-------------------|
+| step-ca         | N/A               |
+| openbao         | N/A               |
+| postgres        | openbao           |
+| rustfs          | openbao           |
+| forgejo         | openbao, postgres |
+| artifact-keeper | step-ca           |
+| traefik         | step-ca           |
+| coredns         | N/A               |
+| llama-server    | N/A               |
+| open-webui      | llama-server      |
+| pi-sandbox      | llama-server      |
 
 * Topology
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
@@ -102,16 +102,16 @@ This repo can contain more than one deployment, each one being assigned a specif
 ** Lab
 |     *VM* | *Host*  | *vCPUs* | *RAM*    | *HDD*     | *Services*                  |
 |--------+-------+-------+--------+---------+---------------------------|
-|    301 | ca    |     1 | 1 GiB  | 16 GiB  | step-ca                   |
-|    302 | proxy |     2 | 2 GiB  | 200 GiB | squid, traefik, coredns   |
+|    301 | core  |     2 | 2 GiB  | 16 GiB  | coredns, step-ca          |
+|    302 | proxy |     4 | 2 GiB  | 200 GiB | artifact-keeper, traefik  |
 |    303 | data  |     4 | 6 GiB  | 100 GiB | openbao, postgres, rustfs |
-|    304 | forge |     8 | 8 GiB  | 100 GiB | forgejo, forgejo-runner   |
-|    305 | gpu   |     8 | 12 GiB | 150 GiB | llama-server, open-webui  |
-|    306 | dev   |     4 | 2 GiB  | 50 GiB  | eca-server                |
+|    304 | forge |     8 | 7 GiB  | 100 GiB | forgejo, forgejo-runner   |
+|    305 | gpu   |     8 | 10 GiB | 150 GiB | llama-server, open-webui  |
+|    306 | dev   |     4 | 2 GiB  | 50 GiB  | pi-sandbox                |
 |--------+-------+-------+--------+---------+---------------------------|
-| *Totals* | 6     |    27 | 31 GiB | 616 GiB | 12                        |
+| *Totals* | 6     |    30 | 29 GiB | 616 GiB | 12                        |
 
-*Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float. I'm also overcommitting vCPUs (27 out of 16) and stretching the RAM quite thin (31 GiB out of 32 GiB, with the Proxmox host OS also running).
+*Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float. I'm also overcommitting vCPUs (30 out of 16) and stretching the RAM quite thin (29 GiB out of 32 GiB, with 3 GiB for Proxmox).
 
 * Ingress
 Ingress will be done through Traefik, so here we plan the hostnames and their mappings. As a rule-of-thumb, hostnames will live under the =.<context>.lan= domain (e.g., =.lab.lan=).
@@ -119,8 +119,9 @@ Ingress will be done through Traefik, so here we plan the hostnames and their ma
 ** Lab
 | Host  | Service              | Traefik             | VM             |
 |-------+----------------------+---------------------+----------------|
-| ca    | step-ca              | N/A                 | =ca.lan=         |
-|       | Cockpit              | =admin.ca.lab.lan=    | =ca.lan:9090=    |
+| core  | CoreDNS              | N/A                 | =core.lan:53=    |
+|       | step-ca              | N/A                 | =core.lan=       |
+|       | Cockpit              | =admin.core.lab.lan=  | =core.lan:9090=  |
 |-------+----------------------+---------------------+----------------|
 | data  | Cockpit              | =admin.data.lab.lan=  | =data.lan:9090=  |
 |       | OpenBao              | =vault.lab.lan=       | =data.lan:8200=  |
@@ -140,6 +141,5 @@ Ingress will be done through Traefik, so here we plan the hostnames and their ma
 |       | Pi Sandbox           | N/A                 | =dev.lan:222=    |
 |-------+----------------------+---------------------+----------------|
 | proxy | Cockpit              | =admin.proxy.lab.lan= | =proxy.lan:9090= |
-|       | Squid Cache          | N/A                 | =proxy.lan:3128= |
+|       | Artifact Keeper      | =artifacts.lab.lan=   | =proxy.lan:8080= |
 |       | Traefik (Dashboard)  | =traefik.lab.lan=     | =proxy.lan:8080= |
-|       | CoreDNS              | N/A                 | =proxy.lan:53=   |

@@ -71,6 +71,34 @@
         upstream_url: https://dl.rockylinux.org/pub/rocky/10/CRB/x86_64/os/
         is_public: true
 
+      - key: fedora-45
+        name: Fedora 45
+        format: rpm
+        repo_type: remote
+        upstream_url: https://dl.fedoraproject.org/pub/fedora/linux/releases/45/Everything/x86_64/os/
+        is_public: true
+
+      - key: fedora-45-updates
+        name: Fedora 45 Updates
+        format: rpm
+        repo_type: remote
+        upstream_url: https://dl.fedoraproject.org/pub/fedora/linux/updates/45/Everything/x86_64/
+        is_public: true
+
+      - key: fedora-45-multimedia
+        name: Fedora 45 Multimedia (Negativo17)
+        format: rpm
+        repo_type: remote
+        upstream_url: https://negativo17.org/repos/multimedia/fedora-45/x86_64/
+        is_public: true
+
+      - key: terra-45
+        name: Terra 45
+        format: rpm
+        repo_type: remote
+        upstream_url: https://repos.fyralabs.com/terra45
+        is_public: true
+
       - key: alpine-main
         name: Alpine Main
         format: alpine

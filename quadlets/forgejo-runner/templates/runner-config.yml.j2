@@ -25,7 +25,8 @@ runner:
     CARGO_HTTP_CAINFO: /etc/local-ca/ca-bundle.crt
 
     PIP_INDEX_URL: https://artifacts.lab.lan/pypi/simple
-    GOPROXY: https://artifacts.lab.lan/go/go/
+    GOPROXY: https://artifacts.lab.lan/go/go,direct
+    GONOSUMCHECK: '*'
     CARGO_REGISTRIES_ARTIFACT_KEEPER_INDEX: sparse+https://artifacts.lab.lan/cargo/cargo/index/
     CARGO_REGISTRY_DEFAULT: artifact-keeper
 

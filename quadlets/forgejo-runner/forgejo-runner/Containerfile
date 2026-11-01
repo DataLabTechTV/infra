@@ -62,7 +62,6 @@ COPY root-ca.crt /etc/pki/ca-trust/source/anchors/root-ca.crt
 RUN update-ca-trust
 
 # Artifact Keeper Repositories
-COPY artifact-keeper.conf /etc/containers/registries.conf.d/artifact-keeper.conf
 COPY artifact-keeper.repo /etc/yum.repos.d/artifact-keeper.repo
 
 # Disable default repos in favor of Artifact Keeper's

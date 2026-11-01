@@ -89,5 +89,13 @@
         else forgejo_register.stdout | trim
       }}
 
+- name: Configure Artifact Keeper registry rewrites
+  ansible.builtin.copy:
+    src: "{{ quadlet_dir }}/config/artifact-keeper.conf"
+    dest: /etc/containers/registries.conf.d/artifact-keeper.conf
+    owner: root
+    group: root
+    mode: "0644"
+
 - name: Deploy Forgejo runner templates
   ansible.builtin.include_tasks: templates.yml

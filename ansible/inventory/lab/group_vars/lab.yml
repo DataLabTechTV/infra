@@ -60,8 +60,8 @@ deployment_order:
   - pi-sandbox
 
 routes:
-  ca.lan:
-    admin.ca: 9090
+  core.lan:
+    admin.core: 9090
   data.lan:
     admin.data: 9090
     vault: 8200

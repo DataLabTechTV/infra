@@ -1,0 +1,34 @@
+[artifact-keeper-rocky-10-baseos]
+name=Rocky Linux 10 BaseOS (Artifact Keeper)
+baseurl=https://artifacts.lab.lan/rpm/rocky-10-baseos
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+
+[artifact-keeper-rocky-10-appstream]
+name=Rocky Linux 10 AppStream (Artifact Keeper)
+baseurl=https://artifacts.lab.lan/rpm/rocky-10-appstream
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+
+[artifact-keeper-rocky-10-extras]
+name=Rocky Linux 10 Extras (Artifact Keeper)
+baseurl=https://artifacts.lab.lan/rpm/rocky-10-extras
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+
+[artifact-keeper-rocky-10-crb]
+name=Rocky Linux 10 CRB (Artifact Keeper)
+baseurl=https://artifacts.lab.lan/rpm/rocky-10-crb
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0
+
+[artifact-keeper-epel-10]
+name=EPEL 10 (Artifact Keeper)
+baseurl=https://artifacts.lab.lan/rpm/epel-10
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0

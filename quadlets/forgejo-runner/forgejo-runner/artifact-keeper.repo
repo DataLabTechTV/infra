@@ -25,3 +25,10 @@ baseurl=https://artifacts.lab.lan/rpm/rocky-10-crb
 enabled=1
 gpgcheck=1
 repo_gpgcheck=0
+
+[artifact-keeper-epel-10]
+name=EPEL 10 (Artifact Keeper)
+baseurl=https://artifacts.lab.lan/rpm/epel-10
+enabled=1
+gpgcheck=1
+repo_gpgcheck=0

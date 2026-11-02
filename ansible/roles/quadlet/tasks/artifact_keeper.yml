@@ -50,3 +50,25 @@
   ansible.builtin.include_role:
     name: artifact_keeper
     tasks_from: repositories
+
+- name: Disable existing Rocky Linux YUM repositories
+  ansible.builtin.command:
+    cmd: >-
+      dnf config-manager --set-disabled
+        baseos appstream extras crb epel
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+  become: true
+  run_once: true
+
+- name: Configure Artifact Keeper Rocky Linux YUM repositories
+  ansible.builtin.copy:
+    src: "{{ quadlet_dir }}/config/artifact-keeper.repo"
+    dest: /etc/yum.repos.d/artifact-keeper.repo
+    owner: root
+    group: root
+    mode: "0644"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['all'] }}"
+  become: true
+  run_once: true

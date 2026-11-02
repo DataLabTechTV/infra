@@ -113,18 +113,11 @@
         upstream_url: https://repos.fyralabs.com/terra44
         is_public: true
 
-      - key: alpine-main
-        name: Alpine Main
+      - key: alpine
+        name: Alpine Linux
         format: alpine
         repo_type: remote
-        upstream_url: https://dl-cdn.alpinelinux.org/alpine/latest-stable/main
-        is_public: true
-
-      - key: alpine-community
-        name: Alpine Community
-        format: alpine
-        repo_type: remote
-        upstream_url: https://dl-cdn.alpinelinux.org/alpine/latest-stable/community
+        upstream_url: https://dl-cdn.alpinelinux.org/alpine
         is_public: true
 
 - name: Get existing Artifact Keeper repositories

@@ -85,6 +85,13 @@
         upstream_url: https://dl.fedoraproject.org/pub/fedora/linux/updates/44/Everything/x86_64/
         is_public: true
 
+      - key: fedora-44-updates-archive
+        name: Fedora 44 Updates Archive
+        format: rpm
+        repo_type: remote
+        upstream_url: https://fedoraproject-updates-archive.fedoraproject.org/fedora/44/x86_64/
+        is_public: true
+
       - key: fedora-44-multimedia
         name: Fedora 44 Multimedia (Negativo17)
         format: rpm

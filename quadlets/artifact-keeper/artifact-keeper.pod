@@ -5,3 +5,5 @@ PartOf=artifact-keeper.target
 [Pod]
 PodName=artifact-keeper
 Network=artifact-keeper.network
+# PublishPort=8080:8080
+PublishPort=3000:3000

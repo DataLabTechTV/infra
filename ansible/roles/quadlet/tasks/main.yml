@@ -71,6 +71,7 @@
       - "*.timer"
       - "*.path"
       - "*.target"
+      - "*.slice"
     file_type: file
   register: systemd_units
   delegate_to: localhost

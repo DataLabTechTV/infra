@@ -1,18 +1,17 @@
 [Unit]
 Description=Artifact Keeper web UI
 PartOf=artifact-keeper.target
-After=artifact-keeper.target
-Requires=artifact-keeper.target
+After=artifact-keeper-backend.service
+Wants=artifact-keeper-backend.service
 
 [Container]
 Pod=artifact-keeper.pod
 ContainerName=artifact-keeper-web
 Image=ghcr.io/artifact-keeper/artifact-keeper-web:latest
-Network=artifact-keeper.network
 Environment=BACKEND_URL=http://artifact-keeper-backend:8080
-PublishPort=3000:3000
 
 [Service]
+Slice=artifact-keeper.slice
 Restart=always
 TimeoutStartSec=900
 

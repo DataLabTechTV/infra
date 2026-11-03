@@ -1,0 +1,7 @@
+[Unit]
+Description=Artifact Keeper resource limits
+
+[Slice]
+MemoryAccounting=yes
+MemoryHigh=1.3G
+MemoryMax=1.5G

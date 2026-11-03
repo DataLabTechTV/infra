@@ -30,7 +30,7 @@ forgejo_ssh_addr: "ssh://git@{{ forgejo_host }}:222"
 forgejo_admin_user: "forgejo"
 forgejo_admin_email: "forgejo@forge.lan"
 
-artifact_keeper_addr: "http://proxy.lan:8080"
+artifact_keeper_addr: "https://artifacts.lab.lan"
 
 
 # --- configure ---

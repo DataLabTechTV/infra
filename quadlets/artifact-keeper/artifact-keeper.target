@@ -1,10 +1,6 @@
 [Unit]
 Description=Artifact Keeper
-Requires=artifact-keeper-pod.service
-Requires=artifact-keeper-backend.service
-Requires=artifact-keeper-web.service
-Requires=artifact-keeper-trivy.service
-Requires=artifact-keeper-scanner-adapter.service
+Requires=artifact-keeper-pod.service artifact-keeper-backend.service artifact-keeper-web.service
 After=artifact-keeper-pod.service
 
 [Install]

@@ -26,7 +26,7 @@
         name: Cargo
         format: cargo
         repo_type: remote
-        upstream_url: https://crates.io
+        upstream_url: https://index.crates.io
         is_public: true
 
       - key: pypi

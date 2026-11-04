@@ -1,0 +1,41 @@
+- name: Set LiteLLM DB name and user
+  ansible.builtin.set_fact:
+    db_name: litellm
+    db_user: litellm
+
+- name: Provision LiteLLM database
+  ansible.builtin.include_role:
+    name: postgres
+    tasks_from: provision
+
+- name: Setup LiteLLM keys
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_litellm_keys }}"
+    secret_fact: litellm_keys
+    secret_passwords:
+      - master_key
+      - salt_key
+
+- name: Create LiteLLM database URL secret
+  containers.podman.podman_secret:
+    name: litellm_database_url
+    data: "postgresql://{{ db.username }}:{{ db.password }}@{{ postgres_host }}:{{ postgres_port}}/{{ db_name }}"
+    state: present
+  no_log: true
+
+- name: Create LiteLLM master key secret
+  containers.podman.podman_secret:
+    name: litellm_master_key
+    data: "sk-{{ litellm_keys.master_key }}"
+    state: present
+  no_log: true
+
+- name: Create LiteLLM salt key secret
+  containers.podman.podman_secret:
+    name: litellm_salt_key
+    data: "sk-{{ litellm_keys.salt_key }}"
+    state: present
+  no_log: true

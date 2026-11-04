@@ -1,0 +1,24 @@
+[Unit]
+Description=LiteLLM
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=ghcr.io/berriai/litellm:v1.106.7@sha256:be24d7da11f4063ca23fbff6689bac5ded14fe4fc645e07f36588636969f1c27
+ContainerName=litellm
+Volume=/etc/litellm:/etc/litellm:ro
+Volume=litellm-data.volume:/data
+Network=llama-server.network
+EnvironmentFile=/etc/litellm/environment
+Secret=litellm_database_url,type=env,target=DATABASE_URL
+Secret=litellm_master_key,type=env,target=LITELLM_MASTER_KEY
+Secret=litellm_salt_key,type=env,target=LITELLM_SALT_KEY
+PublishPort=4000:4000
+Exec=--config /etc/litellm/config.yaml
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

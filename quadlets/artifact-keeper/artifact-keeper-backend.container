@@ -11,6 +11,8 @@ ContainerName=artifact-keeper-backend
 Volume=/etc/artifact-keeper:/etc/artifact-keeper:ro
 Volume=artifact-keeper-data.volume:/data
 EnvironmentFile=/etc/artifact-keeper/backend.env
+Secret=artifact_keeper_database_url,type=env,target=DATABASE_URL
+Secret=artifact_keeper_jwt_secret,type=env,target=JWT_SECRET
 Secret=artifact_keeper_admin_password,type=env,target=ADMIN_PASSWORD
 
 [Service]

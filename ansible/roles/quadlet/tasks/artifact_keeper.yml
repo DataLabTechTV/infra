@@ -31,6 +31,20 @@
     secret_passwords:
       - password
 
+- name: Create Artifact Keeper database URL secret
+  containers.podman.podman_secret:
+    name: artifact_keeper_database_url
+    data: "postgresql://{{ db.username }}:{{ db.password }}@{{ postgres_host }}:{{ postgres_port}}/{{ db_name }}"
+    state: present
+  no_log: true
+
+- name: Create Artifact Keeper JWT secret
+  containers.podman.podman_secret:
+    name: artifact_keeper_jwt_secret
+    data: "{{ artifact_keeper_secrets.jwt_secret }}"
+    state: present
+  no_log: true
+
 - name: Create Artifact Keeper admin password secret
   containers.podman.podman_secret:
     name: artifact_keeper_admin_password

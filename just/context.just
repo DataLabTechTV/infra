@@ -6,8 +6,8 @@ _default:
 _ensure_state_dir:
     mkdir -p "$STATE_DIR"
 
-# Set context for provision, configuration, and deployment
-switch name: _ensure_state_dir
+# Switch to specified context, for provision, configuration, and deployment
+set name: _ensure_state_dir
     #!/usr/bin/env bash
     set -euo pipefail
     source "./lib/logging.sh"
@@ -15,8 +15,8 @@ switch name: _ensure_state_dir
     echo "{{name}}" >>"$CONTEXT_STATE_FILE"
     info "Context switched to '{{name}}'"
 
-# Unset context for provision, configuration, and deployment (defaults to 'lab')
-clear:
+# Clear context, for provision, configuration, and deployment (defaults to 'lab')
+unset:
     #!/usr/bin/env bash
     set -euo pipefail
     source "./lib/logging.sh"
@@ -24,6 +24,6 @@ clear:
     rm -f "$CONTEXT_STATE_FILE"
     info "Context cleared"
 
-# Show the currently active context
+# Show the currently active context, for provision, configuration, and deployment
 show:
     @echo "{{CYAN}}Context:{{NORMAL}} $CONTEXT"

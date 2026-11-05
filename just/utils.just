@@ -1,7 +1,6 @@
 set working-directory := '..'
 
 _default:
-    @just _env_help
     @just --justfile '{{module_file()}}' --list --unsorted
 
 # Install the root CA certificate locally and trust it

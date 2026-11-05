@@ -1,15 +1,22 @@
-default_context := "lab"
+set unstable
+set lists
 
-export CONTEXT := env("CONTEXT", default_context)
+export STATE_DIR := home_directory() / ".local/state/dlt/infra"
+export CONTEXT_STATE_FILE := STATE_DIR / "context"
+
+export DEFAULT_CONTEXT := "lab"
+
+export CONTEXT := if path_exists(CONTEXT_STATE_FILE) {
+    trim(read(CONTEXT_STATE_FILE))
+} else {
+    DEFAULT_CONTEXT
+}
 
 _default:
-    @just _env_help
     @just --list --unsorted
 
-_env_help:
-    @echo "Environment variables:"
-    @echo "    CONTEXT  Collection of infrastructure, configurations, and quadlets (default: {{default_context}})"
-    @echo
+_context:
+    @echo "context: $CONTEXT"
 
 _display_table $tsv_path $header_str="":
     #!/usr/bin/env bash
@@ -61,6 +68,10 @@ up:
             exit 1
             ;;
     esac
+
+# Manage active context
+[group('lifecycle')]
+mod context "just/context.just"
 
 # Provision infrastructure (e.g., VMs)
 [group('lifecycle')]

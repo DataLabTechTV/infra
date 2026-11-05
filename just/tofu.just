@@ -4,7 +4,6 @@ tofu_dir := absolute_path('tofu/')
 config_file := join(tofu_dir, 'config.tfvars')
 
 _default:
-    @just _env_help
     @just --justfile '{{module_file()}}' --list --unsorted
 
 _check-config:

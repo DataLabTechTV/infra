@@ -6,7 +6,6 @@ export ANSIBLE_CONFIG := './ansible/ansible.cfg'
 export VM_SSH_KEY_PATH := env("VM_SSH_KEY_PATH", default_vm_ssh_key_path)
 
 _default:
-    @just _env_help
     @just --justfile '{{module_file()}}' --list --unsorted
 
 # Install Ansible system dependencies

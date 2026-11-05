@@ -3,7 +3,6 @@ set working-directory := '..'
 user := "rocky"
 
 _default:
-    @just _env_help
     @just --justfile '{{module_file()}}' --list --unsorted
 
 # Check systemd status for specified service in the given target host

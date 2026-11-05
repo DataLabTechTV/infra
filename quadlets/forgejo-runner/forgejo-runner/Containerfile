@@ -65,7 +65,7 @@ RUN update-ca-trust
 COPY artifact-keeper.repo /etc/yum.repos.d/artifact-keeper.repo
 
 # Disable default repos in favor of Artifact Keeper's
-RUN dnf config-manager --set-disabled baseos appstream extras crb && \
+RUN dnf config-manager --set-disabled baseos appstream extras crb epel && \
     dnf clean all
 
 WORKDIR /workspace

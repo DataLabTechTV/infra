@@ -73,17 +73,20 @@ mod context "just/context.just"
 # Provision infrastructure (e.g., VMs)
 [group('lifecycle')]
 provision:
+    just context show
     just tofu apply
 
 # Update, upgrade, and install required packages (e.g., podman)
 [group('lifecycle')]
 configure:
+    just context show
     just ansible install
     just ansible configure
 
 # Deploy quadlets, optionally limited to a target host and/or quadlet
 [group('lifecycle')]
 deploy target="" quadlet="":
+    just context show
     just ansible deploy '{{target}}' '{{quadlet}}'
 
 # Check systemd status for specified service
@@ -94,11 +97,13 @@ status service:
 # Follow systemd logs for specified service
 [group('manage')]
 logs service:
+    just context show
     just service logs "$(just _host "{{service}}")" '{{service}}'
 
 # Restart the specified service
 [group('manage')]
 restart service:
+    just context show
     just service restart "$(just _host "{{service}}")" '{{service}}'
 
 # Display generated secrets (e.g., VMs, OpenBao)

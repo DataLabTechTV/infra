@@ -22,7 +22,7 @@ unset:
     source "./lib/logging.sh"
 
     rm -f "$CONTEXT_STATE_FILE"
-    info "Context cleared"
+    info "Context cleared (using default '$DEFAULT_CONTEXT')"
 
 # Show the currently active context, for provision, configuration, and deployment
 show:

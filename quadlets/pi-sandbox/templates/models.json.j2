@@ -1,5 +1,16 @@
 {
   "providers": {
+    "bifrost": {
+      "baseUrl": "http://{{ hostvars[bifrost_host].ansible_facts.fqdn }}:4040/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        {
+          "id": "auto"
+        }
+      ]
+    },
+
     "lab": {
       "baseUrl": "http://{{ hostvars[llama_server_host].ansible_facts.fqdn }}:8080/v1",
       "api": "openai-completions",

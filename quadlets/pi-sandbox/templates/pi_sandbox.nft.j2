@@ -1,6 +1,7 @@
 define pi_subnet        = 10.91.0.0/24
 define pi_gw            = 10.91.0.1
 define admin_net        = 192.168.1.0/24
+define bifrost_ip  = {{ hostvars[bifrost_host].ansible_facts.default_ipv4.address }}
 define llama_server_ip  = {{ hostvars[llama_server_host].ansible_facts.default_ipv4.address }}
 
 define bogons = {
@@ -29,6 +30,7 @@ table inet pi_sandbox {
         ip daddr $pi_subnet drop
 
         ip saddr != $pi_subnet return
+        ip daddr $bifrost_ip tcp dport 4040 accept
         ip daddr $llama_server_ip tcp dport 8080 accept
         ip daddr $bogons drop
         accept

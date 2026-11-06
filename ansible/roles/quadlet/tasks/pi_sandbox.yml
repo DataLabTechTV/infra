@@ -9,9 +9,25 @@
         | first
       }}
 
+- name: Set bifrost host
+  ansible.builtin.set_fact:
+    bifrost_host: >-
+      {{
+        groups['lab']
+        | map('extract', hostvars)
+        | selectattr('quadlets', 'contains', 'bifrost')
+        | map(attribute='inventory_hostname')
+        | first
+      }}
+
 - name: Gather facts from the llama-server host
   ansible.builtin.setup:
   delegate_to: "{{ llama_server_host }}"
+  delegate_facts: true
+
+- name: Gather facts from the bifrost host
+  ansible.builtin.setup:
+  delegate_to: "{{ bifrost_host }}"
   delegate_facts: true
 
 - name: Deploy Pi sandbox templates

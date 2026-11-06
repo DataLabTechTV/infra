@@ -10,7 +10,7 @@ Volume={{ quadlet_scoped_config_dir }}:/etc/open-webui:ro
 Volume=open-webui-data:/app/backend/data
 Network=llama-server.network
 Environment=OPENAI_API_BASE_URLS=http://llama-server:8080/v1
-Environment=ENABLE_PERSISTENT_CONFIG=False
+Environment=ENABLE_PERSISTENT_CONFIG=True
 PublishPort=3000:8080
 
 [Service]

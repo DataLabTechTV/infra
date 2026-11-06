@@ -15,9 +15,6 @@ export CONTEXT := if path_exists(CONTEXT_STATE_FILE) {
 _default:
     @just --list --unsorted
 
-_context:
-    @echo "context: $CONTEXT"
-
 _display_table $tsv_path $header_str="":
     #!/usr/bin/env bash
 

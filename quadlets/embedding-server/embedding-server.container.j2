@@ -1,0 +1,21 @@
+[Unit]
+Description=Embedding Server
+After=network-online.target embedding-server-build.service
+Wants=network-online.target
+Requires=embedding-server-build.service
+
+[Container]
+Image=localhost/embedding-server:latest
+ContainerName=embedding-server
+Volume={{ quadlet_scoped_config_dir }}:/etc/embedding-server:ro
+Volume=embedding-server-models:/models
+Network=llama-server.network
+Secret=hf_token,type=env,target=HF_TOKEN
+EnvironmentFile={{ quadlet_scoped_config_dir }}/environment
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

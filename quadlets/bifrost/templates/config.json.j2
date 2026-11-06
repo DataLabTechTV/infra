@@ -1,0 +1,201 @@
+{
+  "$schema": "https://www.getbifrost.ai/schema",
+
+  "config_store": {
+    "enabled": true,
+    "type": "postgres",
+    "config": {
+      "host": "{{ postgres_host }}",
+      "port": "{{ postgres_port }}",
+      "user": "{{ db.username }}",
+      "password": "env.BIFROST_DB_PASSWORD",
+      "db_name": "{{ db_name }}",
+      "ssl_mode": "disable",
+      "max_idle_conns": 5,
+      "max_open_conns": 50
+    }
+  },
+
+  "logs_store": {
+    "enabled": true,
+    "type": "postgres",
+    "config": {
+      "host": "{{ postgres_host }}",
+      "port": "{{ postgres_port }}",
+      "user": "{{ db.username }}",
+      "password": "env.BIFROST_DB_PASSWORD",
+      "db_name": "{{ db_name }}",
+      "ssl_mode": "disable",
+      "max_idle_conns": 10,
+      "max_open_conns": 100
+    }
+  },
+
+  "providers": {
+    "{{ context }}": {
+      "keys": [
+        {
+          "name": "{{ context }}-gemma",
+          "value": "dummy",
+          "models": [
+            "{{ llama_server_alias }}"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "network_config": {
+        "base_url": "http://llama-server:8080",
+        "allow_private_network": true,
+        "default_request_timeout_in_seconds": 300,
+        "max_retries": 2
+      },
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+          "chat_completion": true,
+          "chat_completion_stream": true
+        }
+      }
+    },
+
+    "{{ context }}-embedding": {
+      "keys": [
+        {
+          "name": "{{ context }}-nomic",
+          "value": "dummy",
+          "models": [
+            "{{ embedding_server_alias }}"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "network_config": {
+        "base_url": "http://embedding-server:8081",
+        "allow_private_network": true,
+        "default_request_timeout_in_seconds": 30,
+        "max_retries": 1
+      },
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+          "embedding": true
+        }
+      }
+    }
+  },
+
+  "governance": {
+    "pricing_overrides": [
+      {
+        "id": "{{ context }}-gemma-pricing",
+        "name": "{{ context | title }} Gemma Pricing",
+        "scope_kind": "provider",
+        "provider_id": "{{ context }}",
+        "match_type": "exact",
+        "pattern": "{{ llama_server_alias }}",
+        "request_types": [
+          "chat_completion"
+        ],
+        "pricing_patch": "{\"input_cost_per_token\":0.00000018056,\"output_cost_per_token\":0.00000018056}"
+      }
+    ],
+
+    "complexity_analyzer_config": {
+      "classifier": "semantic",
+      "semantic": {
+        "provider": "{{ context }}-embedding",
+        "embedding_model": "{{ embedding_server_alias }}",
+        "timeout": "1.5s",
+        "min_similarity": 0,
+        "message_history_count": 1,
+        "count_toward_budgets": false,
+        "vector_store": "embedded"
+      },
+      "session": {
+        "enabled": true
+      },
+      "keywords": {
+        "simple_keywords": [
+          "What is a variable?",
+          "Explain this error message.",
+          "Fix the grammar in this sentence."
+        ],
+        "medium_keywords": [
+          "Write a Python script to process CSV files.",
+          "Explain how container networking works.",
+          "Implement an API endpoint with validation."
+        ],
+        "complex_keywords": [
+          "Design a distributed data processing architecture.",
+          "Analyze trade-offs between several infrastructure designs.",
+          "Develop a multi-stage deployment strategy with rollback guarantees."
+        ]
+      }
+    },
+
+    "routing_rules": [
+      {
+        "id": "complexity-simple",
+        "name": "Simple requests",
+        "enabled": true,
+        "cel_expression": "complexity_tier == \"SIMPLE\"",
+        "targets": [
+          {
+            "provider": "{{ context }}",
+            "model": "{{ llama_server_alias }}",
+            "weight": 1.0
+          }
+        ],
+        "fallbacks": [],
+        "scope": "global",
+        "priority": 10
+      },
+      {
+        "id": "complexity-medium",
+        "name": "Medium requests",
+        "enabled": true,
+        "cel_expression": "complexity_tier == \"MEDIUM\"",
+        "targets": [
+          {
+            "provider": "{{ context }}",
+            "model": "{{ llama_server_alias }}",
+            "weight": 1.0
+          }
+        ],
+        "fallbacks": [],
+        "scope": "global",
+        "priority": 20
+      },
+      {
+        "id": "complexity-complex",
+        "name": "Complex requests",
+        "enabled": true,
+        "cel_expression": "complexity_tier == \"COMPLEX\"",
+        "targets": [
+          {
+            "provider": "{{ context }}",
+            "model": "{{ llama_server_alias }}",
+            "weight": 1.0
+          }
+        ],
+        "fallbacks": [],
+        "scope": "global",
+        "priority": 30
+      }
+    ]
+  },
+
+  "client": {
+    "enforce_auth_on_inference": false
+  },
+
+  "plugins": [
+    {
+      "name": "governance",
+      "enabled": true,
+      "config": {
+        "is_vk_mandatory": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+ARG LLAMA_SERVER_IMAGE_VERSION="server-cuda13-b9894@sha256:9b61117f56447863261f6ae0d15c7d330f219b9fbddeac1ccd336f6fc2b31e81"
+FROM ghcr.io/ggml-org/llama.cpp:${LLAMA_SERVER_IMAGE_VERSION} AS llama_cpp
+
+
+FROM cgr.dev/chainguard/wolfi-base
+
+USER root
+
+RUN apk add --no-cache ca-certificates-bundle libssl3 libstdc++ libgcc zlib libgomp
+
+COPY --from=llama_cpp /usr/local/cuda/lib64 /usr/local/cuda/lib64
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64
+ENV PATH=/usr/local/cuda/bin:${PATH}
+
+COPY --from=llama_cpp /app /app
+RUN chown -R nonroot:nonroot /app
+ENV LD_LIBRARY_PATH=/app:${LD_LIBRARY_PATH}
+
+USER nonroot
+
+VOLUME /models
+EXPOSE 8081
+
+ENV LLAMA_CACHE="/models"
+
+ENV LLAMA_ARG_HOST="0.0.0.0"
+ENV LLAMA_ARG_PORT="8081"
+
+ENV LLAMA_ARG_HF_REPO="nomic-ai/nomic-embed-text-v1.5-GGUF"
+ENV LLAMA_ARG_HF_FILE="nomic-embed-text-v1.5.Q4_K_M.gguf"
+ENV LLAMA_ARG_ALIAS="nomic-ai/nomic-embed-text-v1.5-GGUF:Q4_K_M"
+
+ENTRYPOINT ["/app/llama-server", "--embedding"]

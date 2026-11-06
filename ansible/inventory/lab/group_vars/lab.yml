@@ -56,7 +56,8 @@ deployment_order:
   - traefik
   - coredns
   - llama-server
-  - litellm
+  - embedding-server
+  - bifrost
   - open-webui
   - pi-sandbox
 
@@ -75,7 +76,7 @@ routes:
     admin.gpu: 9090
     llm: 8080
     chat: 3000
-    gateway: 4000
+    gateway: 4040
   dev.lan:
     admin.dev: 9090
   proxy.lan:
@@ -125,12 +126,19 @@ openbao_secret_artifact_keeper_secrets: "{{ openbao_secret_artifact_keeper_prefi
 openbao_secret_artifact_keeper_admin: "{{ openbao_secret_artifact_keeper_prefix }}/admin"
 openbao_secret_litellm_prefix: "gpu/litellm"
 openbao_secret_litellm_keys: "{{ openbao_secret_litellm_prefix }}/keys"
+openbao_secret_bifrost_prefix: "gpu/bifrost"
+openbao_secret_bifrost_keys: "{{ openbao_secret_bifrost_prefix }}/keys"
 
 llama_server_hf_repo: unsloth/gemma-4-E4B-it-GGUF
 llama_server_hf_file: gemma-4-E4B-it-Q4_K_M.gguf
 llama_server_alias: unsloth/gemma-4-E4B-it-GGUF:Q4_K_M
 llama_server_ctx_size: 51200
 llama_server_max_tokens: 4096
+
+embedding_server_hf_repo: nomic-ai/nomic-embed-text-v1.5-GGUF
+embedding_server_hf_file: nomic-embed-text-v1.5.Q4_K_M.gguf
+embedding_server_alias: nomic-ai/nomic-embed-text-v1.5-GGUF:Q4_K_M
+embedding_server_ctx_size: 2048
 
 
 # --- test ----

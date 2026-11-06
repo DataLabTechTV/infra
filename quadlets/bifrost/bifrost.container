@@ -1,0 +1,21 @@
+[Unit]
+Description=Bifrost AI Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/maximhq/bifrost:v2.4.0@sha256:a1c90607dcfd13c1fb2f9476ceb3bb24407a50ade7fdf3e61a59fb42b09e5c57
+ContainerName=bifrost
+Volume=/etc/bifrost/config.json:/app/data/config.json:ro
+Network=llama-server.network
+EnvironmentFile=/etc/bifrost/environment
+Secret=bifrost_setup_token,type=env,target=BIFROST_SETUP_TOKEN
+Secret=bifrost_db_password,type=env,target=BIFROST_DB_PASSWORD
+PublishPort=4040:8080
+
+[Service]
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

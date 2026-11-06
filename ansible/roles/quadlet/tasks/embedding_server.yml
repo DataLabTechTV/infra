@@ -1,0 +1,9 @@
+- name: Deploy embedding-server templates
+  ansible.builtin.include_tasks: templates.yml
+
+- name: Create embedding-server hf_token secret
+  containers.podman.podman_secret:
+    name: hf_token
+    data: "{{ lookup('ansible.builtin.env', 'HF_TOKEN') }}"
+    state: present
+  no_log: true

@@ -1,0 +1,36 @@
+- name: Set Bifrost DB name and user
+  ansible.builtin.set_fact:
+    db_name: bifrost
+    db_user: bifrost
+
+- name: Provision Bifrost database
+  ansible.builtin.include_role:
+    name: postgres
+    tasks_from: provision
+
+- name: Deploy Bifrost templates
+  ansible.builtin.include_tasks: templates.yml
+
+- name: Setup Bifrost setup token
+  ansible.builtin.include_role:
+    name: openbao
+    tasks_from: secret
+  vars:
+    secret_path: "{{ openbao_secret_bifrost_keys }}"
+    secret_fact: bifrost_keys
+    secret_passwords:
+      - setup_token
+
+- name: Create Bifrost DB password secret
+  containers.podman.podman_secret:
+    name: bifrost_db_password
+    data: "{{ db.password }}"
+    state: present
+  no_log: true
+
+- name: Create Bifrost setup token secret
+  containers.podman.podman_secret:
+    name: bifrost_setup_token
+    data: "{{ bifrost_keys.setup_token }}"
+    state: present
+  no_log: true

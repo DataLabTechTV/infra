@@ -12,7 +12,7 @@ context: "{{ group_names[0] }}"
 project_dir: "{{ playbook_dir }}/../.."
 quadlets_dir: "{{ project_dir }}/quadlets"
 tests_dir: "{{ project_dir }}/tests"
-output_dir: "{{ project_dir }}/output"
+local_dir: "{{ project_dir }}/local"
 
 ca_host: "core.lan"
 ca_addr: "https://{{ ca_host }}"
@@ -37,7 +37,7 @@ artifact_keeper_addr: "https://artifacts.lab.lan"
 
 pki_bootstrap: true
 
-pki_output_dir: "{{ output_dir }}/{{ context }}/pki"
+pki_output_dir: "{{ local_dir }}/{{ context }}/pki"
 pki_root_key_file: "{{ pki_output_dir }}/root-ca.key"
 pki_root_csr_file: "{{ pki_output_dir }}/root-ca.csr"
 pki_root_cert_file: "{{ pki_output_dir }}/root-ca.crt"
@@ -95,7 +95,7 @@ tcp_routes:
       - host: dev.lan
         port: 2222
 
-step_ca_output_dir: "{{ output_dir }}/{{ context }}/step-ca"
+step_ca_output_dir: "{{ local_dir }}/{{ context }}/step-ca"
 step_ca_intermediate_key_file: "{{ step_ca_output_dir }}/intermediate-ca.key"
 step_ca_intermediate_csr_file: "{{ step_ca_output_dir }}/intermediate-ca.csr"
 step_ca_intermediate_cert_file: "{{ step_ca_output_dir }}/intermediate-ca.crt"
@@ -104,13 +104,13 @@ step_ca_admin_private_key_file: "{{ step_ca_output_dir }}/admin.json"
 step_ca_squid_public_key_file: "{{ step_ca_output_dir }}/squid.pub.json"
 step_ca_squid_private_key_file: "{{ step_ca_output_dir }}/squid.json"
 
-squid_output_dir: "{{ output_dir }}/{{ context }}/squid"
+squid_output_dir: "{{ local_dir }}/{{ context }}/squid"
 squid_key_file: "{{ squid_output_dir }}/squid-ca.key"
 squid_csr_file: "{{ squid_output_dir }}/squid-ca.csr"
 squid_cert_file: "{{ squid_output_dir }}/squid-ca.crt"
 
 openbao_config_file: "{{ quadlets_dir }}/openbao/config/openbao.json"
-openbao_output_dir: "{{ output_dir }}/{{ context }}/openbao"
+openbao_output_dir: "{{ local_dir }}/{{ context }}/openbao"
 openbao_iac_token_file: "{{ openbao_output_dir }}/iac.token"
 
 openbao_secret_postgres_prefix: "data/postgres"
@@ -143,5 +143,5 @@ embedding_server_ctx_size: 2048
 
 # --- test ----
 
-test_output_dir: "{{ output_dir }}/{{ context }}/test"
+test_output_dir: "{{ local_dir }}/{{ context }}/test"
 test_ssh_key: "{{ test_output_dir }}/{{ context }}-test"

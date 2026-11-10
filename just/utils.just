@@ -10,7 +10,7 @@ trust-root-ca:
     set -euo pipefail
     source ./lib/logging.sh
 
-    root_ca_crt_src_file="./output/$CONTEXT/pki/root-ca.crt"
+    root_ca_crt_src_file="./local/$CONTEXT/pki/root-ca.crt"
 
     if [[ ! -f "$root_ca_crt_src_file" ]]; then
         error "Certificate not found: $root_ca_crt_src_file"

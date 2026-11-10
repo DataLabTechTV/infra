@@ -1,4 +1,4 @@
-output/**
+local/**
 !.gitkeep
 
 # Local .terraform directories

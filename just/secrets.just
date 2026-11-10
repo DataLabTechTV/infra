@@ -45,8 +45,8 @@ openbao:
     tmpfile="$(mktemp)"
     trap 'rm -f "$tmpfile"' EXIT
 
-    init_file="output/$CONTEXT/openbao/init.json"
-    token_file="output/$CONTEXT/openbao/iac.token"
+    init_file="./local/$CONTEXT/openbao/init.json"
+    token_file="./local/$CONTEXT/openbao/iac.token"
 
     if [ -f "$init_file" ]; then
         jq -r '

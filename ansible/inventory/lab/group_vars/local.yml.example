@@ -1,0 +1,24 @@
+electricity_cost_kwh: 0.20
+
+bifrost:
+  providers:
+    host-a:
+      endpoint: http://host-a.lan:8080
+      name: host-a-ornith
+      model: ornith-ai/Ornith-1.5-9B-GGUF:Q4_K_M
+      gpu:
+        power_usage_w: 70
+      cpu:
+        usage: 0.5
+        max_power_w: 150
+      tok_s: 7.30
+    host-b:
+      endpoint: http://host-b:8080
+      name: host-b-bonsai-2
+      model: prism-ml/Ternary-Bonsai-2-27B-gguf:PQ2_0
+      gpu:
+        power_usage_w: 15
+      cpu:
+        usage: 1.0
+        max_power_w: 15
+      tok_s: 8.55

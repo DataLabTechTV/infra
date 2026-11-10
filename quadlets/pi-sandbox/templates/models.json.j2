@@ -10,8 +10,7 @@
         }
       ]
     },
-
-    "lab": {
+    "{{ context }}": {
       "baseUrl": "http://{{ hostvars[llama_server_host].ansible_facts.fqdn }}:8080/v1",
       "api": "openai-completions",
       "apiKey": "none",

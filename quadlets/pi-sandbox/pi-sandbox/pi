@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-pi_bin="/usr/local/lib/node_modules/@earendil-works/pi-coding-agent/dist/bundle/cli.js"
+pi_bin="/usr/local/bin/pi.real"
 
 exec /usr/local/bin/nono run \
     --profile nolabs-ai/pi \

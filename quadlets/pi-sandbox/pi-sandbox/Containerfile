@@ -27,6 +27,7 @@ RUN addgroup -g "${GID}" "${GROUP}" && \
 RUN echo "${SSH_AUTHORIZED_KEY}" >> "/home/${USER}/.ssh/authorized_keys"
 
 COPY workspace.sh /etc/profile.d/workspace.sh
+RUN mv /usr/local/bin/pi /usr/local/bin/pi.real
 COPY pi /usr/local/bin/pi
 COPY sshd_config /etc/ssh/sshd_config
 COPY entrypoint.sh /usr/local/libexec/entrypoint.sh

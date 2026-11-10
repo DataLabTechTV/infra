@@ -1,4 +1,5 @@
-output/**
+/output/**
+/ansible/**/group_vars/local.yml
 !.gitkeep
 
 # Local .terraform directories

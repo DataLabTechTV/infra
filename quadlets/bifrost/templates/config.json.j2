@@ -32,6 +32,36 @@
   },
 
   "providers": {
+    {%- for provider, config in (bifrost.providers | default({})).items() %}
+
+    "{{ provider }}": {
+      "keys": [
+        {
+          "name": "{{ config.name }}",
+          "value": "dummy",
+          "models": [
+            "{{ config.model }}"
+          ],
+          "weight": 1.0
+        }
+      ],
+      "network_config": {
+        "base_url": "{{ config.endpoint }}",
+        "allow_private_network": true,
+        "default_request_timeout_in_seconds": 300,
+        "max_retries": 2
+      },
+      "custom_provider_config": {
+        "base_provider_type": "openai",
+        "allowed_requests": {
+          "list_models": true,
+          "chat_completion": true,
+          "chat_completion_stream": true
+        }
+      }
+    },
+    {% endfor %}
+
     "{{ context }}": {
       "keys": [
         {
@@ -87,6 +117,34 @@
 
   "governance": {
     "pricing_overrides": [
+    {%- for provider, config in (bifrost.providers | default({})).items() %}
+      {%-
+        set total_power_kw = (
+                config.gpu.power_usage_w +
+                config.cpu.usage * config.cpu.max_power_w
+            ) / 1000
+      %}
+      {%-
+        set cost_per_token =
+            (total_power_kw * electricity_cost_kwh) /
+            (config.tok_s * 3600)
+      %}
+
+      {
+        "id": "{{ config.name }}-pricing",
+        "name": "{{ config.name | replace('-', ' ') | title }} Pricing",
+        "scope_kind": "provider",
+        "provider_id": "{{ provider }}",
+        "match_type": "exact",
+        "pattern": "{{ config.model }}",
+        "request_types": [
+          "chat_completion",
+          "chat_completion_stream"
+        ],
+        "pricing_patch": "{ \"input_cost_per_token\": {{ cost_per_token }}, \"output_cost_per_token\": {{ cost_per_token }} }"
+      },
+    {%- endfor %}
+
       {
         "id": "{{ context }}-gemma-pricing",
         "name": "{{ context | title }} Gemma Pricing",

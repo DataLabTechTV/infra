@@ -1,0 +1,9 @@
+ENABLE_PERSISTENT_CONFIG=False
+
+OPENAI_API_BASE_URLS=http://bifrost:8080/v1
+
+OPENAI_API_CONFIGS={"0":{"enable":true,"model_ids":["auto","{{ context }}/{{ llama_server_alias }}"{%-
+    for provider, config in (bifrost.providers | default({})).items()
+%},"{{ provider }}/{{ config.model }}"
+{%- endfor %}
+]}}

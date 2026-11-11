@@ -7,19 +7,19 @@
       "models": [
         {
           "id": "auto"
-        }
-      ]
-    },
-    "{{ context }}": {
-      "baseUrl": "http://{{ hostvars[llama_server_host].ansible_facts.fqdn }}:8080/v1",
-      "api": "openai-completions",
-      "apiKey": "none",
-      "models": [
+        },
         {
-          "id": "{{ llama_server_alias }}",
-          "contextWindow": {{ llama_server_ctx_size }},
-          "maxTokens": {{ llama_server_max_tokens }}
-        }
+          "id": "{{ context }}/{{ llama_server_alias }}"
+        },
+
+        {%- for provider, config in (bifrost.providers | default({})).items() %}
+
+        {
+          "id": "{{ provider }}/{{ config.model }}"
+        }{% if not loop.last %},{% endif %}
+
+        {%- endfor %}
+
       ]
     }
   }

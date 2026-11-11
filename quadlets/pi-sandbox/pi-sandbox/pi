@@ -4,6 +4,9 @@ pi_bin="/usr/local/bin/pi.real"
 
 exec /usr/local/bin/nono run \
     --profile nolabs-ai/pi \
-    --allow /workspace \
+    --allow-cwd \
+    --allow /tmp \
     --allow /home/dev/.cache \
+    --allow /home/dev/.npm \
+    --allow /home/dev/.local/share/npm \
     -- "$pi_bin" "$@"

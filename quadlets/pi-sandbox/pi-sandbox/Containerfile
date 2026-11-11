@@ -24,7 +24,7 @@ RUN addgroup -g "${GID}" "${GROUP}" && \
     install -d -m 0755 -o "${USER}" -g "${GROUP}" /workspace && \
     chown "${USER}:${GROUP}" "/home/${USER}"
 
-RUN echo "${SSH_AUTHORIZED_KEY}" >> "/home/${USER}/.ssh/authorized_keys"
+RUN echo "${SSH_AUTHORIZED_KEY}" >"/home/${USER}/.ssh/authorized_keys"
 
 COPY workspace.sh /etc/profile.d/workspace.sh
 RUN mv /usr/local/bin/pi /usr/local/bin/pi.real

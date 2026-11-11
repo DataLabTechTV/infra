@@ -12,19 +12,25 @@ IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desk
     - config/ :: Configuration files for the quadlet, usually copied to =/etc/<quadlet>=.
 
 * Just Recipes
-By default, the =CONTEXT=local=, which means that ~just provision~ and ~just configure~ are no-ops. If you want provision and configure your Proxmox node with the appropriate VMs, then set =CONTEXT=lab=:
+Deployments are defined per context, which means that we hold multiple infrastructure configurations that are strictly independent. Having a common codebase ensures that VM provisioning code or host system configurations can be conveniently reused as required, without being reimplemented elsewhere.
+
+By default, the context is set to =lab=. Any context other than =local= is expected to run ~just provision~, ~just configure~, and ~just deploy~. When setting context to =local=, however, ~just provision~ and ~just configure~ are no-ops, as this is usually for deploying software on your desktop.
+
+In order to manage your context, you can use the following just recipes:
 
 #+begin_src bash :session *lab*
-export CONTEXT=lab
+just context show
+just context set lab
+just context unset
 #+end_src
 
-Each context knows which steps it requires, if you run:
+Each context defines its own steps, which can be run with:
 
 #+begin_src bash :session *lab*
 just up
 #+end_src
 
-Depending on the context, the following recipes will be run. The full workflow optionally begins with:
+Depending on the context, the following recipes will be triggered. The full workflow optionally begins with:
 
 #+begin_src bash :session *lab*
 just provision
@@ -36,7 +42,7 @@ Which will create the required VMs. You can then configure the VMs with:
 just configure
 #+end_src
 
-Which will install requirements such as ~podman~ or =cockpit-podman=. Once this step is done, you can continue with deploying quadlets:
+Which will install requirements such as =podman= or =cockpit-podman=. Once this step is done, you can continue with deploying quadlets:
 
 #+begin_src bash :session *lab*
 just deploy

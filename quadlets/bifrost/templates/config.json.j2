@@ -200,13 +200,43 @@
         "enabled": true,
         "cel_expression": "complexity_tier == \"SIMPLE\"",
         "targets": [
+        {%- set provider = bifrost.complexity.simple %}
+        {%- if provider == 'default' %}
+
           {
             "provider": "{{ context }}",
             "model": "{{ llama_server_alias }}",
             "weight": 1.0
           }
+
+        {%- else %}
+
+          {
+            "provider": "{{ provider }}",
+            "model": "{{ bifrost.providers[provider].model }}",
+            "weight": 1.0
+          }
+
+        {%- endif %}
+
         ],
-        "fallbacks": [],
+        "fallbacks": [
+
+        {%- if provider != 'default' %}
+        {%- for model in bifrost.providers[provider].fallbacks %}
+        {%- if model == 'default' %}
+
+          "{{ context }}/{{ llama_server_alias }}"{% if not loop.last %},{% endif %}
+
+        {%- else %}
+
+          "{{ model }}"{% if not loop.last %},{% endif %}
+
+        {%- endif %}
+        {%- endfor %}
+        {%- endif %}
+
+        ],
         "scope": "global",
         "priority": 10
       },
@@ -216,13 +246,43 @@
         "enabled": true,
         "cel_expression": "complexity_tier == \"MEDIUM\"",
         "targets": [
+        {%- set provider = bifrost.complexity.medium %}
+        {%- if provider == 'default' %}
+
           {
             "provider": "{{ context }}",
             "model": "{{ llama_server_alias }}",
             "weight": 1.0
           }
+
+        {%- else %}
+
+          {
+            "provider": "{{ provider }}",
+            "model": "{{ bifrost.providers[provider].model }}",
+            "weight": 1.0
+          }
+
+        {%- endif %}
+
         ],
-        "fallbacks": [],
+        "fallbacks": [
+
+        {%- if provider != 'default' %}
+        {%- for model in bifrost.providers[provider].fallbacks %}
+        {%- if model == 'default' %}
+
+          "{{ context }}/{{ llama_server_alias }}"{% if not loop.last %},{% endif %}
+
+        {%- else %}
+
+          "{{ model }}"{% if not loop.last %},{% endif %}
+
+        {%- endif %}
+        {%- endfor %}
+        {%- endif %}
+
+        ],
         "scope": "global",
         "priority": 20
       },
@@ -232,13 +292,43 @@
         "enabled": true,
         "cel_expression": "complexity_tier == \"COMPLEX\"",
         "targets": [
+        {%- set provider = bifrost.complexity.complex %}
+        {%- if provider == 'default' %}
+
           {
             "provider": "{{ context }}",
             "model": "{{ llama_server_alias }}",
             "weight": 1.0
           }
+
+        {%- else %}
+
+          {
+            "provider": "{{ provider }}",
+            "model": "{{ bifrost.providers[provider].model }}",
+            "weight": 1.0
+          }
+
+        {%- endif %}
+
         ],
-        "fallbacks": [],
+        "fallbacks": [
+
+        {%- if provider != 'default' %}
+        {%- for model in bifrost.providers[provider].fallbacks %}
+        {%- if model == 'default' %}
+
+          "{{ context }}/{{ llama_server_alias }}"{% if not loop.last %},{% endif %}
+
+        {%- else %}
+
+          "{{ model }}"{% if not loop.last %},{% endif %}
+
+        {%- endif %}
+        {%- endfor %}
+        {%- endif %}
+
+        ],
         "scope": "global",
         "priority": 30
       }

@@ -1,9 +1,0 @@
-[customizations.installer.kickstart]
-contents = """
-graphical
-"""
-
-[customizations.installer.modules]
-enable = [
-  "org.fedoraproject.Anaconda.Modules.Localization",
-]

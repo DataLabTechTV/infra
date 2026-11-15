@@ -1,3 +1,0 @@
-FROM ghcr.io/ublue-os/ucore-hci:stable
-
-RUN bootc container lint

@@ -131,6 +131,6 @@ mod ansible "just/ansible.just"
 [group('lowlevel')]
 mod service "just/service.just"
 
-# Run bootc related commands
+# uCore setup helper scripts
 [group('lowlevel')]
-mod bootc "just/bootc.just"
+mod ucore "just/ucore.just"

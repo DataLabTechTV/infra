@@ -1,16 +1,3 @@
-FROM git.resf.org/sig_containers/rocky-bootc:10
-
-RUN dnf install -y libvirt qemu-kvm cockpit-machines && \
-    dnf clean all
-
-RUN sed -i \
-    -e '/^\[baseos\]/,/^\[/ { s|^mirrorlist=.*|baseurl=https://dl.rockylinux.org/pub/rocky/10/BaseOS/$basearch/os/|; s|^#baseurl=.*||; }' \
-    -e '/^\[appstream\]/,/^\[/ { s|^mirrorlist=.*|baseurl=https://dl.rockylinux.org/pub/rocky/10/AppStream/$basearch/os/|; s|^#baseurl=.*||; }' \
-    -e '/^\[crb\]/,/^\[/ { s|^mirrorlist=.*|baseurl=https://dl.rockylinux.org/pub/rocky/10/CRB/$basearch/os/|; s|^#baseurl=.*||; }' \
-    /etc/yum.repos.d/rocky.repo
-
-RUN sed -i \
-    -e '/^\[extras\]/,/^\[/ { s|^mirrorlist=.*|baseurl=https://dl.rockylinux.org/pub/rocky/10/extras/$basearch/os/|; s|^#baseurl=.*||; }' \
-    /etc/yum.repos.d/rocky-extras.repo
+FROM ghcr.io/ublue-os/ucore-hci:stable
 
 RUN bootc container lint

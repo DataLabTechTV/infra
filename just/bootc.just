@@ -11,10 +11,10 @@ build-iso:
         -v ./bootc/config.toml:/config.toml:ro \
         -v ./output/bootc:/output \
         quay.io/centos-bootc/bootc-image-builder:latest \
-        --type iso \
+        --type anaconda-iso \
         --rootfs xfs \
         --config /config.toml \
         localhost/ucore-homelab:latest
     sudo chown -R $(id -u):$(id -g) ./output/bootc
     mv ./output/bootc/bootiso/install.iso \
-       ./output/bootc/bootiso/ucore-homelab.iso
+       ./output/bootc/bootiso/ucore-homelab-$(date -u +%Y%m%d).iso

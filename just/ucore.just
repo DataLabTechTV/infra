@@ -13,17 +13,29 @@ _render_butane:
     source "./lib/logging.sh"
 
     mkdir -p ./output/ucore
-    printf 'Password: '
-    export UCORE_PASSWORD_HASH="$(podman run -it --rm quay.io/coreos/mkpasswd --method=yescrypt | tail -n1)"
-    printf '\n🗝️ Password hash set.\n'
 
-    if [ ! -r "$UCORE_SSH_AUTHORIZED_KEY_PATH" ]; then
-        error "File not readable: $UCORE_SSH_AUTHORIZED_KEY_PATH"
-        exit 1
+    while true; do
+        read -rsp "Password: " password; echo
+        read -rsp "Confirm password: " password_confirm; echo
+        if [ "$password" = "$password_confirm" ]; then
+            break
+        else
+            warn "Passwords do not match."
+        fi
+    done
+
+    export UCORE_PASSWORD_HASH="$(
+        printf "$password" |
+        podman run --rm quay.io/coreos/mkpasswd --method=yescrypt --stdin
+    )"
+    printf '🗝️ Password hash set.\n'
+
+    if [ -r "$UCORE_SSH_AUTHORIZED_KEY_PATH" ]; then
+        export UCORE_SSH_AUTHORIZED_KEY="$(cat "$UCORE_SSH_AUTHORIZED_KEY_PATH")"
+        printf '🔑 %s added to authorized keys.\n' "$UCORE_SSH_AUTHORIZED_KEY_PATH"
+    else
+        warn "No authorized SSH was key added: $UCORE_SSH_AUTHORIZED_KEY_PATH not readable."
     fi
-
-    export UCORE_SSH_AUTHORIZED_KEY="$(cat "$UCORE_SSH_AUTHORIZED_KEY_PATH")"
-    printf '🔑 %s added to authorized keys.\n' "$UCORE_SSH_AUTHORIZED_KEY_PATH"
 
     cat ucore/config.bu.tmpl | envsubst > ./output/ucore/config.bu
     printf '🎆 Butane config file rendered.\n'

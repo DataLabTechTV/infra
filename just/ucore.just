@@ -14,6 +14,14 @@ _render_butane:
 
     mkdir -p ./output/ucore
 
+    read -rp "Hostname [localhost]: " UCORE_HOSTNAME
+    [ -z "$UCORE_HOSTNAME" ] && UCORE_HOSTNAME="localhost"
+    export UCORE_HOSTNAME
+
+    read -rp "Keyboard layout [us]: " UCORE_KEYBOARD_LAYOUT
+    [ -z "$UCORE_KEYBOARD_LAYOUT" ] && UCORE_KEYBOARD_LAYOUT="us"
+    export UCORE_KEYBOARD_LAYOUT
+
     while true; do
         read -rsp "Password: " password; echo
         read -rsp "Confirm password: " password_confirm; echo

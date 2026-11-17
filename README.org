@@ -96,7 +96,7 @@ Dependencies are as follows:
 | postgres        | openbao           |
 | rustfs          | openbao           |
 | forgejo         | openbao, postgres |
-| artifact-keeper | step-ca           |
+| artifact-keeper | N/A        |
 | traefik         | step-ca           |
 | coredns         | N/A               |
 | llama-server    | N/A               |

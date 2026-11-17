@@ -83,7 +83,7 @@ We'll need the following quadlets, deployed in order:
 - traefik :: Manages certificates and routes services as required.
 - coredns :: Authoritative DNS for the actice context.
 - llama-server :: Serves LLM models from Hugging Face.
-- litellm :: LLM gateway, which decides which model to route a prompt to.
+- bifrost :: LLM gateway, to decide which model to route to based on prompt complexity, while also tracking cost.
 - open-webui :: Provides a richer UI to interact with the LLMs.
 - pi-sandbox :: Runs the Pi agent, wrapped in ~nono~, in a hardened container, and serves as the development machine, via SSH.
 
@@ -100,9 +100,9 @@ Dependencies are as follows:
 | traefik         | step-ca           |
 | coredns         | N/A               |
 | llama-server    | N/A               |
-| litellm         | llama-server      |
-| open-webui      | llama-server      |
-| pi-sandbox      | llama-server      |
+| bifrost         | llama-server      |
+| open-webui      | bifrost           |
+| pi-sandbox      | bifrost           |
 
 * Topology
 This repo can contain more than one deployment, each one being assigned a specific topology and subset of services.
@@ -113,11 +113,11 @@ This repo can contain more than one deployment, each one being assigned a specif
 |    301 | core  |     2 | 2 GiB  | 16 GiB  | coredns, step-ca                  |
 |    302 | proxy |     4 | 2 GiB  | 200 GiB | artifact-keeper, traefik          |
 |    303 | data  |     4 | 6 GiB  | 100 GiB | openbao, postgres, rustfs         |
-|    304 | forge |     8 | 7 GiB  | 100 GiB | forgejo, forgejo-runner           |
-|    305 | gpu   |     8 | 10 GiB | 150 GiB | llama-server, litellm, open-webui |
+|    304 | forge |     8 | 7 GiB  | 200 GiB | forgejo, forgejo-runner           |
+|    305 | gpu   |     8 | 10 GiB | 150 GiB | llama-server, bifrost, open-webui |
 |    306 | dev   |     4 | 2 GiB  | 50 GiB  | pi-sandbox                        |
 |--------+-------+-------+--------+---------+-----------------------------------|
-| *Totals* | 6     |    30 | 29 GiB | 616 GiB | 12                                |
+| *Totals* | 6     |    30 | 29 GiB | 716 GiB | 12                                |
 
 *Note:* For now, I'm using a fixed amount of memory, but there are really two values we can set, if we decide to use ballooning, and make the RAM size float. I'm also overcommitting vCPUs (30 out of 16) and stretching the RAM quite thin (29 GiB out of 32 GiB, with 3 GiB for Proxmox).
 
@@ -143,7 +143,7 @@ Ingress will be done through Traefik, so here we plan the hostnames and their ma
 |-------+----------------------+---------------------+----------------|
 | gpu   | Cockpit              | =admin.gpu.lab.lan=   | =gpu.lan:9090=   |
 |       | Llama Server         | =llm.lab.lan=         | =gpu.lan:8080=   |
-|       | LiteLLM              | =gateway.lab.lan=     | =gpu.lan:4000=   |
+|       | Bifrost              | =gateway.lab.lan=     | =gpu.lan:4040=   |
 |       | Open WebUI           | =chat.lab.lan=        | =gpu.lan:3000=   |
 |-------+----------------------+---------------------+----------------|
 | dev   | Cockpit              | =admin.dev.lab.lan=   | =dev.lan:9090=   |

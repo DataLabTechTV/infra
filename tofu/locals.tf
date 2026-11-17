@@ -74,7 +74,8 @@ locals {
           memory = {
             dedicated = 2048
             floating = 2048
-          }
+          },
+          size = 50
         }
       }
     }

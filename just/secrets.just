@@ -1,5 +1,8 @@
 set working-directory := '..'
 
+export DEMO_MODE := env("DEMO_MODE", "false")
+export DEMO_MODE_WARN := "Demo mode enabled: credentials hidden"
+
 _default:
     @just --justfile '{{module_file()}}' --list --unsorted
 
@@ -11,7 +14,11 @@ vms:
     #!/usr/bin/env bash
     source ./lib/logging.sh
 
-    info "Showing VM passwords for default user (rocky)"
+    info "Showing VM passwords for default user (rocky)$DEMO_MODE_MSG"
+
+    if [ "$DEMO_MODE" = "true" ]; then
+        warn "$DEMO_MODE_WARN"
+    fi
 
     tmpfile="$(mktemp)"
     trap 'rm -f "$tmpfile"' EXIT
@@ -25,7 +32,11 @@ vms:
         @tsv
     ' >>"$tmpfile"
 
-    just _display_table "$tmpfile" 'VM\tPassword\n'
+    if [ "$DEMO_MODE" = "true" ]; then
+        censor_col="2"
+    fi
+
+    just _display_table "$tmpfile" 'VM\tPassword\n' "$censor_col"
 
 # Show the root and intermediate CA files
 step-ca:
@@ -41,6 +52,10 @@ openbao:
     source ./lib/logging.sh
 
     info "Showing OpenBao unseal key and tokens"
+
+    if [ "$DEMO_MODE" = "true" ]; then
+        warn "$DEMO_MODE_WARN"
+    fi
 
     tmpfile="$(mktemp)"
     trap 'rm -f "$tmpfile"' EXIT
@@ -65,4 +80,8 @@ openbao:
         printf "iac_token\t$iac_token\n" >>"$tmpfile"
     fi
 
-    just _display_table "$tmpfile" 'Secret\tValue\n'
+    if [ "$DEMO_MODE" = "true" ]; then
+        censor_col="2"
+    fi
+
+    just _display_table "$tmpfile" 'Secret\tValue\n' "$censor_col"

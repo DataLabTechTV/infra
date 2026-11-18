@@ -15,13 +15,23 @@ export CONTEXT := if path_exists(CONTEXT_STATE_FILE) {
 _default:
     @just --list --unsorted
 
-_display_table $tsv_path $header_str="":
+_display_table $tsv_path $header_str="" $censor_col="":
     #!/usr/bin/env bash
 
     tmpfile="$(mktemp)"
     trap 'rm -f "$tmpfile"' EXIT
 
-    cp "$tsv_path" "$tmpfile"
+    if [ -z "$censor_col" ]; then
+        cp "$tsv_path" "$tmpfile"
+    else
+        [ -z "$header_str" ] && start_row=0 || start_row=1
+        awk -F'\t' \
+            -v OFS='\t' \
+            -v start_row="$start_row" \
+            -v censor_col="$censor_col" \
+            'NR >= start_row { $censor_col = "*********"; print }' \
+            "$tsv_path" >"$tmpfile"
+    fi
 
     if command -v crabular-cli &>/dev/null; then
         extra_args=()

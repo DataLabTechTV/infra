@@ -1,4 +1,5 @@
 #+title: infra
+#+startup: showeverything
 
 IaC, containers, quadlets, or configs to spin up infra quickly on the Linux desktop, workstation, or home lab.
 

@@ -25,6 +25,21 @@ storage:
       contents:
         inline: KEYMAP=${UCORE_KEYBOARD_LAYOUT}
 
+    - path: /etc/NetworkManager/system-connections/lan.nmconnection
+      mode: 0644
+      contents:
+        inline: |
+            [connection]
+            id=LAN
+            type=ethernet
+            autoconnect=true
+            [ethernet]
+            [ipv4]
+            method=auto
+            dhcp-send-hostname=true
+            [ipv6]
+            method=disabled
+
   links:
     - path: /etc/systemd/system/multi-user.target.wants/cockpit.service
       target: /usr/lib/systemd/system/cockpit.service

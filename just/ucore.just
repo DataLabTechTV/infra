@@ -33,8 +33,8 @@ _render_butane:
     done
 
     export UCORE_PASSWORD_HASH="$(
-        printf "$password" |
-        podman run --rm quay.io/coreos/mkpasswd --method=yescrypt --stdin
+        printf '%s' "$password" |
+        podman run -i --rm quay.io/coreos/mkpasswd --method=yescrypt --stdin
     )"
     printf '🗝️ Password hash set.\n'
 

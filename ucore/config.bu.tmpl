@@ -25,6 +25,13 @@ storage:
       contents:
         inline: KEYMAP=${UCORE_KEYBOARD_LAYOUT}
 
+    - path: /etc/kmscon/kmscon.conf
+      mode: 0644
+      contents:
+        inline: |
+          font-size=28
+          xkb-layout=${UCORE_KEYBOARD_LAYOUT}
+
     - path: /etc/NetworkManager/system-connections/lan.nmconnection
       mode: 0644
       contents:

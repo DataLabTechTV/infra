@@ -12,6 +12,10 @@ storage:
   directories:
     - path: /etc/ucore-autorebase
       mode: 0754
+    - path: /var/lib/libvirt/boot
+      mode: 0755
+    - path: /var/lib/libvirt/secrets
+      mode: 0700
 
   files:
     - path: /etc/hostname

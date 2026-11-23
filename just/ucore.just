@@ -23,6 +23,21 @@ _render_butane:
     export UCORE_KEYBOARD_LAYOUT
 
     while true; do
+        read -rp "NVIDIA [yN]: " is_nvidia
+        case "$is_nvidia" in
+            y|Y)
+                DLTCORE_TAG='stable-nvidia'
+                break
+                ;;
+            n|N|'')
+                DLTCORE_TAG='stable'
+                break
+                ;;
+        esac
+    done
+    export DLTCORE_TAG
+
+    while true; do
         read -rsp "Password: " password; echo
         read -rsp "Confirm password: " password_confirm; echo
         if [ "$password" = "$password_confirm" ]; then

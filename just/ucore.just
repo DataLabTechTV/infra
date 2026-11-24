@@ -26,11 +26,11 @@ _render_butane:
         read -rp "NVIDIA [yN]: " is_nvidia
         case "$is_nvidia" in
             y|Y)
-                DLTCORE_TAG='stable-nvidia'
+                DLTCORE_TAG='latest-nvidia'
                 break
                 ;;
             n|N|'')
-                DLTCORE_TAG='stable'
+                DLTCORE_TAG='latest'
                 break
                 ;;
         esac

@@ -14,10 +14,10 @@ resource "proxmox_download_file" "rocky_10_generic_cloud_qcow2_img" {
 
   content_type       = "import"
   datastore_id       = "local"
-  file_name          = "Rocky-10-GenericCloud-Base-10.3-20261112.0.x86_64.qcow2"
+  file_name          = local.vm_os.filename
   node_name          = var.proxmox_node
-  url                = "https://download.rockylinux.org/pub/rocky/10/images/x86_64/Rocky-10-GenericCloud-Base-10.3-20261112.0.x86_64.qcow2"
-  checksum           = "68eae06d402c8b19e7dca06e85bdc43a3476089afa3ee20d93d0d43cf9871e9e"
+  url                = local.vm_os.url
+  checksum           = local.vm_os.sha256
   checksum_algorithm = "sha256"
 }
 

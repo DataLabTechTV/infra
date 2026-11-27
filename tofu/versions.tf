@@ -10,6 +10,7 @@ terraform {
     libvirt = {
       source = "dmacvicar/libvirt"
       version = "0.9.9"
+      configuration_aliases = [ libvirt.active ]
     }
 
     random = {

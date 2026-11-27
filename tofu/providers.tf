@@ -11,6 +11,10 @@ provider "proxmox" {
 }
 
 provider "libvirt" {
+  alias = "active"
+
+  for_each = local.contexts[var.context].hypervisor == "libvirt" ? toset(["libvirt"]) : toset([])
+
   uri = "qemu+ssh://${var.libvirt_ssh_user}@${var.libvirt_ssh_host}:${var.libvirt_ssh_port}/system?keyfile=${var.libvirt_ssh_private_key_path}"
 }
 

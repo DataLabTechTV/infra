@@ -14,4 +14,7 @@ libvirt_ssh_user = "core"
 
 libvirt_ssh_private_key_path = "~/.ssh/libvirt"
 
+libvirt_pool = "default"
+libvirt_bridge = "default"
+
 vm_ssh_public_key_path       = "~/.ssh/vms.pub"

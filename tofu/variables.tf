@@ -73,3 +73,15 @@ variable "libvirt_ssh_private_key_path" {
   description = "Path to the SSH private key used to access the Libvirt hypervisor"
   default     = "~/.ssh/dltcore"
 }
+
+variable "libvirt_pool" {
+  type        = string
+  description = "Storage pool name for VM disks"
+  default     = "default"
+}
+
+variable "libvirt_bridge" {
+  type        = string
+  description = "Network bridge name for VM network interfaces"
+  default     = "default"
+}

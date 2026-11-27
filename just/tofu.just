@@ -57,9 +57,13 @@ _tofu action *args:
         -var="context=$CONTEXT" \
         {{args}}
 
+# Initialize OpenTofu project or upgrade providers
+init: _check
+    @just --justfile '{{module_file()}}' _tofu init -upgrade
+
 # Check infrastructure changes for the specified context
 plan: _check
-    @just --justfile '{{module_file()}}'  _tofu plan
+    @just --justfile '{{module_file()}}' _tofu plan
 
 # Apply infrastructure changes for the specified context
 apply: _check

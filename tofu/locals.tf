@@ -2,7 +2,26 @@ locals {
   // Each context is an infrastructure configuration, followed by
   // a category (e.g., vms), and one or multiple hosts.
   contexts = {
+    test = {
+      hypervisor = "libvirt"
+      vms = {
+        core = {
+          vm_id = 301
+          cpu = {
+            cores = 4
+            hotplugged = 2
+          }
+          memory = {
+            dedicated = 2048
+            floating = 2048
+          }
+          size = 16
+        }
+      }
+    }
+
     lab = {
+      hypervisor = "proxmox"
       vms = {
         core = {
           vm_id = 301

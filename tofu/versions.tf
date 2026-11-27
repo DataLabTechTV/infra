@@ -7,6 +7,11 @@ terraform {
       version = "~> 0.112.0"
     }
 
+    libvirt = {
+      source = "dmacvicar/libvirt"
+      version = "0.9.9"
+    }
+
     random = {
       source  = "hashicorp/random"
       version = "~> 3.9.0"

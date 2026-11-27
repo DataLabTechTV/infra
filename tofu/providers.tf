@@ -10,6 +10,10 @@ provider "proxmox" {
   }
 }
 
+provider "libvirt" {
+  uri = "qemu+ssh://${var.libvirt_ssh_user}@${var.libvirt_ssh_host}:${var.libvirt_ssh_port}/system?keyfile=${var.libvirt_ssh_private_key_path}"
+}
+
 provider "random" {}
 
 provider "null" {}

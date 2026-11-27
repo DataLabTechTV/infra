@@ -1,6 +1,6 @@
 set working-directory := '..'
 
-default_ucore_ssh_authorized_key_path := env("HOME") / ".ssh/id_ed25519.pub"
+default_ucore_ssh_authorized_key_path := env("HOME") / ".ssh/libvirt.pub"
 
 export UCORE_SSH_AUTHORIZED_KEY_PATH := env("UCORE_SSH_AUTHORIZED_KEY_PATH", default_ucore_ssh_authorized_key_path)
 

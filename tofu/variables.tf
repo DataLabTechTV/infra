@@ -50,3 +50,26 @@ variable "vm_ssh_public_key_path" {
   description = "Path to the SSH public key used to access the VMs"
   default     = "~/.ssh/vms.pub"
 }
+
+variable "libvirt_ssh_host" {
+  type        = string
+  description = "Libvirt hypervisor SSH host"
+}
+
+variable "libvirt_ssh_port" {
+  type        = number
+  description = "Libvirt hypervisor SSH port"
+  default     = 22
+}
+
+variable "libvirt_ssh_user" {
+  type        = string
+  description = "Libvirt hypervisor SSH user"
+  default     = "core"
+}
+
+variable "libvirt_ssh_private_key_path" {
+  type        = string
+  description = "Path to the SSH private key used to access the Libvirt hypervisor"
+  default     = "~/.ssh/dltcore"
+}
